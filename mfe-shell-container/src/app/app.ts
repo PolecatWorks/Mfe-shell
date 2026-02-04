@@ -5,6 +5,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { SharedContextService } from 'mfe-shared';
 
 @Component({
   selector: 'app-root',
@@ -23,4 +24,9 @@ import { MatListModule } from '@angular/material/list';
 })
 export class App {
   title = 'mfe-shell-container';
+
+  constructor(private sharedContext: SharedContextService) {
+    console.log('App: SharedContextService injected');
+    this.sharedContext.setContext({ username: 'ShellUser', roles: ['admin'] });
+  }
 }
