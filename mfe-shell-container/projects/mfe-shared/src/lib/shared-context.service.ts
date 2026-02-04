@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export interface UserContext {
   username: string;
   roles: string[];
+  name: string;
 }
 
 @Injectable({
