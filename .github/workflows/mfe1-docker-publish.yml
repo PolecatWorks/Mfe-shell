@@ -46,6 +46,28 @@ jobs:
     if: needs.check-paths.outputs.backend == 'true'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine Shell Dependency SHA
+        id: shell-dep
+        run: |
+          # Find the last commit that touched the shell directory or its workflow
+          SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-docker-publish.yml)
+          echo "Determined latest shell change at: $SHELL_SHA"
+          echo "SHELL_SHA=$SHELL_SHA" >> $GITHUB_ENV
+
+          # Check if this SHA exists in origin/main to decide if we pull from Prod or Dev repo
+          # Fetch origin/main just in case
+          git fetch origin main
+          if git merge-base --is-ancestor $SHELL_SHA origin/main; then
+            echo "SHA is on main. Using PROD repository."
+            echo "IS_PROD=true" >> $GITHUB_ENV
+          else
+            echo "SHA is not on main (likely PR). Using DEV repository."
+            echo "IS_PROD=false" >> $GITHUB_ENV
+          fi
       - name: Wait for MFE Shell Workflow
         uses: actions/github-script@v7
         with:
