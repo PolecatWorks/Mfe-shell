@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe, JsonPipe } from '@angular/common';
-import { SharedContextService } from 'mfe-shared';
+import { SharedContextService, UserContext } from 'mfe-shared';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,7 @@ import { SharedContextService } from 'mfe-shared';
   template: `
     <div style="border: 2px dashed red; padding: 10px;">
       <h2>MFE1 Component</h2>
-      <p>Name from Context: {{ (contextService.context$ | async)?.name }}</p>
+      <p>Name from Context: {{ $any(contextService.context$ | async)?.name }}</p>
     </div>
   `,
   styles: [`

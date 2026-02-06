@@ -12,7 +12,12 @@ RUN npm run build -- --configuration production
 # Stage 2: Serve with Nginx
 FROM nginx:alpine
 
+#Copy the MFE Shell app
 COPY --from=build /app/dist/mfe-shell-container/browser /usr/share/nginx/html
+
+# Also copy mfe-shared library for other containers to use
+COPY --from=build /app/dist/mfe-shared /usr/share/mfe-shared
+
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
