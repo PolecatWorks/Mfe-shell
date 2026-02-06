@@ -10,6 +10,7 @@ import { SharedContextService, UserContext } from 'mfe-shared';
     <div style="border: 2px dashed red; padding: 10px;">
       <h2>MFE1 Component</h2>
       <p>Name from Context: {{ $any(contextService.context$ | async)?.name }}</p>
+      <p> Name {{contextService.getContext()?.name}}</p>
     </div>
   `,
   styles: [`
