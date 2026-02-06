@@ -17,12 +17,7 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "baseUrl": "./",
-    "paths": {
-      "mfe-shared": [
-        "../mfe-shell-container/projects/mfe-shared/src/public-api.ts"
-      ]
-    }
+    "baseUrl": "./"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
