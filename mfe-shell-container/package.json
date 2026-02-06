@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "mfe-shared": "ng build mfe-shared",
     "start": "ng build mfe-shared && ng serve",
     "build": "ng build mfe-shared && ng build",
     "watch": "ng build --watch --configuration development",
