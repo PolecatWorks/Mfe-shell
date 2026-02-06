@@ -1,24 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { SharedContextService, UserContext } from 'mfe-shared';
+import { MatButtonModule } from '@angular/material/button';
+
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [AsyncPipe],
-  template: `
-    <div style="border: 2px dashed red; padding: 10px;">
-      <h2>MFE1 Component</h2>
-      <p>Name from Context: {{ $any(contextService.context$ | async)?.name }}</p>
-      <p> Name {{contextService.getContext()?.name}}</p>
-      <button (click)="setRobRoy()">Set Rob Roy</button>
-    </div>
-  `,
-  styles: [`
-    :host {
-      display: block;
-    }
-  `]
+  imports: [
+    AsyncPipe,
+    MatButtonModule
+  ],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   contextService = inject(SharedContextService);

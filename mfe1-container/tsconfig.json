@@ -18,7 +18,12 @@
     "target": "ES2022",
     "module": "ES2022",
     "baseUrl": "./",
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
+    "paths": {
+      "mfe-shared": [
+        "node_modules/mfe-shared"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
