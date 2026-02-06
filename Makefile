@@ -27,4 +27,4 @@ mfe1-dev: mfe1-container/node_modules/.bin/ng
 	cd mfe1-container && npm run start
 
 mfe1-docker: mfe-shell-docker
-	docker build -t mfe1-container ./mfe1-container
+	docker build --build-arg MFE_SHELL_IMAGE=mfe-shell-container -t mfe1-container ./mfe1-container
