@@ -11,6 +11,7 @@ import { SharedContextService, UserContext } from 'mfe-shared';
       <h2>MFE1 Component</h2>
       <p>Name from Context: {{ $any(contextService.context$ | async)?.name }}</p>
       <p> Name {{contextService.getContext()?.name}}</p>
+      <button (click)="setRobRoy()">Set Rob Roy</button>
     </div>
   `,
   styles: [`
@@ -21,4 +22,12 @@ import { SharedContextService, UserContext } from 'mfe-shared';
 })
 export class AppComponent {
   contextService = inject(SharedContextService);
+
+  setRobRoy() {
+    this.contextService.setContext({
+      name: 'Rob Roy',
+      username: 'robroy',
+      roles: ['hero']
+    });
+  }
 }
