@@ -16,6 +16,9 @@ mfe-shell-container/node_modules/.bin/ng:
 mfe-shell-dev: mfe-shell-container/node_modules/.bin/ng
 	cd mfe-shell-container && npm run start
 
+mfe-shell-docker:
+	docker build -t mfe-shell-container ./mfe-shell-container
+
 mfe1-container/node_modules/.bin/ng:
 	@echo "Installing node modules in mfe1-container"
 	cd $(BASE_DIR)/mfe1-container && npm install
@@ -23,10 +26,5 @@ mfe1-container/node_modules/.bin/ng:
 mfe1-dev: mfe1-container/node_modules/.bin/ng
 	cd mfe1-container && npm run start
 
-
-
-docker-build:
-	docker build -t mfe-shell-container ./mfe-shell-container
-
-docker-build-mfe1:
-	docker build -f mfe1-container/Dockerfile -t mfe1-container .
+mfe1-docker: mfe-shell-docker
+	docker build -t mfe1-container ./mfe1-container

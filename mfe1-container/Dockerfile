@@ -1,30 +1,31 @@
+# Use mfe-shell image for mfe-shared library
+FROM mfe-shell-container:latest AS mfe-shell
+
 FROM node:22-alpine AS build
 
 WORKDIR /app
 
-COPY . .
-
-# Build Shared Library
-WORKDIR /app/mfe-shell-container
-RUN npm ci
-RUN npm run build
-
-# Build MFE1
-WORKDIR /app/mfe1-container
-RUN npm install
-
-# Link Shared Library
-WORKDIR /app/mfe-shell-container/dist/mfe-shared
+# Copy and link mfe-shared library from mfe-shell image
+COPY --from=mfe-shell /usr/share/mfe-shared /tmp/mfe-shared
+WORKDIR /tmp/mfe-shared
 RUN npm link
 
-WORKDIR /app/mfe1-container
+# Copy mfe1 application
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Link mfe-shared into mfe1
 RUN npm link mfe-shared
 
+COPY . .
+
+# Build mfe1
 RUN npx ng build --configuration production
 
 # Stage 2: Serve
 FROM nginx:alpine
-COPY --from=build /app/mfe1-container/dist/mfe1-container/browser /usr/share/nginx/html
-COPY mfe1-container/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist/mfe1-container/browser /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
