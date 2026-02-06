@@ -37,9 +37,56 @@ jobs:
             backend:
               - 'mfe1-container/**'
               - '.github/workflows/mfe1-docker-publish.yml'
+              - '.github/workflows/mfe-shell-docker-publish.yml'
+
+  wait-for-shell:
+    needs: check-paths
+    if: needs.check-paths.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for MFE Shell Workflow
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workflowId = 'mfe-shell-docker-publish.yml';
+            const maxRetries = 60; // Wait up to 30 minutes (30s interval)
+            const intervalSeconds = 30;
+
+            console.log(`Waiting for workflow ${workflowId} on commit ${context.sha}...`);
+
+            for (let i = 0; i < maxRetries; i++) {
+              // List workflow runs for the specific workflow and commit SHA
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: workflowId,
+                head_sha: context.sha,
+              });
+
+              if (runs.data.total_count === 0) {
+                console.log('Workflow run not found yet. Waiting...');
+              } else {
+                const run = runs.data.workflow_runs[0];
+                console.log(`Found workflow run: ${run.id} (Status: ${run.status}, Conclusion: ${run.conclusion})`);
+
+                if (run.status === 'completed') {
+                  if (run.conclusion === 'success') {
+                    console.log('MFE Shell workflow completed successfully.');
+                    return;
+                  } else {
+                    core.setFailed(`MFE Shell workflow failed with conclusion: ${run.conclusion}`);
+                    return;
+                  }
+                }
+              }
+
+              await new Promise(r => setTimeout(r, intervalSeconds * 1000));
+            }
+
+            core.setFailed('Timeout waiting for MFE Shell workflow to complete.');
 
   build:
-    needs: check-paths
+    needs: [check-paths, wait-for-shell]
     if: needs.check-paths.outputs.backend == 'true'
     strategy:
       fail-fast: false
