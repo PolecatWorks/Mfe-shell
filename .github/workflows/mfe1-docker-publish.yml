@@ -59,29 +59,33 @@ jobs:
             console.log(`Waiting for workflow ${workflowId} on commit ${commitSha}...`);
 
             for (let i = 0; i < maxRetries; i++) {
-              // List workflow runs for the specific workflow and commit SHA
-              const runs = await github.rest.actions.listWorkflowRuns({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                workflow_id: workflowId,
-                head_sha: commitSha,
-              });
+              try {
+                // List workflow runs for the specific workflow and commit SHA
+                const runs = await github.rest.actions.listWorkflowRuns({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: workflowId,
+                  head_sha: commitSha,
+                });
 
-              if (runs.data.total_count === 0) {
-                console.log('Workflow run not found yet. Waiting...');
-              } else {
-                const run = runs.data.workflow_runs[0];
-                console.log(`Found workflow run: ${run.id} (Status: ${run.status}, Conclusion: ${run.conclusion})`);
+                if (runs.data.total_count === 0) {
+                  console.log('Workflow run not found yet. Waiting...');
+                } else {
+                  const run = runs.data.workflow_runs[0];
+                  console.log(`Found workflow run: ${run.id} (Status: ${run.status}, Conclusion: ${run.conclusion})`);
 
-                if (run.status === 'completed') {
-                  if (run.conclusion === 'success') {
-                    console.log('MFE Shell workflow completed successfully.');
-                    return;
-                  } else {
-                    core.setFailed(`MFE Shell workflow failed with conclusion: ${run.conclusion}`);
-                    return;
+                  if (run.status === 'completed') {
+                    if (run.conclusion === 'success') {
+                      console.log('MFE Shell workflow completed successfully.');
+                      return;
+                    } else {
+                      core.setFailed(`MFE Shell workflow failed with conclusion: ${run.conclusion}`);
+                      return;
+                    }
                   }
                 }
+              } catch (error) {
+                console.log(`Error checking workflow status: ${error.message}. Retrying...`);
               }
 
               await new Promise(r => setTimeout(r, intervalSeconds * 1000));
