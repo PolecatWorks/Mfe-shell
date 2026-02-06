@@ -128,7 +128,6 @@ jobs:
           else
             echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1" >> $GITHUB_ENV
           fi
-          fi
 
           # Construct the full image name for the base image (mfe-shell)
           # Logic mirrors mfe-shell workflow:
