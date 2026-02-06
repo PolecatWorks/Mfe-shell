@@ -1,5 +1,6 @@
 # Use mfe-shell image for mfe-shared library
-FROM mfe-shell-container:latest AS mfe-shell
+ARG MFE_SHELL_IMAGE=mfe-shell-container:latest
+FROM ${MFE_SHELL_IMAGE} AS mfe-shell
 
 FROM node:22-alpine AS build
 
