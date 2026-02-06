@@ -30,6 +30,8 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -53,8 +55,8 @@ jobs:
             const intervalSeconds = 30;
 
             // Determine the correct SHA to look for.
-            // In a PR, context.sha is the merge commit, but workflow runs are indexed by the head commit.
-            const commitSha = context.payload.pull_request ? context.payload.pull_request.head.sha : context.sha;
+            // We calculated this in the previous step
+            const commitSha = process.env.SHELL_SHA;
 
             console.log(`Waiting for workflow ${workflowId} on commit ${commitSha}...`);
 
@@ -116,6 +118,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - &prepare_step
         name: Prepare environment for current platform
@@ -138,17 +142,31 @@ jobs:
           # Main: ghcr.io/owner/repo-mfe-shell:sha-<commit_sha>
           # PR:   ghcr.io/owner/repo-mfe-shell/dev:sha-<commit_sha>
 
-          SHELL_REPO_NAME="${repo_name}-mfe-shell"
-          # Get SHA from the same place as the wait-for-shell script
-          COMMIT_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
 
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-             SHELL_IMAGE_NAME_LOWERCASE=$(echo "$SHELL_REPO_NAME/dev" | tr '[:upper:]' '[:lower:]')
+          # Determine the shell dependency SHA and Repo type again (or pass from previous job if we want, but re-calculating is safer/easier than passing data between jobs)
+          # We need to re-run the calculation because this is a separate job and environment
+
+          SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-docker-publish.yml)
+          git fetch origin main
+          if git merge-base --is-ancestor $SHELL_SHA origin/main; then
+             IS_PROD=true
           else
-             SHELL_IMAGE_NAME_LOWERCASE=$(echo "$SHELL_REPO_NAME" | tr '[:upper:]' '[:lower:]')
+             IS_PROD=false
           fi
 
-          echo "MFE_SHELL_IMAGE_FULL=${{ env.REGISTRY }}/${SHELL_IMAGE_NAME_LOWERCASE}:sha-${COMMIT_SHA}" >> $GITHUB_ENV
+          SHELL_REPO_NAME="${repo_name}-mfe-shell"
+
+          if [[ "$IS_PROD" == "true" ]]; then
+             # Production image (ghcr.io/owner/repo-mfe-shell)
+             SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME" | tr '[:upper:]' '[:lower:]')
+          else
+             # Dev image (ghcr.io/owner/repo-mfe-shell/dev)
+             SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME/dev" | tr '[:upper:]' '[:lower:]')
+          fi
+
+          # Construct full path
+          # Usually tags are sha-<sha>
+          echo "MFE_SHELL_IMAGE_FULL=${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:sha-${SHELL_SHA}" >> $GITHUB_ENV
 
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
 
