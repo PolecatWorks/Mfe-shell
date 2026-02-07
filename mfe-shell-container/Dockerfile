@@ -20,4 +20,4 @@ COPY --from=build /app/dist/mfe-shared /usr/share/mfe-shared
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+EXPOSE 8080
