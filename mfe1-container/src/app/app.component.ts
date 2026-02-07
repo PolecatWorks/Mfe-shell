@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  contextService = inject(SharedContextService);
+  contextService: SharedContextService = inject(SharedContextService);
 
   setRobRoy() {
     this.contextService.setContext({
