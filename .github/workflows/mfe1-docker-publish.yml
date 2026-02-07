@@ -28,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
+      shell: ${{ steps.filter.outputs.shell }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,6 +40,9 @@ jobs:
             backend:
               - 'mfe1-container/**'
               - '.github/workflows/mfe1-docker-publish.yml'
+              - '.github/workflows/mfe-shell-docker-publish.yml'
+            shell:
+              - 'mfe-shell-container/**'
               - '.github/workflows/mfe-shell-docker-publish.yml'
 
   wait-for-shell:
@@ -52,11 +56,24 @@ jobs:
 
       - name: Determine Shell Dependency SHA
         id: shell-dep
+        env:
+          IS_PR: ${{ github.event_name == 'pull_request' }}
+          SHELL_CHANGED: ${{ needs.check-paths.outputs.shell }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           # Find the last commit that touched the shell directory or its workflow
           SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-docker-publish.yml)
           echo "Determined latest shell change at: $SHELL_SHA"
           echo "SHELL_SHA=$SHELL_SHA" >> $GITHUB_ENV
+
+          # Determine which SHA to wait for
+          if [[ "$IS_PR" == "true" && "$SHELL_CHANGED" == "true" ]]; then
+             echo "Shell changes detected in PR. Waiting for workflow on PR HEAD SHA: $PR_HEAD_SHA"
+             echo "WORKFLOW_SHA=$PR_HEAD_SHA" >> $GITHUB_ENV
+          else
+             echo "No shell changes in PR, or not a PR. Waiting for latest shell commit: $SHELL_SHA"
+             echo "WORKFLOW_SHA=$SHELL_SHA" >> $GITHUB_ENV
+          fi
 
           # Check if this SHA exists in origin/main to decide if we pull from Prod or Dev repo
           # Fetch origin/main just in case
@@ -68,6 +85,7 @@ jobs:
             echo "SHA is not on main (likely PR). Using DEV repository."
             echo "IS_PROD=false" >> $GITHUB_ENV
           fi
+
       - name: Wait for MFE Shell Workflow
         uses: actions/github-script@v7
         with:
@@ -78,7 +96,7 @@ jobs:
 
             // Determine the correct SHA to look for.
             // We calculated this in the previous step
-            const commitSha = process.env.SHELL_SHA;
+            const commitSha = process.env.WORKFLOW_SHA;
 
             console.log(`Waiting for workflow ${workflowId} on commit ${commitSha}...`);
 
