@@ -62,8 +62,10 @@ Because `mfe-shared` is a local library that both the Shell and MFE1 depend on a
 
 2.  **Create Global Link for Shared Lib**
     ```bash
+    # You can also use `make mfe1-shared` to handle linking automatically
     cd mfe-shell-container/dist/mfe-shared && npm link
     ```
+
 
 3.  **Link in Shell**
     ```bash
@@ -82,18 +84,42 @@ Because `mfe-shared` is a local library that both the Shell and MFE1 depend on a
 
 ## 🐳 Docker Support
 
-To build production-ready Docker images:
+You can build and run the containers using the Makefile:
 
-### Shell Image
 ```bash
-make docker-build
-# Builds 'mfe-shell-container:latest'
+# Build and run the shell
+make mfe-shell-docker-run
+
+# Build and run MFE1 (this will also build the shell as a dependency)
+make mfe1-docker-run
 ```
 
-### MFE1 Image
+The default ports are:
+-   **mfe-shell**: 4200 (mapped to container port 8080)
+-   **mfe1**: 4201 (mapped to container port 8080)
+
+You can override these ports by setting the variables in the Makefile or environment:
 ```bash
-make docker-build-mfe1
-# Builds 'mfe1-container:latest'
+make mfe-shell-docker-run mfe-shell_PORT=5000
+```
+
+## 🏗️ Architecture
+
+```mermaid
+graph TD
+    subgraph "Host Machine"
+        Browser[Web Browser]
+    end
+
+    subgraph "Docker Network"
+        Shell[mfe-shell Container<br/>Port 8080]
+        MFE1[mfe1 Container<br/>Port 8080]
+    end
+
+    Browser -->|Port 4200| Shell
+    Browser -->|Port 4201| MFE1
+
+    Shell -.->|Loads| MFE1
 ```
 
 ## 📂 Project Structure

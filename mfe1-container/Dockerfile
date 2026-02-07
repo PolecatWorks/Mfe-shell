@@ -29,4 +29,4 @@ FROM nginx:alpine
 COPY --from=build /app/dist/mfe1-container/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+EXPOSE 8080

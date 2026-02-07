@@ -2,6 +2,9 @@
 
 BASE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
+mfe-shell_PORT := 4200
+mfe1_PORT := 4201
+
 
 install:
 	cd mfe-shell-container && npm install
@@ -38,3 +41,9 @@ mfe1-dev: mfe1-container/node_modules/.bin/ng
 
 mfe1-docker: mfe-shell-docker
 	docker build --build-arg MFE_SHELL_IMAGE=mfe-shell-container -t mfe1-container ./mfe1-container
+
+mfe-shell-docker-run: mfe-shell-docker
+	docker run -it --rm -p $(mfe-shell_PORT):8080 mfe-shell-container
+
+mfe1-docker-run: mfe1-docker
+	docker run -it --rm -p $(mfe1_PORT):8080 mfe1-container
