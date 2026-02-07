@@ -47,7 +47,7 @@ jobs:
 
   wait-for-shell:
     needs: check-paths
-    if: needs.check-paths.outputs.backend == 'true'
+    if: needs.check-paths.outputs.backend == 'true' && needs.check-paths.outputs.shell == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -57,34 +57,10 @@ jobs:
       - name: Determine Shell Dependency SHA
         id: shell-dep
         env:
-          IS_PR: ${{ github.event_name == 'pull_request' }}
-          SHELL_CHANGED: ${{ needs.check-paths.outputs.shell }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          # Find the last commit that touched the shell directory or its workflow
-          SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-docker-publish.yml)
-          echo "Determined latest shell change at: $SHELL_SHA"
-          echo "SHELL_SHA=$SHELL_SHA" >> $GITHUB_ENV
-
-          # Determine which SHA to wait for
-          if [[ "$IS_PR" == "true" && "$SHELL_CHANGED" == "true" ]]; then
-             echo "Shell changes detected in PR. Waiting for workflow on PR HEAD SHA: $PR_HEAD_SHA"
-             echo "WORKFLOW_SHA=$PR_HEAD_SHA" >> $GITHUB_ENV
-          else
-             echo "No shell changes in PR, or not a PR. Waiting for latest shell commit: $SHELL_SHA"
-             echo "WORKFLOW_SHA=$SHELL_SHA" >> $GITHUB_ENV
-          fi
-
-          # Check if this SHA exists in origin/main to decide if we pull from Prod or Dev repo
-          # Fetch origin/main just in case
-          git fetch origin main
-          if git merge-base --is-ancestor $SHELL_SHA origin/main; then
-            echo "SHA is on main. Using PROD repository."
-            echo "IS_PROD=true" >> $GITHUB_ENV
-          else
-            echo "SHA is not on main (likely PR). Using DEV repository."
-            echo "IS_PROD=false" >> $GITHUB_ENV
-          fi
+          echo "Shell changes detected. Waiting for workflow on SHA: $PR_HEAD_SHA"
+          echo "WORKFLOW_SHA=$PR_HEAD_SHA" >> $GITHUB_ENV
 
       - name: Wait for MFE Shell Workflow
         uses: actions/github-script@v7
@@ -137,7 +113,7 @@ jobs:
 
   build:
     needs: [check-paths, wait-for-shell]
-    if: needs.check-paths.outputs.backend == 'true'
+    if: needs.check-paths.outputs.backend == 'true' && (needs.wait-for-shell.result == 'success' || needs.wait-for-shell.result == 'skipped')
     strategy:
       fail-fast: false
       matrix:
@@ -168,6 +144,10 @@ jobs:
         # This is useful for naming artifacts and other resources that cannot contain '/'.
         # The environment variable PLATFORMS_PAIR will be used later in the workflow.
         id: prepare
+        env:
+          IS_PR: ${{ github.event_name == 'pull_request' }}
+          SHELL_CHANGED: ${{ needs.check-paths.outputs.shell }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           platform=${{ matrix.platform }}
           repo_name="${{ github.repository }}"
@@ -186,27 +166,33 @@ jobs:
           # Determine the shell dependency SHA and Repo type again (or pass from previous job if we want, but re-calculating is safer/easier than passing data between jobs)
           # We need to re-run the calculation because this is a separate job and environment
 
-          SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-docker-publish.yml)
-          git fetch origin main
-          if git merge-base --is-ancestor $SHELL_SHA origin/main; then
-             IS_PROD=true
-          else
-             IS_PROD=false
-          fi
-
           SHELL_REPO_NAME="${repo_name}-mfe-shell"
+          IMAGE_NAME_LOWERCASE_BASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')
 
-          if [[ "$IS_PROD" == "true" ]]; then
-             # Production image (ghcr.io/owner/repo-mfe-shell)
-             SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME" | tr '[:upper:]' '[:lower:]')
+          if [[ "$SHELL_CHANGED" == "true" ]]; then
+             if [[ "$IS_PR" == "true" ]]; then
+                # Shell changed in PR. Wait-for-shell ran and waited for PR HEAD.
+                # Use dev image with PR head SHA
+                SHELL_SHA="${PR_HEAD_SHA}"
+                SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME/dev" | tr '[:upper:]' '[:lower:]')
+                MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:sha-${SHELL_SHA}"
+             else
+                # Shell changed but NOT a PR (e.g. main branch push)
+                # Use prod image logic (from git log)
+                SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-docker-publish.yml)
+                SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME" | tr '[:upper:]' '[:lower:]')
+                MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:sha-${SHELL_SHA}"
+             fi
           else
-             # Dev image (ghcr.io/owner/repo-mfe-shell/dev)
-             SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME/dev" | tr '[:upper:]' '[:lower:]')
+             # Shell NOT changed.
+             # Use main image (prod)
+             # The tag is 'main'
+             SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME" | tr '[:upper:]' '[:lower:]')
+             MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:main"
           fi
 
-          # Construct full path
-          # Usually tags are sha-<sha>
-          echo "MFE_SHELL_IMAGE_FULL=${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:sha-${SHELL_SHA}" >> $GITHUB_ENV
+          echo "Using shell image: $MFE_SHELL_IMAGE_FULL"
+          echo "MFE_SHELL_IMAGE_FULL=${MFE_SHELL_IMAGE_FULL}" >> $GITHUB_ENV
 
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
 
