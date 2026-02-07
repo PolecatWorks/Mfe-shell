@@ -166,20 +166,20 @@ jobs:
           # Determine the shell dependency SHA and Repo type again (or pass from previous job if we want, but re-calculating is safer/easier than passing data between jobs)
           # We need to re-run the calculation because this is a separate job and environment
 
+          SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-docker-publish.yml)
+
           SHELL_REPO_NAME="${repo_name}-mfe-shell"
           IMAGE_NAME_LOWERCASE_BASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')
 
           if [[ "$SHELL_CHANGED" == "true" ]]; then
              if [[ "$IS_PR" == "true" ]]; then
                 # Shell changed in PR. Wait-for-shell ran and waited for PR HEAD.
-                # Use dev image with PR head SHA
-                SHELL_SHA="${PR_HEAD_SHA}"
+                # Use dev image with CONTENT SHA (not necessarily PR HEAD)
                 SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME/dev" | tr '[:upper:]' '[:lower:]')
                 MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:sha-${SHELL_SHA}"
              else
                 # Shell changed but NOT a PR (e.g. main branch push)
                 # Use prod image logic (from git log)
-                SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-docker-publish.yml)
                 SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME" | tr '[:upper:]' '[:lower:]')
                 MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:sha-${SHELL_SHA}"
              fi
