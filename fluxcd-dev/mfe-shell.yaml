@@ -53,7 +53,7 @@ spec:
   releaseName: mfe1
   chartRef:
     kind: OCIRepository
-    name: mfe1
+    name: mfe-shell
   interval: 50m
   install:
     remediation:
