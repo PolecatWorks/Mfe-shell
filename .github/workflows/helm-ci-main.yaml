@@ -1,9 +1,7 @@
-name: Helm CI
+name: Helm CI (Main)
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
     branches: ["main"]
 
 env:
@@ -28,11 +26,11 @@ jobs:
           filters: |
             charts:
               - 'charts/**'
-              - '.github/workflows/helm-publish.yaml'
+              - '.github/workflows/helm-ci-main.yaml'
 
   lint:
     needs: check-paths
-    if: needs.check-paths.outputs.charts == 'true' && github.event_name == 'pull_request'
+    if: needs.check-paths.outputs.charts == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -40,14 +38,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: azure/setup-helm@v4.2.0
 
-      - name: Lint nginx-view-mfe-shell
-        run: helm lint charts/nginx-view
-
       - name: Lint nginx-view
         run: helm lint charts/nginx-view
 
   publish:
-    needs: check-paths
+    needs: [check-paths, lint]
     if: needs.check-paths.outputs.charts == 'true'
     runs-on: ubuntu-latest
     permissions:
@@ -57,42 +52,28 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - id: lower-repo
         name: Repository to lowercase
         run: |
-          SHORTER_REPO=${GITHUB_REPOSITORY%:*}
-          echo "repository=${SHORTER_REPO@L}" >> $GITHUB_OUTPUT
+          echo "repository=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
 
-      - name: Get Short SHA
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Get Content SHA
+        id: content_sha
+        run: |
+          # Get the short SHA of the last commit that modified the chart directory
+          SHA_SHORT=$(git log -1 --format=%h -- charts/nginx-view)
+          echo "sha_short=$SHA_SHORT" >> $GITHUB_OUTPUT
 
       - name: Update Chart Versions
         run: |
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
-            suffix="-main"
-          else
-            suffix="-dev-${{ steps.vars.outputs.sha_short }}"
-          fi
-
+          # Use the content SHA in the version
+          suffix="-main-${{ steps.content_sha.outputs.sha_short }}"
           sed -i "s/^version: .*/&${suffix}/" charts/nginx-view/Chart.yaml
           echo "Updated Nginx View Version:"
           grep "^version:" charts/nginx-view/Chart.yaml
-
-          sed -i "s/^version: .*/&${suffix}/" charts/nginx-view/Chart.yaml
-          echo "Updated Nginx View Version:"
-          grep "^version:" charts/nginx-view/Chart.yaml
-
-      - name: Push Helm chart to OCI for nginx-view
-        uses: bsord/helm-push@v4
-        with:
-          chart-folder: charts/nginx-view
-          useOCIRegistry: true
-          registry-url: oci://ghcr.io/${{ steps.lower-repo.outputs.repository }}/helm
-          username: ${{ github.actor }}
-          access-token: ${{ secrets.GITHUB_TOKEN }}
-          force: true
 
       - name: Push Helm chart to OCI for nginx-view
         uses: bsord/helm-push@v4
@@ -113,18 +94,14 @@ jobs:
     steps:
       - name: Check Status
         run: |
-          # If charts changed, check if the relevant job succeeded
           if [[ "${{ needs.check-paths.outputs.charts }}" == 'true' ]]; then
-            if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
-               if [[ "${{ needs.lint.result }}" != 'success' ]]; then
-                 echo "Lint failed!"
-                 exit 1
-               fi
-            else
-               if [[ "${{ needs.publish.result }}" != 'success' ]]; then
-                 echo "Publish failed!"
-                 exit 1
-               fi
+            if [[ "${{ needs.lint.result }}" != 'success' ]]; then
+               echo "Lint failed!"
+               exit 1
+            fi
+            if [[ "${{ needs.publish.result }}" != 'success' ]]; then
+               echo "Publish failed!"
+               exit 1
             fi
           fi
           echo "Success!"
