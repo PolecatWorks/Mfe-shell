@@ -30,10 +30,10 @@ jobs:
               - 'mfe1-container/**'
               - '.github/workflows/mfe1-ci-pr.yml'
               - '.github/workflows/mfe1-ci-main.yml'
-              - '.github/workflows/mfe-shell-docker-publish.yml'
+              - '.github/workflows/mfe-shell-ci-main.yml'
             shell:
               - 'mfe-shell-container/**'
-              - '.github/workflows/mfe-shell-docker-publish.yml'
+              - '.github/workflows/mfe-shell-ci-main.yml'
 
   wait-for-shell:
     needs: check-paths
@@ -54,7 +54,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const workflowId = 'mfe-shell-docker-publish.yml';
+            const workflowId = 'mfe-shell-ci-main.yml';
             const maxRetries = 60; // Wait up to 30 minutes (30s interval)
             const intervalSeconds = 30;
             const commitSha = process.env.WORKFLOW_SHA;
@@ -128,7 +128,7 @@ jobs:
           echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1" >> $GITHUB_ENV
 
           # Calculate Content SHA for tagging
-          SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-docker-publish.yml)
+          SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-ci-main.yml)
 
           SHELL_REPO_NAME="${repo_name}-mfe-shell"
 
@@ -249,3 +249,19 @@ jobs:
       - name: Inspect image
         run: |
           docker buildx imagetools inspect '${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}:${{ steps.meta.outputs.version }}'
+
+  ci-success:
+    name: MFE1 CI Success
+    needs: [check-paths, merge]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Status
+        run: |
+          if [[ "${{ needs.check-paths.outputs.backend }}" == 'true' ]]; then
+            if [[ "${{ needs.merge.result }}" != 'success' ]]; then
+               echo "Build/Merge failed!"
+               exit 1
+            fi
+          fi
+          echo "Success!"
