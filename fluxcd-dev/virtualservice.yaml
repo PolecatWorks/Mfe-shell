@@ -10,17 +10,17 @@ spec:
     - istio-ingress/k8s-gateway
     - mesh # applies to all the sidecars in the mesh
   http:
-    - name: mfe-shell
-      match:
+    - match:
         - uri:
             prefix: /
+      name: mfe-shell
       route:
         - destination:
-            host: mfe-shell
-    - name: mfe1
-      match:
+            host: mfe-shell-nginx-view
+    - match:
         - uri:
             prefix: /mfe1
+      name: mfe1
       route:
         - destination:
-            host: mfe1
+            host: mfe1-nginx-view
