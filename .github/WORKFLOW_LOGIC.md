@@ -85,3 +85,64 @@ flowchart TD
     *   **Changed**: Uses the production image built from the specific content SHA (`sha-<SHA>`).
     *   **Unchanged**: Uses the stable `main` image.
 *   **Output**: Pushes to the production registry with `main`, `latest`, and `sha-<SHA>` tags.
+
+
+# MFE Shell CI Logic
+
+The MFE Shell workflows are responsible for building the base shell image consumed by MFE1.
+
+## 3. Shell PR Flow (`mfe-shell-ci-pr.yml`)
+
+Triggers on `pull_request` to `main` when shell files change.
+
+### Logic Diagram
+
+```mermaid
+flowchart TD
+    Start([PR Event]) --> CheckPaths{Changes?}
+
+    CheckPaths -->|Yes| CalcSHA[Calculate Content SHA]
+    CheckPaths -->|No| Skip([Skip])
+
+    CalcSHA --> Build[**Build Shell**]
+
+    Build --> Output[**Push Output Image**<br/>Repo: `...-mfe-shell/dev`<br/>Tag: `sha-CONTENT_SHA`]
+
+    classDef default fill:#fff,stroke:#333,stroke-width:1px;
+    classDef action fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef output fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+
+    class CalcSHA,Build action;
+    class Output output;
+```
+
+*   **Output**: Pushes to `...-mfe-shell/dev`.
+*   **Tagging**: Uses the SHA of the content (`mfe-shell-container/`) to ensure the tag is specific to the code content.
+
+## 4. Shell Main Flow (`mfe-shell-ci-main.yml`)
+
+Triggers on `push` to `main` when shell files change.
+
+### Logic Diagram
+
+```mermaid
+flowchart TD
+    Start([Push to Main]) --> CheckPaths{Changes?}
+
+    CheckPaths -->|Yes| CalcSHA[Calculate Content SHA]
+    CheckPaths -->|No| Skip([Skip])
+
+    CalcSHA --> Build[**Build Shell**]
+
+    Build --> Output[**Push Output Image**<br/>Repo: `...-mfe-shell`<br/>Tags: `main`, `latest`, `sha-CONTENT_SHA`]
+
+    classDef default fill:#fff,stroke:#333,stroke-width:1px;
+    classDef action fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef output fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+
+    class CalcSHA,Build action;
+    class Output output;
+```
+
+*   **Output**: Pushes to `...-mfe-shell` (prod).
+*   **Tagging**: Updates `main` and `latest` tags, ensuring downstream consumers (like MFE1) pick up the new base image.
