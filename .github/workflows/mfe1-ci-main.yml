@@ -1,0 +1,251 @@
+name: MFE1 CI (Main)
+
+on:
+  push:
+    branches: ["main"]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}-mfe1
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-paths:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      shell: ${{ steps.filter.outputs.shell }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'mfe1-container/**'
+              - '.github/workflows/mfe1-ci-pr.yml'
+              - '.github/workflows/mfe1-ci-main.yml'
+              - '.github/workflows/mfe-shell-docker-publish.yml'
+            shell:
+              - 'mfe-shell-container/**'
+              - '.github/workflows/mfe-shell-docker-publish.yml'
+
+  wait-for-shell:
+    needs: check-paths
+    if: needs.check-paths.outputs.backend == 'true' && needs.check-paths.outputs.shell == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine Shell Dependency SHA
+        id: shell-dep
+        run: |
+          echo "Shell changes detected in Main push. Waiting for workflow on SHA: $GITHUB_SHA"
+          echo "WORKFLOW_SHA=$GITHUB_SHA" >> $GITHUB_ENV
+
+      - name: Wait for MFE Shell Workflow
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workflowId = 'mfe-shell-docker-publish.yml';
+            const maxRetries = 60; // Wait up to 30 minutes (30s interval)
+            const intervalSeconds = 30;
+            const commitSha = process.env.WORKFLOW_SHA;
+
+            console.log(`Waiting for workflow ${workflowId} on commit ${commitSha}...`);
+
+            for (let i = 0; i < maxRetries; i++) {
+              try {
+                const runs = await github.rest.actions.listWorkflowRuns({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: workflowId,
+                  head_sha: commitSha,
+                });
+
+                if (runs.data.total_count === 0) {
+                  console.log('Workflow run not found yet. Waiting...');
+                } else {
+                  const run = runs.data.workflow_runs[0];
+                  console.log(`Found workflow run: ${run.id} (Status: ${run.status}, Conclusion: ${run.conclusion})`);
+
+                  if (run.status === 'completed') {
+                    if (run.conclusion === 'success') {
+                      console.log('MFE Shell workflow completed successfully.');
+                      return;
+                    } else {
+                      core.setFailed(`MFE Shell workflow failed with conclusion: ${run.conclusion}`);
+                      return;
+                    }
+                  }
+                }
+              } catch (error) {
+                console.log(`Error checking workflow status: ${error.message}. Retrying...`);
+              }
+              await new Promise(r => setTimeout(r, intervalSeconds * 1000));
+            }
+            core.setFailed('Timeout waiting for MFE Shell workflow to complete.');
+
+  build:
+    needs: [check-paths, wait-for-shell]
+    if: needs.check-paths.outputs.backend == 'true' && (needs.wait-for-shell.result == 'success' || needs.wait-for-shell.result == 'skipped')
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
+
+    runs-on: ${{ matrix.platform == 'linux/amd64' && 'ubuntu-24.04' || matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm' }}
+    name: ${{ matrix.platform }} MFE1 Docker
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare environment
+        id: prepare
+        env:
+          SHELL_CHANGED: ${{ needs.check-paths.outputs.shell }}
+        run: |
+          platform=${{ matrix.platform }}
+          repo_name="${{ github.repository }}"
+
+          # For Main, strictly use prod image path
+          echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1" >> $GITHUB_ENV
+
+          # Calculate Content SHA for tagging
+          SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-docker-publish.yml)
+
+          SHELL_REPO_NAME="${repo_name}-mfe-shell"
+
+          if [[ "$SHELL_CHANGED" == "true" ]]; then
+             # Shell changed in Main. Wait-for-shell ran on GITHUB_SHA.
+             # Input image is the prod image from this commit (tagged with content SHA)
+             SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME" | tr '[:upper:]' '[:lower:]')
+             MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:sha-${SHELL_SHA}"
+          else
+             # Shell NOT changed.
+             # Use main image (prod)
+             SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME" | tr '[:upper:]' '[:lower:]')
+             MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:main"
+          fi
+
+          echo "Using shell image: $MFE_SHELL_IMAGE_FULL"
+          echo "MFE_SHELL_IMAGE_FULL=${MFE_SHELL_IMAGE_FULL}" >> $GITHUB_ENV
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: ${{ matrix.platform }}
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}
+          tags: |
+            type=raw,value=main
+            type=raw,value=latest
+            type=sha,format=long
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: mfe1-container
+          push: true
+          build-args: |
+            MFE_SHELL_IMAGE=${{ env.MFE_SHELL_IMAGE_FULL }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true
+          cache-from: |
+            type=gha,scope=${{ github.repository }}-mfe1-${{ github.ref_name }}-${{ matrix.platform }}
+            type=gha,scope=${{ github.repository }}-mfe1-main-${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=${{ github.repository }}-mfe1-${{ github.ref_name }}-${{ matrix.platform }}
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v5
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    name: Merge Docker manifests
+    runs-on: ubuntu-latest
+    needs: [build]
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Prepare environment
+        run: |
+          repo_name="${{ github.repository }}"
+          echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1" >> $GITHUB_ENV
+
+      - name: Download digests
+        uses: actions/download-artifact@v6
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}
+          tags: |
+            type=raw,value=main
+            type=raw,value=latest
+            type=sha,format=long
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect '${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}:${{ steps.meta.outputs.version }}'

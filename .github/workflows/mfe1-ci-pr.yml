@@ -1,25 +1,14 @@
-name: MFE1 Docker
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
+name: MFE1 CI (PR)
 
 on:
-  push:
-    branches: ["main"]
   pull_request:
     branches: ["main"]
 
 env:
-  # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
-  # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}-mfe1
 
 concurrency:
-  # This concurrency group ensures that only one job in the group runs at a time.
-  # If a new job is triggered, the previous one will be canceled.
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
@@ -39,7 +28,8 @@ jobs:
           filters: |
             backend:
               - 'mfe1-container/**'
-              - '.github/workflows/mfe1-docker-publish.yml'
+              - '.github/workflows/mfe1-ci-pr.yml'
+              - '.github/workflows/mfe1-ci-main.yml'
               - '.github/workflows/mfe-shell-docker-publish.yml'
             shell:
               - 'mfe-shell-container/**'
@@ -59,7 +49,7 @@ jobs:
         env:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          echo "Shell changes detected. Waiting for workflow on SHA: $PR_HEAD_SHA"
+          echo "Shell changes detected in PR. Waiting for workflow on SHA: $PR_HEAD_SHA"
           echo "WORKFLOW_SHA=$PR_HEAD_SHA" >> $GITHUB_ENV
 
       - name: Wait for MFE Shell Workflow
@@ -69,16 +59,12 @@ jobs:
             const workflowId = 'mfe-shell-docker-publish.yml';
             const maxRetries = 60; // Wait up to 30 minutes (30s interval)
             const intervalSeconds = 30;
-
-            // Determine the correct SHA to look for.
-            // We calculated this in the previous step
             const commitSha = process.env.WORKFLOW_SHA;
 
             console.log(`Waiting for workflow ${workflowId} on commit ${commitSha}...`);
 
             for (let i = 0; i < maxRetries; i++) {
               try {
-                // List workflow runs for the specific workflow and commit SHA
                 const runs = await github.rest.actions.listWorkflowRuns({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -105,10 +91,8 @@ jobs:
               } catch (error) {
                 console.log(`Error checking workflow status: ${error.message}. Retrying...`);
               }
-
               await new Promise(r => setTimeout(r, intervalSeconds * 1000));
             }
-
             core.setFailed('Timeout waiting for MFE Shell workflow to complete.');
 
   build:
@@ -121,14 +105,11 @@ jobs:
           - linux/amd64
           - linux/arm64
 
-    # runs-on: ubuntu-latest
     runs-on: ${{ matrix.platform == 'linux/amd64' && 'ubuntu-24.04' || matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm' }}
     name: ${{ matrix.platform }} MFE1 Docker
     permissions:
       contents: read
       packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
       id-token: write
 
     steps:
@@ -137,74 +118,43 @@ jobs:
         with:
           fetch-depth: 0
 
-      - &prepare_step
-        name: Prepare environment for current platform
-        # This step sets up the environment for the current platform being built.
-        # It replaces the '/' character in the platform name with '-' and sets it as an environment variable.
-        # This is useful for naming artifacts and other resources that cannot contain '/'.
-        # The environment variable PLATFORMS_PAIR will be used later in the workflow.
+      - name: Prepare environment
         id: prepare
         env:
-          IS_PR: ${{ github.event_name == 'pull_request' }}
           SHELL_CHANGED: ${{ needs.check-paths.outputs.shell }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           platform=${{ matrix.platform }}
           repo_name="${{ github.repository }}"
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1/dev" >> $GITHUB_ENV
-          else
-            echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1" >> $GITHUB_ENV
-          fi
 
-          # Construct the full image name for the base image (mfe-shell)
-          # Logic mirrors mfe-shell workflow:
-          # Main: ghcr.io/owner/repo-mfe-shell:sha-<commit_sha>
-          # PR:   ghcr.io/owner/repo-mfe-shell/dev:sha-<commit_sha>
+          # For PRs, strictly use dev image path
+          echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1/dev" >> $GITHUB_ENV
 
-
-          # Determine the shell dependency SHA and Repo type again (or pass from previous job if we want, but re-calculating is safer/easier than passing data between jobs)
-          # We need to re-run the calculation because this is a separate job and environment
-
+          # Calculate Content SHA for tagging
           SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-docker-publish.yml)
 
           SHELL_REPO_NAME="${repo_name}-mfe-shell"
-          IMAGE_NAME_LOWERCASE_BASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')
 
           if [[ "$SHELL_CHANGED" == "true" ]]; then
-             if [[ "$IS_PR" == "true" ]]; then
-                # Shell changed in PR. Wait-for-shell ran and waited for PR HEAD.
-                # Use dev image with CONTENT SHA (not necessarily PR HEAD)
-                SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME/dev" | tr '[:upper:]' '[:lower:]')
-                MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:sha-${SHELL_SHA}"
-             else
-                # Shell changed but NOT a PR (e.g. main branch push)
-                # Use prod image logic (from git log)
-                SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME" | tr '[:upper:]' '[:lower:]')
-                MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:sha-${SHELL_SHA}"
-             fi
+             # Shell changed in PR. Wait-for-shell ran on PR HEAD.
+             # Input image is the dev image from this PR (tagged with content SHA)
+             SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME/dev" | tr '[:upper:]' '[:lower:]')
+             MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:sha-${SHELL_SHA}"
           else
              # Shell NOT changed.
              # Use main image (prod)
-             # The tag is 'main'
              SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME" | tr '[:upper:]' '[:lower:]')
              MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:main"
           fi
 
           echo "Using shell image: $MFE_SHELL_IMAGE_FULL"
           echo "MFE_SHELL_IMAGE_FULL=${MFE_SHELL_IMAGE_FULL}" >> $GITHUB_ENV
-
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
 
-      # Set up BuildKit Docker container builder
-      # https://github.com/docker/setup-buildx-action
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
           platforms: ${{ matrix.platform }}
 
-      # Login against a Docker registry except on PR
-      # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@v3
         with:
@@ -212,27 +162,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}
           tags: |
-            type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=sha,format=long
 
-      # Build and push Docker image
-      # https://github.com/docker/build-push-action
       - name: Build and push Docker image
         id: build
         uses: docker/build-push-action@v5
         with:
           context: mfe1-container
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           build-args: |
             MFE_SHELL_IMAGE=${{ env.MFE_SHELL_IMAGE_FULL }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -260,32 +204,15 @@ jobs:
   merge:
     name: Merge Docker manifests
     runs-on: ubuntu-latest
+    needs: [build]
     permissions:
-      attestations: write
-      actions: read
-      checks: read
-      contents: read
-      deployments: none
-      id-token: write
-      issues: read
-      discussions: read
       packages: write
-      pages: none
-      pull-requests: read
-      repository-projects: read
-      security-events: read
-      statuses: read
-    needs:
-      - build
+      contents: read
     steps:
       - name: Prepare environment
         run: |
           repo_name="${{ github.repository }}"
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1/dev" >> $GITHUB_ENV
-          else
-            echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1" >> $GITHUB_ENV
-          fi
+          echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1/dev" >> $GITHUB_ENV
 
       - name: Download digests
         uses: actions/download-artifact@v6
@@ -299,18 +226,12 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}
-          annotations: |
-            type=org.opencontainers.image.description,value=${{ github.event.repository.description || 'No description provided' }}
           tags: |
-            type=raw,value=main,enable=${{ github.ref_name == 'main' }}
-            type=raw,value=latest,enable=${{ github.ref_name == 'main' }}
+            type=ref,event=pr
             type=sha,format=long
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        with:
-          driver-opts: |
-            network=host
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -319,48 +240,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get execution timestamp with RFC3339 format
-        id: timestamp
-        run: |
-          echo "timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
-
       - name: Create manifest list and push
         working-directory: /tmp/digests
-        id: manifest-annotate
-        continue-on-error: true
         run: |
-          docker buildx imagetools create \
-            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            --annotation='index:org.opencontainers.image.description=${{ github.event.repository.description }}' \
-            --annotation='index:org.opencontainers.image.created=${{ steps.timestamp.outputs.timestamp }}' \
-            --annotation='index:org.opencontainers.image.url=${{ github.event.repository.url }}' \
-            --annotation='index:org.opencontainers.image.source=${{ github.event.repository.url }}' \
-            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}@sha256:%s ' *)
-
-      - name: Create manifest list and push without annotations
-        if: steps.manifest-annotate.outcome == 'failure'
-        working-directory: /tmp/digests
-        run: |
-          docker buildx imagetools create  $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}@sha256:%s ' *)
 
       - name: Inspect image
-        id: inspect
         run: |
           docker buildx imagetools inspect '${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}:${{ steps.meta.outputs.version }}'
-
-  ci-success:
-    name: MFE1 CI Success
-    needs: [check-paths, merge]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Status
-        run: |
-          if [[ "${{ needs.check-paths.outputs.backend }}" == 'true' ]]; then
-            if [[ "${{ needs.merge.result }}" != 'success' ]]; then
-               echo "Build/Merge failed!"
-               exit 1
-            fi
-          fi
-          echo "Success!"
