@@ -1,5 +1,4 @@
 env: []
-serve_root: ""
 
 replicaCount: 1
 

@@ -113,7 +113,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "nginx-view.env" -}}
 {{- $myEnv := .Values.env -}}
-{{- $myEnv = append $myEnv (dict "name" "SERVE_ROOT" "value" .Values.serve_root) -}}
 {{- tpl (toYaml $myEnv) . }}
 {{- end -}}
 
