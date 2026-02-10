@@ -30,6 +30,10 @@ spec:
       pullPolicy: Always # Dev ONLY
     config:
       contents:
+        mfe.json: |
+          {
+            "mfe1": "/mfe1/remoteEntry.json"
+          }
         auth-config.json: |
           {
             "issuer": "http://keycloak.k8s/auth/realms/dev",
