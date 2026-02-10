@@ -59,7 +59,8 @@ spec:
       contents:
         mfe.json: |
           {
-            "mfe1": "/mfe1/remoteEntry.json"
+            "mfe1": "/mfe1/remoteEntry.json",
+            "angry-agent": "/mfe/angry-agent/remoteEntry.json"
           }
         auth-config.json: |
           {
@@ -75,25 +76,3 @@ spec:
             "skipIssuerCheck": true,
             "strictDiscoveryDocumentValidation": false
           }
----
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: mfe1
-spec:
-  releaseName: mfe1
-  chartRef:
-    kind: OCIRepository
-    name: mfe-shell
-  interval: 50m
-  install:
-    remediation:
-      retries: 3
-  values:
-    image:
-      repository: ghcr.io/polecatworks/mfe-shell-mfe1
-      tag: main
-      pullPolicy: Always # Dev ONLY
-    env:
-      - name: SERVE_ROOT
-        value: /mfe1

@@ -1,0 +1,22 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mfe1
+spec:
+  releaseName: mfe1
+  chartRef:
+    kind: OCIRepository
+    name: mfe-shell
+  interval: 50m
+  install:
+    remediation:
+      retries: 3
+  values:
+    image:
+      repository: ghcr.io/polecatworks/mfe-shell-mfe1
+      tag: main
+      pullPolicy: Always # Dev ONLY
+    env:
+      - name: SERVE_ROOT
+        value: /mfe1
