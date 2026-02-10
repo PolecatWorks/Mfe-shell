@@ -16,6 +16,10 @@ export const routes: Routes = [
         path: 'mfe1',
         loadComponent: () => loadRemoteModule('mfe1', './Component').then(m => m.AppComponent)
       },
+      {
+        path: 'angry-agent',
+        loadChildren: () => loadRemoteModule('angry-agent', './routes').then(m => m.remoteRoutes)
+      },
     ]
   },
   { path: '**', pathMatch: 'full', redirectTo: 'home' },

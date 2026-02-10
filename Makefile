@@ -3,7 +3,7 @@
 BASE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 mfe-shell_PORT := 4200
-mfe1_PORT := 4201
+mfe1_PORT := 3000
 
 
 install:
@@ -37,7 +37,7 @@ mfe1-container/node_modules/.bin/ng: mfe1-container/node_modules/mfe-shared/pack
 	cd $(BASE_DIR)/mfe1-container && npm install
 
 mfe1-dev: mfe1-container/node_modules/.bin/ng
-	cd mfe1-container && npm run start
+	cd mfe1-container && ng serve --port ${mfe1_PORT}
 
 mfe1-docker: mfe-shell-docker
 	docker build --build-arg MFE_SHELL_IMAGE=mfe-shell-container -t mfe1-container ./mfe1-container
