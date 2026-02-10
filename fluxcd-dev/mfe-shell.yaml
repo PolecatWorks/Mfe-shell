@@ -67,3 +67,6 @@ spec:
       repository: ghcr.io/polecatworks/mfe-shell-mfe1
       tag: main
       pullPolicy: Always # Dev ONLY
+    env:
+      - name: SERVE_ROOT
+        value: /mfe1
