@@ -65,7 +65,8 @@ jobs:
         run: |
           # Get the short SHA of the last commit that modified the chart directory
           SHA_SHORT=$(git log -1 --format=%h -- charts/nginx-view)
-          echo "sha_short=$SHA_SHORT" >> $GITHUB_OUTPUT
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          echo "sha_short=${TIMESTAMP}-${SHA_SHORT}" >> $GITHUB_OUTPUT
 
       - name: Update Chart Versions
         run: |
