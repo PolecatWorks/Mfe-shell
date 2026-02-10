@@ -3,3 +3,6 @@ image:
   repository: ghcr.io/polecatworks/mfe-shell-mfe-shell
   tag: main
 # serve_root: /app0
+# env:
+#   - name: SERVE_ROOT
+#     value: "/app0"
