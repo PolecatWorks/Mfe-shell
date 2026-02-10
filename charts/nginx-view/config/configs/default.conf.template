@@ -1,0 +1,29 @@
+server {
+    listen 8080;
+    server_name localhost;
+    root /usr/share/nginx/html;
+
+    # 1. Health Checks (High Priority)
+    location /alive { return 200; access_log off; }
+    location /ready { return 200; access_log off; }
+
+    # 2. MFE Logic (Regex - must be carefully ordered)
+    # We use ^~ or place this ABOVE the general static file regex
+    location ^~ ${SERVE_ROOT}/ {
+        alias /usr/share/nginx/html/;
+        # No try_files here means it will 404 if missing
+    }
+
+    # 3. General Static Files
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|json)$ {
+        expires 1y;
+        add_header Cache-Control "public, no-transform";
+        add_header 'Access-Control-Allow-Origin' '*';
+        # Note: If a file is in /mfe1/, it was already handled by the ^~ block above
+    }
+
+    # 4. SPA Fallback
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
