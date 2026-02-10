@@ -55,11 +55,6 @@ spec:
                 add_header 'Access-Control-Allow-Origin' '*';
                 # Note: If a file is in /mfe1/, it was already handled by the ^~ block above
             }
-
-            # 4. SPA Fallback
-            location / {
-                try_files $uri $uri/ /index.html;
-            }
           }
       contents:
         mfe.json: |
