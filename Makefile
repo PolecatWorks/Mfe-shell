@@ -32,7 +32,7 @@ mfe1-shared: mfe-shell-container/dist/mfe-shared/package.json
 	cd $(BASE_DIR)/mfe1-container && npm link mfe-shared
 
 
-mfe1-container/node_modules/.bin/ng: mfe1-container/node_modules/mfe-shared/package.json
+mfe1-container/node_modules/.bin/ng: mfe1-container/package.json
 	@echo "Installing node modules in mfe1-container"
 	cd $(BASE_DIR)/mfe1-container && npm install
 

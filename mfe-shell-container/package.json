@@ -36,6 +36,7 @@
     "@angular/router": "^21.1.0",
     "@softarc/native-federation-node": "^3.5.1",
     "es-module-shims": "^2.8.0",
+    "mfe-shared": "file:dist/mfe-shared",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.16.0"
