@@ -2,11 +2,11 @@
     <h2>MFE1 Application Shell</h2>
 
     <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <button mat-raised-button color="primary" routerLink="/" routerLinkActive="active"
+        <button mat-raised-button color="primary" routerLink="./" routerLinkActive="active"
             [routerLinkActiveOptions]="{exact: true}">Home (Vanilla MFE1)</button>
-        <button mat-raised-button color="accent" routerLink="/chooser" routerLinkActive="active">Character
+        <button mat-raised-button color="accent" routerLink="chooser" routerLinkActive="active">Character
             Chooser</button>
-        <button mat-raised-button color="warn" routerLink="/viewer" routerLinkActive="active">Context Viewer</button>
+        <button mat-raised-button color="warn" routerLink="viewer" routerLinkActive="active">Context Viewer</button>
     </div>
 
     <router-outlet></router-outlet>
