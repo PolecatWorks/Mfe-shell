@@ -1,7 +1,13 @@
-<div style="border: 2px dashed red; padding: 10px;">
-    <h2>MFE1 Component</h2>
-    <p>Name from Context: {{ $any(contextService.context$ | async)?.name }}</p>
-    <p> Name {{contextService.getContext()?.name}}</p>
+<div style="border: 4px solid purple; padding: 20px;">
+    <h2>MFE1 Application Shell</h2>
 
-    <button mat-raised-button color="primary" (click)="setRobRoy()">Set Rob Roy</button>
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button mat-raised-button color="primary" routerLink="/" routerLinkActive="active"
+            [routerLinkActiveOptions]="{exact: true}">Home (Vanilla MFE1)</button>
+        <button mat-raised-button color="accent" routerLink="/chooser" routerLinkActive="active">Character
+            Chooser</button>
+        <button mat-raised-button color="warn" routerLink="/viewer" routerLinkActive="active">Context Viewer</button>
+    </div>
+
+    <router-outlet></router-outlet>
 </div>
