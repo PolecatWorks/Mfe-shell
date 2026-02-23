@@ -14,7 +14,7 @@ export const routes: Routes = [
       { path: 'settings', component: Settings },
       {
         path: 'mfe1',
-        loadComponent: () => loadRemoteModule('mfe1', './Component').then(m => m.AppComponent)
+        loadChildren: () => loadRemoteModule('mfe1', './routes').then(m => m.remoteRoutes)
       },
       {
         path: 'angry-agent',
