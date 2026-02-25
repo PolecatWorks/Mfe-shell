@@ -59,11 +59,16 @@ spec:
       contents:
         shell-config.json: |
           {
-            "mfes": {
+            "remotes": {
               "mfe1": "/mfe/mfe1/remoteEntry.json",
               "mfe2": "/mfe/mfe2/remoteEntry.json",
               "angry-agent": "/mfe/angry-agent/remoteEntry.json"
             },
+            "mfeRoutes": [
+              { "path": "mfe1", "displayName": "MFE 1", "remoteName": "mfe1", "exposedModule": "./routes", "componentName": "remoteRoutes" },
+              { "path": "mfe2", "displayName": "Irish MFE", "remoteName": "mfe2", "exposedModule": "./Component", "componentName": "Component" },
+              { "path": "angry-agent", "displayName": "Angry Agent", "remoteName": "angry-agent", "exposedModule": "./routes", "componentName": "remoteRoutes" }
+            ],
             "menu": [
               { "name": "Home", "route": "/home" },
               { "name": "Base", "route": "/home/base" },

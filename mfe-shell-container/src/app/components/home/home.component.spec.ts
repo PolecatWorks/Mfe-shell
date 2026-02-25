@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HomeComponent } from './home.component';
+import { MFE_CONFIG } from '../../mfe-config';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -11,8 +12,11 @@ describe('HomeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule],
-      providers: [provideRouter([])]
+      imports: [NoopAnimationsModule, HomeComponent],
+      providers: [
+        provideRouter([]),
+        { provide: MFE_CONFIG, useValue: { remotes: {}, mfeRoutes: [] } }
+      ]
     }).compileComponents();
   });
 
