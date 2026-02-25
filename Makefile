@@ -6,6 +6,15 @@ mfe-shell_PORT := 4200
 mfe1_PORT := 3000
 
 
+
+clean:
+	rm -rf mfe-shell-container/node_modules
+	rm -rf mfe-shell-container/dist
+	rm -rf mfe1-container/node_modules
+	rm -rf mfe1-container/dist
+
+
+
 install:
 	cd mfe-shell-container && npm install
 
