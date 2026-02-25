@@ -1,0 +1,22 @@
+{
+  "name": "mfe2-container",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node build.js",
+    "build": "node build.js --build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@softarc/native-federation": "^2.0.0",
+    "@softarc/native-federation-esbuild": "^2.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "es-module-shims": "^2.8.0",
+    "esbuild": "^0.20.0",
+    "tslib": "^2.6.0",
+    "typescript": "^5.0.0"
+  }
+}
