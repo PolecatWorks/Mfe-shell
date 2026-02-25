@@ -4,8 +4,7 @@ BASE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 mfe-shell_PORT := 4200
 mfe1_PORT := 3000
-
-
+mfe2_PORT := 3002
 
 clean:
 	rm -rf mfe-shell-container/node_modules
@@ -17,6 +16,8 @@ clean:
 
 install:
 	cd mfe-shell-container && npm install
+	cd mfe1-container && npm install
+	cd mfe2-container && npm install
 
 mfe-shell-container/node_modules/.bin/ng:
 	@echo "Installing node modules in mfe-shell-container"
@@ -56,3 +57,16 @@ mfe-shell-docker-run: mfe-shell-docker
 
 mfe1-docker-run: mfe1-docker
 	docker run -it --rm -p $(mfe1_PORT):8080 mfe1-container
+
+mfe2-install:
+	@echo "Installing node modules in mfe2-container"
+	cd $(BASE_DIR)/mfe2-container && npm install
+
+mfe2-dev: mfe2-install
+	cd mfe2-container && npm start
+
+mfe2-docker:
+	docker build -t mfe2-container ./mfe2-container
+
+mfe2-docker-run: mfe2-docker
+	docker run -it --rm -p $(mfe2_PORT):8080 mfe2-container
