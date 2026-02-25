@@ -1,4 +1,4 @@
-import '../../test-setup';
+import '../../../test-setup';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Settings } from './settings';
@@ -11,7 +11,7 @@ describe('Settings', () => {
     await TestBed.configureTestingModule({
       imports: [Settings]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(Settings);
     component = fixture.componentInstance;
