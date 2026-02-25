@@ -15,6 +15,6 @@ export class App {
 
   constructor(private sharedContext: SharedContextService) {
     console.log('App: SharedContextService injected');
-    this.sharedContext.setContext({ username: 'ShellUser', name: 'Ben', roles: ['admin'] });
+    this.sharedContext.setContext({ username: 'ShellUser', name: 'Shellos', roles: ['admin'] });
   }
 }
