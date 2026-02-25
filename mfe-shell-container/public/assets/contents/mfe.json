@@ -1,4 +1,20 @@
 {
+  "remotes": {
     "mfe1": "http://localhost:3000/remoteEntry.json",
     "angry-agent": "http://localhost:3001/remoteEntry.json"
+  },
+  "mfeRoutes": [
+    {
+      "path": "mfe1",
+      "displayName": "MFE 1",
+      "remoteName": "mfe1",
+      "exposedModule": "./routes"
+    },
+    {
+      "path": "angry-agent",
+      "displayName": "Angry Agent",
+      "remoteName": "angry-agent",
+      "exposedModule": "./routes"
+    }
+  ]
 }
