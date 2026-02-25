@@ -17,6 +17,10 @@ export const routes: Routes = [
         loadChildren: () => loadRemoteModule('mfe1', './routes').then(m => m.remoteRoutes)
       },
       {
+        path: 'mfe2',
+        loadComponent: () => import('./components/mfe2-wrapper/mfe2-wrapper.component').then(m => m.Mfe2WrapperComponent)
+      },
+      {
         path: 'angry-agent',
         loadChildren: () => loadRemoteModule('angry-agent', './routes').then(m => m.remoteRoutes)
       },
