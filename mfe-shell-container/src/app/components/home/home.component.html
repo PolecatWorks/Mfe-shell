@@ -3,7 +3,6 @@
     <mat-icon>menu</mat-icon>
   </button>
   <mat-menu #navMenu="matMenu">
-    <a mat-menu-item href="#">Reset</a>
     <a mat-menu-item [routerLink]="['/home']">Home</a>
     <a mat-menu-item [routerLink]="['/home', 'base']">Base</a>
     <a mat-menu-item [routerLink]="['/home', 'profile']">Profile</a>
@@ -15,6 +14,9 @@
 
   <span>Shell</span>
   <span class="example-spacer"></span>
+  <a mat-icon-button href="#" aria-label="Reset" matTooltip="Reset">
+    <mat-icon>refresh</mat-icon>
+  </a>
   <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
     <mat-icon>favorite</mat-icon>
   </button>
