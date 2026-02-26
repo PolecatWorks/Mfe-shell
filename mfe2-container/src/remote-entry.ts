@@ -11,7 +11,10 @@ export function mount(container: HTMLElement, props: any) {
   }
 
   root = createRoot(container);
-  root.render(React.createElement(App, { userContext: props.userContext }));
+  root.render(React.createElement(App, {
+    userContext: props.userContext,
+    setContext: props.setContext
+  }));
 
   return () => {
     if (root) {
@@ -22,8 +25,8 @@ export function mount(container: HTMLElement, props: any) {
 }
 
 export function unmount(container: HTMLElement) {
-    if (root) {
-        root.unmount();
-        root = null;
-    }
+  if (root) {
+    root.unmount();
+    root = null;
+  }
 }
