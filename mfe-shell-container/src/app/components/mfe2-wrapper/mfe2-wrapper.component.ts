@@ -17,8 +17,9 @@ export class Mfe2WrapperComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     try {
       const userContext = this.sharedContext.getContext();
+      const setContext = (newContext: any) => this.sharedContext.setContext(newContext);
       const m = await loadRemoteModule('mfe2', './Component');
-      this.unmount = m.mount(this.container.nativeElement, { userContext });
+      this.unmount = m.mount(this.container.nativeElement, { userContext, setContext });
     } catch (err) {
       console.error('Error loading MFE2:', err);
       if (this.container && this.container.nativeElement) {

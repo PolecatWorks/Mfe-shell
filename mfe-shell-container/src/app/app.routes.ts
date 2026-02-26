@@ -17,7 +17,7 @@ export const routes: Routes = [
         loadChildren: () => loadRemoteModule('mfe1', './routes').then(m => m.remoteRoutes)
       },
       {
-        path: 'mfe2',
+        matcher: (url) => url.length > 0 && url[0].path === 'mfe2' ? { consumed: url } : null,
         loadComponent: () => import('./components/mfe2-wrapper/mfe2-wrapper.component').then(m => m.Mfe2WrapperComponent)
       },
       {
