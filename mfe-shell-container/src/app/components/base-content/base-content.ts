@@ -1,4 +1,4 @@
-import { Component, OnInit, Type } from '@angular/core';
+import { Component, OnInit, Type, ChangeDetectorRef } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedContextService } from 'mfe-shared';
@@ -14,13 +14,15 @@ export class BaseContent implements OnInit {
   viewerComponent: Type<any> | null = null;
 
   constructor(
-    public context: SharedContextService
+    public context: SharedContextService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   async ngOnInit() {
     try {
       const module = await loadRemoteModule('mfe1', './Viewer');
       this.viewerComponent = module.Viewer;
+      this.cdr.detectChanges();
     } catch (error) {
       console.error('Error loading Viewer component from mfe1:', error);
     }
