@@ -60,6 +60,7 @@ spec:
         mfe.json: |
           {
             "mfe1": "/mfe1/remoteEntry.json",
+            "mfe2": "/mfe2/remoteEntry.json",
             "angry-agent": "/mfe/angry-agent/remoteEntry.json"
           }
         auth-config.json: |
