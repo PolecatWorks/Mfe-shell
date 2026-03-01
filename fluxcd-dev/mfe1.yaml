@@ -19,4 +19,4 @@ spec:
       pullPolicy: Always # Dev ONLY
     env:
       - name: SERVE_ROOT
-        value: /mfe1
+        value: /mfe/mfe1
