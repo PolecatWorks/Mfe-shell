@@ -13,10 +13,17 @@ spec:
     - name: mfe1
       match:
         - uri:
-            prefix: /mfe1
+            prefix: /mfe/mfe1
       route:
         - destination:
             host: mfe1-nginx-view
+    - name: mfe2
+      match:
+        - uri:
+            prefix: /mfe/mfe2
+      route:
+        - destination:
+            host: mfe2-nginx-view
     - name: mfe-shell
       match:
         - uri:
