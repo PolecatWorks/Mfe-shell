@@ -1,5 +1,0 @@
-{
-    "mfe1": "http://localhost:3000/remoteEntry.json",
-    "mfe2": "http://localhost:3002/remoteEntry.json",
-    "angry-agent": "http://localhost:3001/remoteEntry.json"
-}

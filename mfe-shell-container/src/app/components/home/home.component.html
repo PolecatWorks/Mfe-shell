@@ -3,13 +3,7 @@
     <mat-icon>menu</mat-icon>
   </button>
   <mat-menu #navMenu="matMenu">
-    <a mat-menu-item [routerLink]="['/home']">Home</a>
-    <a mat-menu-item [routerLink]="['/home', 'base']">Base</a>
-    <a mat-menu-item [routerLink]="['/home', 'profile']">Profile</a>
-    <a mat-menu-item [routerLink]="['/home', 'settings']">Settings</a>
-    <a mat-menu-item [routerLink]="['/home', 'mfe1']">MFE 1</a>
-    <a mat-menu-item [routerLink]="['/home', 'mfe2']">Irish MFE</a>
-    <a mat-menu-item [routerLink]="['/home', 'angry-agent']">Angry Agent</a>
+    <a mat-menu-item *ngFor="let item of menuItems" [routerLink]="item.route">{{ item.name }}</a>
   </mat-menu>
 
   <span>Shell</span>

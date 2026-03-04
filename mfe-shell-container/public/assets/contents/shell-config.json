@@ -1,0 +1,37 @@
+{
+    "mfes": {
+        "mfe1": "http://localhost:3000/remoteEntry.json",
+        "mfe2": "http://localhost:3002/remoteEntry.json",
+        "angry-agent": "http://localhost:3001/remoteEntry.json"
+    },
+    "menu": [
+        {
+            "name": "Home",
+            "route": "/home"
+        },
+        {
+            "name": "Base",
+            "route": "/home/base"
+        },
+        {
+            "name": "Profile",
+            "route": "/home/profile"
+        },
+        {
+            "name": "Settings",
+            "route": "/home/settings"
+        },
+        {
+            "name": "MFE 1",
+            "route": "/home/mfe1"
+        },
+        {
+            "name": "Irish MFE",
+            "route": "/home/mfe2"
+        },
+        {
+            "name": "Angry Agent",
+            "route": "/home/angry-agent"
+        }
+    ]
+}
