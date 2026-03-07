@@ -37,20 +37,23 @@ jobs:
 
   wait-for-shell:
     needs: check-paths
-    if: needs.check-paths.outputs.backend == 'true' && needs.check-paths.outputs.shell == 'true'
+    if: needs.check-paths.outputs.backend == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        if: needs.check-paths.outputs.shell == 'true'
         with:
           fetch-depth: 0
 
       - name: Determine Shell Dependency SHA
         id: shell-dep
+        if: needs.check-paths.outputs.shell == 'true'
         run: |
           echo "Shell changes detected in Main push. Waiting for workflow on SHA: $GITHUB_SHA"
           echo "WORKFLOW_SHA=$GITHUB_SHA" >> $GITHUB_ENV
 
       - name: Wait for MFE Shell Workflow
+        if: needs.check-paths.outputs.shell == 'true'
         uses: actions/github-script@v7
         with:
           script: |
@@ -95,7 +98,7 @@ jobs:
 
   build:
     needs: [check-paths, wait-for-shell]
-    if: always() && needs.check-paths.outputs.backend == 'true' && (needs.wait-for-shell.result == 'success' || needs.wait-for-shell.result == 'skipped')
+    if: needs.check-paths.outputs.backend == 'true'
     strategy:
       fail-fast: false
       matrix:
