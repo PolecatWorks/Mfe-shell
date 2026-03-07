@@ -4,9 +4,16 @@
   z-index: 1000;
 }
 
+.content-wrapper {
+  position: relative;
+  height: calc(100vh - 64px);
+  width: 100%;
+  overflow: hidden;
+}
+
 .content {
   padding: 16px;
-  height: calc(100vh - 64px);
+  height: 100%;
   overflow: auto;
   box-sizing: border-box;
 }

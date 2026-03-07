@@ -10,13 +10,15 @@ import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MFE_CONFIG, MenuConfig } from '../../mfe-config';
+import { fadeAnimation } from '../../route-animations';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule, MatMenuModule, MatIconModule, MatTooltipModule, RouterOutlet, RouterLink],
+  imports: [MatToolbarModule, MatButtonModule, MatMenuModule, MatIconModule, MatTooltipModule, RouterOutlet, RouterLink, CommonModule],
+  animations: [fadeAnimation]
 })
 export class HomeComponent implements OnInit {
   private breakpointObserver = inject(BreakpointObserver);
@@ -33,5 +35,13 @@ export class HomeComponent implements OnInit {
     if (this.config && this.config.menu) {
       this.menuItems = this.config.menu;
     }
+  }
+
+  getRouteAnimationData(outlet: RouterOutlet) {
+    if (outlet && outlet.isActivated) {
+      // Use the route path to uniquely identify the state for the animation trigger
+      return outlet.activatedRoute.routeConfig?.path || 'default';
+    }
+    return 'none';
   }
 }
