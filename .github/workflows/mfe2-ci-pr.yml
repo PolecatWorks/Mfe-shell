@@ -97,7 +97,7 @@ jobs:
 
   build:
     needs: [check-paths, wait-for-shell]
-    if: needs.check-paths.outputs.backend == 'true' && (needs.wait-for-shell.result == 'success' || needs.wait-for-shell.result == 'skipped')
+    if: always() && needs.check-paths.outputs.backend == 'true' && (needs.wait-for-shell.result == 'success' || needs.wait-for-shell.result == 'skipped')
     strategy:
       fail-fast: false
       matrix:
