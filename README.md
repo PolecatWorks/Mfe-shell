@@ -96,6 +96,53 @@ Because `mfe-shared` is a local library that both the Shell and MFE1 depend on a
     - **Shell**: `npm start` (in `mfe-shell-container`)
     - **MFE1**: `npm start` (in `mfe1-container`)
 
+## 🧩 Adding a New Micro Frontend
+
+To add a new Micro Frontend to the Shell, you do not need to make deep code changes to the Shell itself. The integration is largely configuration-driven.
+
+### 1. Content & UI
+- **Location**: All UI content, views, and routing for your feature should live **inside the MFE**.
+- **Animations**: The Shell provides the slide-in/slide-out route transitions automatically. You do **not** need to implement any route animations inside the MFE. The MFE simply needs to render its content, and the Shell will wrap and animate it when the route changes.
+- **Recommendation**: To ensure smooth sliding animations, make sure your remote components occupy `100%` height and width of their container.
+
+### 2. Shared State & Logic (`mfe-shared`)
+If your MFE is Angular-based, you can leverage the `mfe-shared` singleton library for shared state and services.
+- **Available services**: The library exposes services like `SharedContextService` for user context/state and `SharedHttpService` for unified API calls.
+- **Usage**: Import them from `mfe-shared` in your MFE just like any other Angular service. Since `mfe-shared` is linked globally, the Shell and your MFE will share the exact same instance in memory at runtime.
+
+### 3. Exposing the MFE
+Your remote application needs to expose an entry point for the Shell to load.
+- **Angular (Native Federation)**: In `federation.config.js`, expose your main component or routing module. For example: `exposes: { './routes': './src/app/app.routes.ts' }`.
+- **React (Esbuild)**: Expose a mountable component.
+- Serve the MFE so that `remoteEntry.json` is accessible.
+
+### 4. Updating the Shell Configuration
+The Shell dynamically loads routes and menus at runtime via `mfe-shell-container/public/assets/contents/shell-config.json`.
+To hook up your new MFE, update this file:
+
+1. **`remotes`**: Map a remote name to your `remoteEntry.json` URL.
+   ```json
+   "remotes": { "my-new-mfe": "http://localhost:3003/remoteEntry.json" }
+   ```
+2. **`mfeRoutes`**: Define how the Shell should load your remote.
+   ```json
+   {
+       "path": "my-mfe-route",
+       "displayName": "My New Feature",
+       "remoteName": "my-new-mfe",
+       "exposedModule": "./routes",
+       "componentName": "remoteRoutes"
+   }
+   ```
+   *(Note: The Shell uses a heuristic to determine how to wrap the MFE. If `exposedModule` ends with `routes` or `componentName` is `remoteRoutes`, it assumes native Angular routing. Otherwise, it uses a generic framework-agnostic wrapper).*
+3. **`menu`**: Add an entry for the sidebar navigation.
+   ```json
+   {
+       "name": "My Feature Menu Link",
+       "route": "/home/my-mfe-route"
+   }
+   ```
+
 ## 🐳 Docker Support
 
 You can build and run the containers using the Makefile:
