@@ -22,23 +22,25 @@
   </button>
 </mat-toolbar>
 
-<div class="content">
-  <router-outlet #outlet="outlet" />
+<main class="content-wrapper" [@routeAnimations]="getRouteAnimationData(outlet)">
+  <div class="content">
+    <router-outlet #outlet="outlet" />
 
-  @if (!outlet.isActivated) {
-  <div class="dashboard-container">
-    <div class="square-card card-1">
-      <mat-icon>dashboard</mat-icon>
-      <span class="title">Dashboard</span>
+    @if (!outlet.isActivated) {
+    <div class="dashboard-container">
+      <div class="square-card card-1">
+        <mat-icon>dashboard</mat-icon>
+        <span class="title">Dashboard</span>
+      </div>
+      <div class="square-card card-2">
+        <mat-icon>analytics</mat-icon>
+        <span class="title">Analytics</span>
+      </div>
+      <div class="square-card card-3">
+        <mat-icon>settings</mat-icon>
+        <span class="title">Settings</span>
+      </div>
     </div>
-    <div class="square-card card-2">
-      <mat-icon>analytics</mat-icon>
-      <span class="title">Analytics</span>
-    </div>
-    <div class="square-card card-3">
-      <mat-icon>settings</mat-icon>
-      <span class="title">Settings</span>
-    </div>
+    }
   </div>
-  }
-</div>
+</main>
