@@ -13,7 +13,7 @@ export const fadeAnimation = trigger('routeAnimations', [
                     width: '100%',
                     height: '100%',
                     opacity: 0,
-                    transform: 'scale(0.98)',
+                    transform: 'translateX(100%)',
                 }),
             ],
             { optional: true }
@@ -22,7 +22,7 @@ export const fadeAnimation = trigger('routeAnimations', [
         query(
             ':leave',
             [
-                style({ opacity: 1, transform: 'scale(1)' }),
+                style({ opacity: 1, transform: 'translateX(0%)' }),
             ],
             { optional: true }
         ),
@@ -32,8 +32,8 @@ export const fadeAnimation = trigger('routeAnimations', [
                 ':leave',
                 [
                     animate(
-                        '200ms ease-out',
-                        style({ opacity: 0, transform: 'scale(0.98)' })
+                        '300ms ease-in-out',
+                        style({ opacity: 0, transform: 'translateX(-100%)' })
                     ),
                 ],
                 { optional: true }
@@ -42,8 +42,8 @@ export const fadeAnimation = trigger('routeAnimations', [
                 ':enter',
                 [
                     animate(
-                        '300ms ease-in',
-                        style({ opacity: 1, transform: 'scale(1)' })
+                        '300ms ease-in-out',
+                        style({ opacity: 1, transform: 'translateX(0%)' })
                     ),
                 ],
                 { optional: true }
