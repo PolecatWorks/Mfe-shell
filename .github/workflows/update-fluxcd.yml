@@ -1,0 +1,157 @@
+name: Update FluxCD
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "mfe-shell-container/**"
+      - ".github/workflows/mfe-shell-ci-main.yml"
+      - "mfe1-container/**"
+      - ".github/workflows/mfe1-ci-main.yml"
+      - "mfe2-container/**"
+      - ".github/workflows/mfe2-ci-main.yml"
+      - ".github/workflows/update-fluxcd.yml"
+
+jobs:
+  check-paths:
+    runs-on: ubuntu-latest
+    outputs:
+      mfe_shell: ${{ steps.filter.outputs.mfe_shell }}
+      mfe1: ${{ steps.filter.outputs.mfe1 }}
+      mfe2: ${{ steps.filter.outputs.mfe2 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            mfe_shell:
+              - 'mfe-shell-container/**'
+              - '.github/workflows/mfe-shell-ci-main.yml'
+            mfe1:
+              - 'mfe1-container/**'
+              - '.github/workflows/mfe1-ci-main.yml'
+              - '.github/workflows/mfe-shell-ci-main.yml'
+            mfe2:
+              - 'mfe2-container/**'
+              - '.github/workflows/mfe2-ci-main.yml'
+              - '.github/workflows/mfe-shell-ci-main.yml'
+
+  update-fluxcd:
+    needs: check-paths
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wait for Required Docker Workflows
+        uses: actions/github-script@v7
+        env:
+          EXPECT_MFE_SHELL: ${{ needs.check-paths.outputs.mfe_shell }}
+          EXPECT_MFE1: ${{ needs.check-paths.outputs.mfe1 }}
+          EXPECT_MFE2: ${{ needs.check-paths.outputs.mfe2 }}
+        with:
+          script: |
+            const workflowIds = [];
+            if (process.env.EXPECT_MFE_SHELL === 'true') workflowIds.push('mfe-shell-ci-main.yml');
+            if (process.env.EXPECT_MFE1 === 'true') workflowIds.push('mfe1-ci-main.yml');
+            if (process.env.EXPECT_MFE2 === 'true') workflowIds.push('mfe2-ci-main.yml');
+
+            if (workflowIds.length === 0) {
+              console.log('No relevant CI workflows expected to run. Proceeding directly.');
+              return;
+            }
+
+            const maxRetries = 60; // Wait up to 30 minutes (30s interval)
+            const intervalSeconds = 30;
+            const commitSha = context.sha;
+
+            console.log(`Waiting for workflows ${workflowIds.join(', ')} on commit ${commitSha}...`);
+
+            const completedWorkflows = new Set();
+
+            for (let i = 0; i < maxRetries; i++) {
+              for (const workflowId of workflowIds) {
+                if (completedWorkflows.has(workflowId)) continue;
+
+                try {
+                  const runs = await github.rest.actions.listWorkflowRuns({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    workflow_id: workflowId,
+                    head_sha: commitSha,
+                  });
+
+                  if (runs.data.total_count === 0) {
+                    console.log(`Workflow run ${workflowId} not found yet. Waiting...`);
+                  } else {
+                    const run = runs.data.workflow_runs[0];
+                    console.log(`Found workflow ${workflowId} (ID: ${run.id}, Status: ${run.status}, Conclusion: ${run.conclusion})`);
+
+                    if (run.status === 'completed') {
+                      if (run.conclusion === 'success' || run.conclusion === 'skipped') {
+                        console.log(`CI ${workflowId} completed successfully (or skipped).`);
+                        completedWorkflows.add(workflowId);
+                      } else {
+                        core.setFailed(`CI workflow ${workflowId} failed with conclusion: ${run.conclusion}`);
+                        return;
+                      }
+                    }
+                  }
+                } catch (error) {
+                  console.log(`Error checking workflow status for ${workflowId}: ${error.message}. Retrying...`);
+                }
+              }
+
+              if (completedWorkflows.size === workflowIds.length) {
+                console.log('All required CI workflows completed successfully.');
+                return;
+              }
+              await new Promise(r => setTimeout(r, intervalSeconds * 1000));
+            }
+            core.setFailed('Timeout waiting for required CI workflows to complete.');
+
+      - name: Update fluxcd-dev tags
+        env:
+          PAT: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ secrets.PAT }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          CHANGES_MADE=false
+
+          if [[ "${{ needs.check-paths.outputs.mfe_shell }}" == 'true' ]]; then
+             SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-ci-main.yml)
+             yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe-shell") | .spec.values.image.tag) = "sha-" + "'"$SHELL_SHA"'"' -i fluxcd-dev/mfe-shell.yaml
+             git add fluxcd-dev/mfe-shell.yaml
+             CHANGES_MADE=true
+          fi
+
+          if [[ "${{ needs.check-paths.outputs.mfe1 }}" == 'true' ]]; then
+             yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe1") | .spec.values.image.tag) = "sha-${{ github.sha }}"' -i fluxcd-dev/mfe1.yaml
+             git add fluxcd-dev/mfe1.yaml
+             CHANGES_MADE=true
+          fi
+
+          if [[ "${{ needs.check-paths.outputs.mfe2 }}" == 'true' ]]; then
+             yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe2") | .spec.values.image.tag) = "sha-${{ github.sha }}"' -i fluxcd-dev/mfe2.yaml
+             git add fluxcd-dev/mfe2.yaml
+             CHANGES_MADE=true
+          fi
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit for fluxcd-dev tags."
+          else
+            BRANCH_NAME="update-fluxcd-${GITHUB_SHA}"
+            git checkout -b $BRANCH_NAME
+            git commit -m "chore: update fluxcd-dev image tags for MFE shell, MFE1, and MFE2"
+            git push --force https://x-access-token:$PAT@github.com/${{ github.repository }}.git $BRANCH_NAME
+            gh pr create --title "chore: update fluxcd-dev tags" --body "Automated PR to update FluxCD tags based on new MFE image builds." --base main --head $BRANCH_NAME
+            gh pr merge $BRANCH_NAME --auto --rebase
+          fi
