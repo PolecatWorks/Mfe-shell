@@ -6,31 +6,6 @@ import { Settings } from './components/settings/settings';
 import { HomeComponent } from './components/home/home.component';
 import { MfeConfig, MfeRouteConfig } from './mfe-config';
 
-<<<<<<< HEAD
-export const routes: Routes = [
-  {
-    path: 'home', component: HomeComponent,
-    children: [
-      { path: 'base', component: BaseContent },
-      { path: 'profile', component: Profile },
-      { path: 'settings', component: Settings },
-      {
-        path: 'mfe1',
-        loadChildren: () => loadRemoteModule('mfe1', './routes').then(m => m.remoteRoutes)
-      },
-      {
-        matcher: (url) => url.length > 0 && url[0].path === 'mfe2' ? { consumed: url } : null,
-        loadComponent: () => import('./components/mfe2-wrapper/mfe2-wrapper.component').then(m => m.Mfe2WrapperComponent)
-      },
-      {
-        path: 'angry-agent',
-        loadChildren: () => loadRemoteModule('angry-agent', './routes').then(m => m.remoteRoutes)
-      },
-    ]
-  },
-  { path: '**', pathMatch: 'full', redirectTo: 'home' },
-];
-=======
 export const createRoutes = (config: MfeConfig): Routes => {
   const dynamicRoutes: Routes = (config.mfeRoutes || []).map((mfe: MfeRouteConfig) => {
     // Heuristic: If exposedModule ends with "routes" or componentName is "remoteRoutes", assume Angular routes.
@@ -47,11 +22,11 @@ export const createRoutes = (config: MfeConfig): Routes => {
       return {
         path: mfe.path,
         loadComponent: () => import('./components/generic-mfe-wrapper/generic-mfe-wrapper.component')
-            .then(m => m.GenericMfeWrapperComponent),
+          .then(m => m.GenericMfeWrapperComponent),
         data: {
-            remoteName: mfe.remoteName,
-            exposedModule: mfe.exposedModule,
-            componentName: mfe.componentName
+          remoteName: mfe.remoteName,
+          exposedModule: mfe.exposedModule,
+          componentName: mfe.componentName
         }
       };
     }
@@ -70,4 +45,3 @@ export const createRoutes = (config: MfeConfig): Routes => {
     { path: '**', pathMatch: 'full', redirectTo: 'home' },
   ];
 };
->>>>>>> 39d378d (Make MFE Shell configurable via JSON)
