@@ -124,26 +124,18 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          CHANGES_MADE=false
+          # Get the last modified commit SHA for each MFE component
+          SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-ci-main.yml)
+          MFE1_SHA=$(git log -1 --format=%H -- mfe1-container/ .github/workflows/mfe1-ci-main.yml .github/workflows/mfe-shell-ci-main.yml)
+          MFE2_SHA=$(git log -1 --format=%H -- mfe2-container/ .github/workflows/mfe2-ci-main.yml .github/workflows/mfe-shell-ci-main.yml)
 
-          if [[ "${{ needs.check-paths.outputs.mfe_shell }}" == 'true' ]]; then
-             SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-ci-main.yml)
-             yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe-shell") | .spec.values.image.tag) = "sha-" + "'"$SHELL_SHA"'"' -i fluxcd-dev/mfe-shell.yaml
-             git add fluxcd-dev/mfe-shell.yaml
-             CHANGES_MADE=true
-          fi
+          # Apply updates unconditionally. `yq` will harmlessly overwrite tags if they haven't changed,
+          # and `git diff` will naturally ignore files with no actual changes.
+          yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe-shell") | .spec.values.image.tag) = "sha-" + "'"$SHELL_SHA"'"' -i fluxcd-dev/mfe-shell.yaml
+          yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe1") | .spec.values.image.tag) = "sha-" + "'"$MFE1_SHA"'"' -i fluxcd-dev/mfe1.yaml
+          yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe2") | .spec.values.image.tag) = "sha-" + "'"$MFE2_SHA"'"' -i fluxcd-dev/mfe2.yaml
 
-          if [[ "${{ needs.check-paths.outputs.mfe1 }}" == 'true' ]]; then
-             yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe1") | .spec.values.image.tag) = "sha-${{ github.sha }}"' -i fluxcd-dev/mfe1.yaml
-             git add fluxcd-dev/mfe1.yaml
-             CHANGES_MADE=true
-          fi
-
-          if [[ "${{ needs.check-paths.outputs.mfe2 }}" == 'true' ]]; then
-             yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe2") | .spec.values.image.tag) = "sha-${{ github.sha }}"' -i fluxcd-dev/mfe2.yaml
-             git add fluxcd-dev/mfe2.yaml
-             CHANGES_MADE=true
-          fi
+          git add fluxcd-dev/mfe-shell.yaml fluxcd-dev/mfe1.yaml fluxcd-dev/mfe2.yaml
 
           if git diff --staged --quiet; then
             echo "No changes to commit for fluxcd-dev tags."
