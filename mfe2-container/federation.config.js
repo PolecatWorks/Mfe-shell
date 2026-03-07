@@ -1,5 +1,6 @@
 const { withNativeFederation, shareAll } = require('@softarc/native-federation/build');
 
+
 module.exports = withNativeFederation({
   name: 'mfe2-container',
 
