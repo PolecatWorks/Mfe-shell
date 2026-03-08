@@ -5,6 +5,7 @@ export interface UserContext {
   username: string;
   roles: string[];
   name: string;
+  accessToken?: string;
 }
 
 @Injectable({
@@ -24,5 +25,9 @@ export class SharedContextService {
 
   getContext(): UserContext | null {
     return this.contextSubject.getValue();
+  }
+
+  getAccessToken(): string | undefined {
+    return this.contextSubject.getValue()?.accessToken;
   }
 }
