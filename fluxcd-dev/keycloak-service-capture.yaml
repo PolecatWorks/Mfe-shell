@@ -1,0 +1,46 @@
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakClient
+metadata:
+  name: angry-agent
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  advancedProtocolMappers: true
+  clientId: angry-agent
+  name: Angry Agent
+  description: Service Account to describe the angry agent application
+  clientRoles:
+    - service-read
+    - service-write
+    - service-delete
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmGroup
+metadata:
+  name: angry-agent-readers
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  name: AngryAgentReaders
+  clientRoles:
+    - clientId: angry-agent
+      roles:
+        - service-read
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmGroup
+metadata:
+  name: angry-agent-writers
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  name: AngryAgentWriters
+  clientRoles:
+    - clientId: angry-agent
+      roles:
+        - service-write
+        - service-delete
