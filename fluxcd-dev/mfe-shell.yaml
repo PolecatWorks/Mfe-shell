@@ -83,7 +83,7 @@ spec:
           {
             "issuer": "http://keycloak.k8s/auth/realms/dev",
             "redirectUri": "/index.html",
-            "clientId": "mfe-shell",
+            "clientId": "shell-ui",
             "responseType": "code",
             "scope": "openid profile email offline_access",
             "useSilentRefresh": true,
