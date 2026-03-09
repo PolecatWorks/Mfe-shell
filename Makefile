@@ -25,9 +25,7 @@ mfe-shell-container/node_modules/.bin/ng:
 
 mfe-shell-shared: mfe-shell-container/node_modules/.bin/ng
 	cd mfe-shell-container && npm run mfe-shared
-
-
-
+	cd mfe-shell-container/dist/mfe-shared && npm link
 
 
 mfe-shell-dev: mfe-shell-container/node_modules/.bin/ng
