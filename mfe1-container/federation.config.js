@@ -9,6 +9,7 @@ module.exports = withNativeFederation({
     './Component': './src/app/app.component.ts',
     './routes': './src/app/app.routes.ts',
     './Viewer': './src/app/viewer/viewer.ts',
+    './JsonShow': './src/app/json-show/json-show.ts',
   },
 
   shared: {
