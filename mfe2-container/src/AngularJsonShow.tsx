@@ -15,8 +15,14 @@ const AngularJsonShow: React.FC<AngularJsonShowProps> = ({ data }) => {
     const loadAndMount = async () => {
       try {
         const module = await loadRemoteModule('mfe1', './JsonShowWrapper');
-        if (isMounted && containerRef.current) {
-          unmountFn = await module.mount(containerRef.current, { data });
+        if (!isMounted || !containerRef.current) return;
+
+        unmountFn = await module.mount(containerRef.current, { data });
+
+        // If the component unmounted while we were waiting for mount() to resolve,
+        // we need to immediately unmount the Angular app to prevent a memory leak.
+        if (!isMounted && unmountFn && containerRef.current) {
+           unmountFn(containerRef.current);
         }
       } catch (error) {
         console.error('Error loading or mounting Angular JsonShow from mfe1:', error);
