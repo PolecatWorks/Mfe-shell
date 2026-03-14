@@ -1,4 +1,4 @@
-# REQ-004: Docker Deployment & Containerization
+# REQ-A004: Docker Deployment & Containerization
 
 **Status:** ACTIVE  
 **Version:** 1.0  
@@ -55,7 +55,7 @@ All containers are properly configured and deployable:
 
 ## Related Requirements
 
-- [REQ-001: Native Federation Architecture](REQ-001.md)
+- [REQ-A001: Native Federation Architecture](REQ-A001.md)
 - [REQ-F008: Docker Compose Orchestration](../features/REQ-F008.md) — Future enhancement
 
 ---

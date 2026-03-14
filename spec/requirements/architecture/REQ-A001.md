@@ -1,4 +1,4 @@
-# REQ-001: Native Federation Architecture
+# REQ-A001: Native Federation Architecture
 
 **Status:** ACTIVE  
 **Version:** 1.0  
@@ -55,9 +55,9 @@ Implementation is complete, but documentation improvements are tracked:
 
 ## Related Requirements
 
-- [REQ-002: Shared Library Singleton Pattern](REQ-002.md)
-- [REQ-003: Shell Dynamic Routing System](REQ-003.md)
-- [REQ-004: Docker Deployment & Containerization](REQ-004.md)
+- [REQ-A002: Shared Library Singleton Pattern](REQ-A002.md)
+- [REQ-A003: Shell Dynamic Routing System](REQ-A003.md)
+- [REQ-A004: Docker Deployment & Containerization](REQ-A004.md)
 - [REQ-F001: MFE Shell](../features/REQ-F001.md)
 - [REQ-F002: MFE1 Remote](../features/REQ-F002.md)
 - [REQ-F003: MFE2 Remote](../features/REQ-F003.md)

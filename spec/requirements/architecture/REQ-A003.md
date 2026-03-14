@@ -1,4 +1,4 @@
-# REQ-003: Shell Dynamic Routing System
+# REQ-A003: Shell Dynamic Routing System
 
 **Status:** ACTIVE  
 **Version:** 1.0  
@@ -50,7 +50,7 @@ No immediate work items; system is stable.
 
 ## Related Requirements
 
-- [REQ-001: Native Federation Architecture](REQ-001.md)
+- [REQ-A001: Native Federation Architecture](REQ-A001.md)
 - [REQ-F001: MFE Shell](../features/REQ-F001.md)
 - [REQ-F009: Dynamic MFE Discovery](../features/REQ-F009.md) — Future enhancement for auto-discovery
 
