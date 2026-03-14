@@ -53,8 +53,8 @@ The shared library is working, but prerequisite documentation needs improvement:
 ## Related Requirements
 
 - [REQ-A001: Native Federation Architecture](REQ-A001.md)
-- [REQ-F002: MFE1 Remote](../features/REQ-F002.md)
-- [REQ-F006: MFE2 Shared Library Integration](../features/REQ-F006.md) — Future enhancement
+- [REQ-F010: MFE1 Remote](../features/REQ-F010.md)
+- [REQ-F010: MFE2 Shared Library Integration](../features/REQ-F010.md) — Future enhancement
 
 ---
 

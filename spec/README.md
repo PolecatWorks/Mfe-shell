@@ -34,9 +34,9 @@ spec/
 │   │   ├── REQ-A003.md                # Shell Dynamic Routing System
 │   │   └── REQ-A004.md                # Docker Deployment & Containerization
 │   ├── features/                      # Feature requirements (9 files)
-│   │   ├── REQ-F001.md through F009   # MFE Shell, MFE1, MFE2, CI/CD, + proposed
+│   │   ├── REQ-F013.md through F009   # MFE Shell, MFE1, MFE2, CI/CD, + proposed
 │   └── documentation/                 # Documentation requirements (4 files)
-│       ├── REQ-D001.md through D004   # Root README, Container READMEs, Copilot, Architecture
+│       ├── REQ-D014.md through D004   # Root README, Container READMEs, Copilot, Architecture
 │
 ├── WORK.md                            # Active work items (linked to requirements/)
 │                                      # 15 items: 1 done, 14 pending
@@ -60,7 +60,7 @@ spec/
 | Question | Answer |
 |----------|--------|
 | What are the 12 active requirements? | `requirements/README.md` - Index with links to all files |
-| Where is requirement REQ-F002? | `requirements/features/REQ-F002.md` - MFE1 Remote |
+| Where is requirement REQ-F010? | `requirements/features/REQ-F010.md` - MFE1 Remote |
 | What's the current work status? | `WORK.md` - 1 ✅ done, 0 🔄 in progress, 14 ⏳ pending |
 | Which requirement maps to which work item? | `WORK.md` - Each task shows Requirement: REQ-### |
 | How do I know if a requirement was superseded? | `requirements/[category]/REQ-###.md` - Shows "Superseded by: X" |
@@ -205,8 +205,8 @@ See: REQ-A001 v2.0 for current approach
 **To trace a work item to its requirement:**
 1. Open `WORK.md`
 2. Find task item (e.g., DOC-002)
-3. See "Requirement: REQ-D001" at top
-4. Click link to `requirements/documentation/REQ-D001.md`
+3. See "Requirement: REQ-D014" at top
+4. Click link to `requirements/documentation/REQ-D014.md`
 
 ---
 

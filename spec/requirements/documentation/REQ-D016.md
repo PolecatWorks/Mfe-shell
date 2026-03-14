@@ -1,4 +1,4 @@
-# REQ-D003: Copilot Instructions
+# REQ-D016: Copilot Instructions
 
 **Status:** ACTIVE  
 **Version:** 1.0  
@@ -51,8 +51,8 @@ Instructions exist but will need updates after other doc fixes complete.
 
 ## Related Requirements
 
-- [REQ-D001: Root README.md](REQ-D001.md)
-- [REQ-D002: Container READMEs](REQ-D002.md)
+- [REQ-D014: Root README.md](REQ-D014.md)
+- [REQ-D015: Container READMEs](REQ-D015.md)
 
 ---
 

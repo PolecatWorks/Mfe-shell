@@ -51,8 +51,8 @@ No immediate work items; system is stable.
 ## Related Requirements
 
 - [REQ-A001: Native Federation Architecture](REQ-A001.md)
-- [REQ-F001: MFE Shell](../features/REQ-F001.md)
-- [REQ-F009: Dynamic MFE Discovery](../features/REQ-F009.md) — Future enhancement for auto-discovery
+- [REQ-F013: MFE Shell](../features/REQ-F013.md)
+- [REQ-F013: Dynamic MFE Discovery](../features/REQ-F013.md) — Future enhancement for auto-discovery
 
 ---
 

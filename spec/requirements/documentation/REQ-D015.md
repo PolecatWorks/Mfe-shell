@@ -1,4 +1,4 @@
-# REQ-D002: Container READMEs (Shell & MFE1)
+# REQ-D015: Container READMEs (Shell & MFE1)
 
 **Status:** ACTIVE  
 **Version:** 1.0  
@@ -53,9 +53,9 @@ Documentation for individual container applications. Should provide MFE-specific
 
 ## Related Requirements
 
-- [REQ-D001: Root README.md](REQ-D001.md)
-- [REQ-F001: MFE Shell](../features/REQ-F001.md)
-- [REQ-F002: MFE1 Remote](../features/REQ-F002.md)
+- [REQ-D014: Root README.md](REQ-D014.md)
+- [REQ-F013: MFE Shell](../features/REQ-F013.md)
+- [REQ-F010: MFE1 Remote](../features/REQ-F010.md)
 
 ---
 

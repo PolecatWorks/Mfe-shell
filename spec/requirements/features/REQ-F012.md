@@ -1,4 +1,4 @@
-# REQ-F004: Native Federation Configuration
+# REQ-F012: Native Federation Configuration
 
 **Status:** ACTIVE  
 **Version:** 1.0  
@@ -50,9 +50,9 @@ No immediate work items; configuration is stable.
 ## Related Requirements
 
 - [REQ-A001: Native Federation Architecture](../architecture/REQ-A001.md)
-- [REQ-F001: MFE Shell](REQ-F001.md)
-- [REQ-F002: MFE1 Remote](REQ-F002.md)
-- [REQ-F003: MFE2 Remote](REQ-F003.md)
+- [REQ-F013: MFE Shell](REQ-F013.md)
+- [REQ-F010: MFE1 Remote](REQ-F010.md)
+- [REQ-F011: MFE2 Remote](REQ-F011.md)
 
 ---
 

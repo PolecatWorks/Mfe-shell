@@ -1,4 +1,4 @@
-# REQ-F001: MFE Shell (Angular 21)
+# REQ-F013: MFE Shell (Angular 21)
 
 **Status:** ACTIVE  
 **Version:** 1.0  
@@ -55,8 +55,8 @@ No immediate work items; Shell is stable.
 - [REQ-A001: Native Federation Architecture](../architecture/REQ-A001.md)
 - [REQ-A002: Shared Library Singleton Pattern](../architecture/REQ-A002.md)
 - [REQ-A003: Shell Dynamic Routing System](../architecture/REQ-A003.md)
-- [REQ-F002: MFE1 Remote](REQ-F002.md)
-- [REQ-F003: MFE2 Remote](REQ-F003.md)
+- [REQ-F010: MFE1 Remote](REQ-F010.md)
+- [REQ-F011: MFE2 Remote](REQ-F011.md)
 
 ---
 
