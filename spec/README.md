@@ -1,149 +1,208 @@
-# Specifications Directory
+# Specifications & Requirements
 
-This directory contains all specifications, requirements, and work tracking for the MFE Shell project. It serves as the single source of truth for:
-- **Architecture specifications** - How the system is designed
-- **Implemented features** - What's already built and working
-- **Pending work** - What needs to be done
-- **Documentation** - Analysis, standards, and guidelines
+This directory contains all specifications, requirements, and work tracking for the MFE Shell project using an **RFC-inspired approach**. Each requirement has a clear status (Active, Proposed, Superseded) and version history, allowing visibility into how requirements evolve over time.
+
+The system serves as the single source of truth for:
+- **Requirements** - What must be built (with supersession tracking)
+- **Work Items** - Tasks to implement requirements (linked to requirements)
+- **Task Documentation** - UAT steps and implementation guidance for each task
+
+## RFC-Inspired Approach
+
+Similar to IETF RFCs, requirements capture the specification and are versioned. When requirements change or are superseded, the history is preserved:
+
+- **ACTIVE**: Currently implemented or under development
+- **PROPOSED**: Planned for future implementation
+- **SUPERSEDED**: Replaced by a newer requirement (old version kept for auditability)
+
+This enables:
+- ✅ Full visibility into how designs evolved
+- ✅ Understanding why past decisions were made
+- ✅ Tracing impact of requirement changes
+- ✅ Easy rollback or revert decisions if needed
 
 ## Directory Structure
 
 ```
 spec/
-├── README.md                          # This file
-├── SPECIFICATIONS.md                  # Master specification index
-├── WORK_ITEMS.md                      # Work tracking and status
-├── DOCUMENTATION_ANALYSIS.md          # Analysis of current documentation
+├── README.md                          # This file - Navigation and guidance
+├── REQUIREMENTS.md                    # RFC-like requirements (SINGLE SOURCE OF TRUTH)
+│                                      # All 12 active + any superseded requirements
+├── WORK.md                            # Active work items (linked to REQUIREMENTS.md)
+│                                      # 15 items: 1 done, 14 pending
 │
-├── architecture/                      # Architecture specifications
-│   ├── README.md
-│   ├── FEDERATION_ARCHITECTURE.md     # Native Federation setup
-│   ├── SHARED_LIBRARY.md              # mfe-shared singleton pattern
-│   ├── SHELL_ROUTING.md               # Shell's dynamic routing system
-│   └── DOCKER_DEPLOYMENT.md           # Docker & containerization specs
-│
-├── implemented/                       # Completed specifications & features
-│   ├── README.md
-│   ├── NATIVE_FEDERATION_IMPL.md      # Native Federation implementation status
-│   ├── SHARED_LIBRARY_IMPL.md         # Shared library implementation
-│   ├── MFE1_ANGULAR_IMPL.md           # MFE1 (Angular) implementation
-│   ├── MFE2_REACT_IMPL.md             # MFE2 (React) implementation
-│   ├── SHELL_ARCHITECTURE_IMPL.md     # Shell architecture implementation
-│   └── CI_CD_IMPL.md                  # CI/CD workflows implementation
-│
-└── pending/                           # Work to be done
-    ├── README.md
-    ├── DOCUMENTATION_FIXES.md         # Documentation issues & fixes
-    ├── FEATURE_ENHANCEMENTS.md        # Planned features
-    └── TECHNICAL_DEBT.md              # Technical debt & improvements
+└── tasks/                             # Task implementations and UAT
+    ├── README.md                      # Index of all tasks
+    ├── DOC-001.md                     # ✅ Complete - MFE1 test runner docs
+    ├── DOC-002.md                     # 📋 Template for new tasks
+    └── [TASK-ID].md                   # One file per task (UAT focused)
 ```
 
 ## Quick Navigation
 
-### For Understanding the System
-1. Start with `SPECIFICATIONS.md` to get an overview
-2. Read `architecture/README.md` for design principles
-3. Review specific architecture specs in `architecture/` directory
+### 👉 Start Here
+- **Understanding Requirements?** → Read `REQUIREMENTS.md` (full specs with version control)
+- **Checking Work Status?** → Read `WORK.md` (all tasks linked to requirements)
+- **Implementing a Task?** → Read `tasks/[TASK-ID].md` (UAT steps and testing)
 
-### For Current Work
-1. Check `WORK_ITEMS.md` for current status
-2. Review `pending/DOCUMENTATION_FIXES.md` for known issues
-3. Check implementation files in `implemented/` for reference
-
-### For Adding New Work
-1. Document the specification first
-2. Add work item to `WORK_ITEMS.md`
-3. Move to `implemented/` when complete
-
----
-
-## Key Definitions
-
-### Specification
-A detailed description of:
-- **What** the system should do
-- **How** it should work
-- **Why** it's designed that way
-- **Constraints** and assumptions
-
-### Implemented
-Features and systems that are:
-- ✅ Built and working
-- ✅ Tested (or have passing tests)
-- ✅ Documented
-- ✅ Ready for production use
-
-### Pending
-Work items that:
-- ⏳ Are identified but not yet started
-- ⏳ Are in progress
-- ⏳ Blocked and waiting
-- ⏳ Planned for future work
+### By Question
+| Question | Answer |
+|----------|--------|
+| What are the 12 active requirements? | `REQUIREMENTS.md` - Architecture, Features, Documentation |
+| What's the current work status? | `WORK.md` - 1 ✅ done, 0 🔄 in progress, 14 ⏳ pending |
+| Which requirement maps to which work item? | `WORK.md` - Each task shows Requirement: REQ-### |
+| How do I know if a requirement was superseded? | `REQUIREMENTS.md` - Shows "Superseded by: X" and has a Superseded section |
+| How do I test a completed task? | `tasks/[TASK-ID].md` - UAT steps and checklists |
+| What changed in mfe1-container/README.md? | `tasks/DOC-001.md` - What Was Changed section |
 
 ---
 
-## Status Tracking
+## Core Concepts
 
-All work is tracked using:
-- **Status**: Pending, In Progress, Done, Blocked
-- **Priority**: Critical, High, Medium, Low
-- **Effort**: Estimate in hours/days
-- **Owner**: Person/team responsible
+### Requirements (REQUIREMENTS.md)
+Single source of truth for all specifications:
+- 12 Active requirements (Architecture, Features, Documentation)
+- 5 Proposed future enhancements
+- Version numbers and supersession tracking
+- Each has: Status, Version, Proposed date, Description, Rationale, Implementation points
 
-See `WORK_ITEMS.md` for the authoritative work list.
+### Work Items (WORK.md)
+Active tasks to implement requirements:
+- 15 total items: 1 ✅ done, 14 ⏳ pending
+- Each linked to specific requirement(s) from REQUIREMENTS.md
+- Includes: Priority, Effort, Acceptance Criteria, Files to Change
+- Tracks dependencies (e.g., DOC-009 blocked by DOC-001-005)
+
+### Tasks (tasks/[ID].md)
+Implementation details and UAT for each work item:
+- NOT duplicates of WORK.md (they reference it)
+- Focus: What changed, UAT steps, test checklist
+- One file per completed or in-progress task
+- Example: tasks/DOC-001.md - What was changed + 8 UAT scenarios
 
 ---
 
-## Contributing to Specs
+## Supersession & Version Control
 
-When adding a new specification:
+When a requirement changes, create a new version:
 
-1. **Create a spec file** in the appropriate category
-2. **Use the template** below
-3. **Add to master index** in `SPECIFICATIONS.md`
-4. **Create work item** in `WORK_ITEMS.md` if work is needed
-5. **Link related specs** using cross-references
-
-### Specification Template
-
+**Example (future):**
 ```markdown
-# [Feature/Component Name]
+### REQ-001: Native Federation Architecture (ACTIVE)
+**Version:** 2.0 (UPDATED 2026-04-15)
+**Supersedes:** REQ-001 v1.0
+**Superseded by:** None
 
-## Overview
-Brief description of what this is and why it matters.
+Changes in v2.0:
+- Added support for lazy-loaded remotes
+- Enhanced configuration validation
 
-## Requirements
-What must be true for this to be complete?
+---
 
-## Design
-How is this implemented?
+## Superseded
 
-## Current Status
-Implemented ✓ | Pending ⏳ | In Progress 🔄 | Blocked ❌
+### REQ-001-v1: Native Federation Architecture (SUPERSEDED)
+**Version:** 1.0
+**Proposed:** 2026-03-14
+**Superseded:** 2026-04-15
+**Reason:** v2.0 adds support for lazy-loaded remotes
 
-## Related Specifications
-- [Other Spec Name](path/to/spec)
-
-## Work Items
-- [WORK-001: Task Name](../WORK_ITEMS.md#work-001)
+Old approach: [description]
+See: REQ-001 v2.0 for current approach
 ```
 
 ---
 
-## Recent Changes
+## Status Summary
 
-- **2026-03-14**: Initial spec directory structure created
-- **2026-03-14**: Added DOCUMENTATION_ANALYSIS.md with findings from comprehensive review
-- **2026-03-14**: Created architecture specifications foundation
+| Component | Count | Details |
+|-----------|-------|---------|
+| **Requirements** | 12 Active + 5 Proposed | See REQUIREMENTS.md |
+| **Work Items** | 15 total | 1 ✅ Done, 14 ⏳ Pending |
+| **Tasks** | 1 ✅ complete | DOC-001 (MFE1 test runner docs) |
+| **Blocked Work** | 1 | DOC-009 (waiting on DOC-001-005) |
+
+---
+
+## Adding a New Requirement
+
+1. **Add to REQUIREMENTS.md** with template:
+   ```markdown
+   ### REQ-###: [Name]
+   **Status:** ACTIVE|PROPOSED  
+   **Version:** 1.0  
+   **Proposed:** YYYY-MM-DD  
+   **Supersedes:** None  
+   **Superseded by:** None
+   
+   **Description:** [What it is]
+   **Rationale:** [Why it matters]
+   **Status:** ✅ Implemented | ⏳ Pending | 🔄 In Progress
+   ```
+
+2. **Add to WORK.md** if work is needed:
+   ```markdown
+   ### [TASK-ID]: [Name]
+   **Requirement:** REQ-###
+   **Status:** ⏳ PENDING
+   **Effort:** X hours
+   ```
+
+3. **Create tasks/[ID].md** when work begins
+
+---
+
+## Adding a New Work Item
+
+1. **Create entry in WORK.md** with:
+   - Requirement reference: `REQ-###`
+   - Priority, Status, Effort
+   - Problem, Solution, Acceptance Criteria
+   - Related Issues
+
+2. **Create tasks/[ID].md** with:
+   - Reference back to WORK.md
+   - What Was Changed section
+   - UAT steps and checklists
+
+---
+
+## Tracking Completed Work
+
+When you complete a work item:
+
+1. **Update WORK.md**: Change Status to ✅ DONE, add completion date
+2. **Update REQUIREMENTS.md**: If requirement status changed, update it there
+3. **Create/update tasks/[ID].md**: Document UAT results
+4. **Run UAT**: Use checklist in tasks/[ID].md to verify completeness
+
+Example: DOC-001 is ✅ DONE and tracked in both WORK.md and tasks/DOC-001.md
+
+---
+
+## Legacy Files (for reference)
+
+These files are retained for historical reference but information is now consolidated:
+- `SPECIFICATIONS.md` → Merged into `REQUIREMENTS.md`
+- `WORK_ITEMS.md` → Merged into `WORK.md`
+- `DOCUMENTATION_ANALYSIS.md` → Issues now in WORK.md
+- `architecture/`, `implemented/`, `pending/` directories → Not needed with new structure
+
+To enable a full transition, these will be archived or removed in next phase.
 
 ---
 
 ## Questions?
 
-For questions about:
-- **What's implemented**: Check `implemented/` directory
-- **What needs to be done**: Check `pending/` directory
-- **Architecture decisions**: Check `architecture/` directory
-- **Work status**: Check `WORK_ITEMS.md`
-- **Documentation issues**: Check `DOCUMENTATION_ANALYSIS.md`
+- **What are we building?** → `REQUIREMENTS.md` (active requirements)
+- **What are we working on?** → `WORK.md` (current tasks)
+- **How do I test DOC-001?** → `tasks/DOC-001.md` (UAT guide)
+- **Why did we supersede REQ-X?** → `REQUIREMENTS.md` (history section)
+- **How do requirements work here?** → This file (you are here!)
+
+---
+
+**Last Updated:** 2026-03-14  
+**Maintainer:** Development Team  
+**Format:** RFC-inspired with version control and supersession tracking
 
