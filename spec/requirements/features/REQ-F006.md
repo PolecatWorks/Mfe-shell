@@ -51,7 +51,7 @@ This is a proposed enhancement. Current MFE2 works well with local UserContext.
 
 ## Related Requirements
 
-- [REQ-002: Shared Library Singleton Pattern](../architecture/REQ-002.md)
+- [REQ-A002: Shared Library Singleton Pattern](../architecture/REQ-A002.md)
 - [REQ-F003: MFE2 Remote](REQ-F003.md)
 
 ---

@@ -50,7 +50,7 @@ This is a future enhancement. Current manual configuration works well for small 
 
 ## Related Requirements
 
-- [REQ-003: Shell Dynamic Routing System](../architecture/REQ-003.md)
+- [REQ-A003: Shell Dynamic Routing System](../architecture/REQ-A003.md)
 - [REQ-F001: MFE Shell](REQ-F001.md)
 
 ---

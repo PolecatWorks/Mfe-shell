@@ -52,9 +52,9 @@ No immediate work items; Shell is stable.
 
 ## Related Requirements
 
-- [REQ-001: Native Federation Architecture](../architecture/REQ-001.md)
-- [REQ-002: Shared Library Singleton Pattern](../architecture/REQ-002.md)
-- [REQ-003: Shell Dynamic Routing System](../architecture/REQ-003.md)
+- [REQ-A001: Native Federation Architecture](../architecture/REQ-A001.md)
+- [REQ-A002: Shared Library Singleton Pattern](../architecture/REQ-A002.md)
+- [REQ-A003: Shell Dynamic Routing System](../architecture/REQ-A003.md)
 - [REQ-F002: MFE1 Remote](REQ-F002.md)
 - [REQ-F003: MFE2 Remote](REQ-F003.md)
 

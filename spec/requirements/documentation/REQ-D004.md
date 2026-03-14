@@ -54,10 +54,10 @@ Architecture documentation doesn't exist as formal spec yet.
 
 ## Related Requirements
 
-- [REQ-001: Native Federation Architecture](../architecture/REQ-001.md)
-- [REQ-002: Shared Library Singleton Pattern](../architecture/REQ-002.md)
-- [REQ-003: Shell Dynamic Routing System](../architecture/REQ-003.md)
-- [REQ-004: Docker Deployment & Containerization](../architecture/REQ-004.md)
+- [REQ-A001: Native Federation Architecture](../architecture/REQ-A001.md)
+- [REQ-A002: Shared Library Singleton Pattern](../architecture/REQ-A002.md)
+- [REQ-A003: Shell Dynamic Routing System](../architecture/REQ-A003.md)
+- [REQ-A004: Docker Deployment & Containerization](../architecture/REQ-A004.md)
 
 ---
 
