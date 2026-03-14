@@ -57,7 +57,7 @@ Update mfe1-container/README.md line 41 to clarify the actual test runner and pr
 **Related:**
 - Issue #1 in DOCUMENTATION_ANALYSIS.md
 - Issue #9 in DOCUMENTATION_ANALYSIS.md (also addressed)
-- [A1: Native Federation Architecture](SPECIFICATIONS.md#a1-native-federation-architecture)
+- [A1: Native Federation Architecture](requirements/architecture/REQ-A001.md-native-federation-architecture)
 
 **Completion Date:** 2026-03-14
 **Completed By:** Copilot
@@ -371,7 +371,7 @@ Use Playwright for cross-framework testing (works with Angular, React, vanilla J
 - [ ] CI passes before merge
 
 **Related:**
-- [SPECIFICATIONS.md: F7 E2E Testing](SPECIFICATIONS.md#f7-e2e-testing-framework)
+- [Requirements: F7 E2E Testing](requirements/features/REQ-F07-e2e-testing-framework)
 
 ---
 
@@ -406,7 +406,7 @@ Investigate and implement shared library integration for MFE2 (React).
 - [ ] Tests verify state consistency
 
 **Related:**
-- [SPECIFICATIONS.md: F6 MFE2 Shared Library](SPECIFICATIONS.md#f6-mfe2-shared-library-integration)
+- [Requirements: F6 MFE2 Shared Library](requirements/features/REQ-F06-mfe2-shared-library-integration)
 
 ---
 
@@ -440,7 +440,7 @@ Implement automatic MFE discovery without manual shell-config.json updates.
 - [ ] Backwards compatible with existing setup
 
 **Related:**
-- [SPECIFICATIONS.md: F9 Dynamic MFE Discovery](SPECIFICATIONS.md#f9-dynamic-mfe-discovery)
+- [Requirements: F9 Dynamic MFE Discovery](requirements/features/REQ-F09-dynamic-mfe-discovery)
 
 ---
 
@@ -471,7 +471,7 @@ Document detailed federation configuration for Shell, MFE1, and MFE2.
 - [ ] New developers can understand setup
 
 **Related:**
-- [SPECIFICATIONS.md: A1 Native Federation](SPECIFICATIONS.md#a1-native-federation-architecture)
+- [Requirements: A1 Native Federation](requirements/architecture/REQ-A001.md-native-federation-architecture)
 
 ---
 
@@ -508,7 +508,7 @@ Create docker-compose.yml for simplified full-stack development.
 - [ ] Stops cleanly with Ctrl+C
 
 **Related:**
-- [SPECIFICATIONS.md: F8 Docker Compose](SPECIFICATIONS.md#f8-docker-compose-orchestration)
+- [Requirements: F8 Docker Compose](requirements/features/REQ-F08-docker-compose-orchestration)
 
 ---
 

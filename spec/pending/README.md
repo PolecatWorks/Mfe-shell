@@ -132,7 +132,7 @@ Plan these for roadmap:
 ## Related
 
 - [WORK_ITEMS.md](../WORK_ITEMS.md) - Detailed work tracking
-- [SPECIFICATIONS.md](../SPECIFICATIONS.md) - Master spec index
+- [requirements/README.md](../requirements/README.md) - Master spec index
 - [DOCUMENTATION_ANALYSIS.md](../DOCUMENTATION_ANALYSIS.md) - Analysis of issues
 - [../implemented/README.md](../implemented/README.md) - What's done
 

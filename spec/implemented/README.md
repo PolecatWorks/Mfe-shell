@@ -55,7 +55,7 @@ While these features are implemented, there are documentation issues identified:
 
 1. **To understand what's already built:**
    - Read the IMPL files in this directory
-   - Check SPECIFICATIONS.md for overview
+   - Check requirements/README.md for overview
 
 2. **To find implementation examples:**
    - Check relevant IMPL file for architecture details
@@ -67,6 +67,6 @@ While these features are implemented, there are documentation issues identified:
 
 ## Related
 
-- [SPECIFICATIONS.md](../SPECIFICATIONS.md) - Master spec index
+- [requirements/README.md](../requirements/README.md) - Master spec index
 - [WORK_ITEMS.md](../WORK_ITEMS.md) - Work tracking
 - [DOCUMENTATION_ANALYSIS.md](../DOCUMENTATION_ANALYSIS.md) - Found issues

@@ -1,6 +1,6 @@
-# REQ-F011: MFE2 Remote (React 18)
+# REQ-F011: E2E Testing Framework
 
-**Status:** ACTIVE  
+**Status:** PROPOSED  
 **Version:** 1.0  
 **Proposed:** 2026-03-14  
 **Supersedes:** None  
@@ -10,64 +10,53 @@
 
 ## Description
 
-Second micro frontend built with React 18. Demonstrates non-Angular MFE support. Uses Esbuild for bundling and exposes mount/unmount lifecycle functions.
+End-to-end testing framework for Shell + MFEs integration scenarios.
 
 ---
 
 ## Rationale
 
-- Proves framework-agnostic MFE capability
-- Shows how non-Angular frameworks integrate
-- Esbuild provides simpler configuration than Webpack
-- Demonstrates lifecycle hooks pattern
-- Validates that Shell can manage multiple framework types
+- Current approach: Unit tests only (Vitest, Karma, Jest)
+- Gap: No integration tests for federation behavior
+- Benefit: Catch integration issues before production
+- Tool: Playwright for cross-framework testing
 
 ---
 
 ## Key Implementation Points
 
-- React 18 with Esbuild (not Webpack)
-- Exposes mount/unmount lifecycle functions
-- Wrapped by GenericMfeWrapperComponent in Shell
-- Duplicates UserContext locally (intentional, avoids Angular dependency)
-- Standalone: `npm start` at http://localhost:3002
-- Test runner: Jest (React default)
+- Playwright for cross-framework E2E testing
+- Cover: Shell startup, MFE loading, routing, state sharing
+- Test both standalone and integrated modes
+- Verify federation bootstrap sequence
+- Test MFE communication patterns
 
 ---
 
 ## Current Status
 
-✅ **Implemented**
+⏳ **Pending**
 
-MFE2 is fully functional and demonstrates successful React integration.
+No E2E tests currently exist.
 
 ---
 
 ## Work Items
 
-No immediate work items; MFE2 is stable.
+- [TEST-001: Implement E2E testing framework](../WORK.md#TEST-001) — ⏳ Pending
+  - Effort: 12-20 hours
+  - Priority: Medium
 
 ---
 
 ## Related Requirements
 
-- [REQ-A001: Native Federation Architecture](../architecture/REQ-A001.md)
-- [REQ-A003: Shell Dynamic Routing System](../architecture/REQ-A003.md)
-- [REQ-F013: MFE Shell](REQ-F013.md)
-- [REQ-F010: MFE2 Shared Library Integration](REQ-F010.md) — Future enhancement
-
----
-
-## Design Decision: Local UserContext
-
-MFE2 duplicates UserContext instead of using mfe-shared because:
-- Avoids pulling Angular dependency into React application
-- React state management patterns differ from Angular services
-- Keeps MFE2 lightweight and independent
-- Future: REQ-F006 considers bridge pattern for sharing
+- [REQ-F001: MFE Shell](REQ-F001.md)
+- [REQ-F002: MFE1 Remote](REQ-F002.md)
+- [REQ-F003: MFE2 Remote](REQ-F003.md)
 
 ---
 
 **Last Updated:** 2026-03-14  
-**Owner:** Development Team  
-**Review Frequency:** When adding features or updating React version
+**Owner:** QA / Testing Team  
+**Review Frequency:** As testing strategy evolves
