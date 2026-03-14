@@ -1,4 +1,4 @@
-# REQ-D001: Root README.md
+# REQ-D014: Root README.md
 
 **Status:** ACTIVE  
 **Version:** 1.0  
@@ -55,8 +55,8 @@ Root README exists but has issues:
 
 ## Related Requirements
 
-- [REQ-D002: Container READMEs](REQ-D002.md)
-- [REQ-D003: Copilot Instructions](REQ-D003.md)
+- [REQ-D015: Container READMEs](REQ-D015.md)
+- [REQ-D016: Copilot Instructions](REQ-D016.md)
 
 ---
 

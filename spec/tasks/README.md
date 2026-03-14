@@ -167,8 +167,8 @@ REQUIREMENTS.md#REQ-###
 
 Example:
 - tasks/DOC-001.md references WORK.md#DOC-001
-- WORK.md#DOC-001 implements REQ-F002 and REQ-D002
-- REQ-F002 and REQ-D002 are defined in REQUIREMENTS.md
+- WORK.md#DOC-001 implements REQ-F010 and REQ-D015
+- REQ-F010 and REQ-D015 are defined in REQUIREMENTS.md
 
 ---
 

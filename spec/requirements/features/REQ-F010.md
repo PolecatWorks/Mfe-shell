@@ -1,4 +1,4 @@
-# REQ-F002: MFE1 Remote (Angular 21)
+# REQ-F010: MFE1 Remote (Angular 21)
 
 **Status:** ACTIVE  
 **Version:** 1.0  
@@ -53,8 +53,8 @@ MFE1 is fully functional. Documentation has been improved (DOC-001 complete).
 
 - [REQ-A001: Native Federation Architecture](../architecture/REQ-A001.md)
 - [REQ-A002: Shared Library Singleton Pattern](../architecture/REQ-A002.md)
-- [REQ-F001: MFE Shell](REQ-F001.md)
-- [REQ-F006: MFE2 Shared Library Integration](REQ-F006.md) — Considers same pattern for React
+- [REQ-F013: MFE Shell](REQ-F013.md)
+- [REQ-F010: MFE2 Shared Library Integration](REQ-F010.md) — Considers same pattern for React
 
 ---
 

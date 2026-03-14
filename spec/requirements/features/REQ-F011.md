@@ -1,4 +1,4 @@
-# REQ-F003: MFE2 Remote (React 18)
+# REQ-F011: MFE2 Remote (React 18)
 
 **Status:** ACTIVE  
 **Version:** 1.0  
@@ -53,8 +53,8 @@ No immediate work items; MFE2 is stable.
 
 - [REQ-A001: Native Federation Architecture](../architecture/REQ-A001.md)
 - [REQ-A003: Shell Dynamic Routing System](../architecture/REQ-A003.md)
-- [REQ-F001: MFE Shell](REQ-F001.md)
-- [REQ-F006: MFE2 Shared Library Integration](REQ-F006.md) — Future enhancement
+- [REQ-F013: MFE Shell](REQ-F013.md)
+- [REQ-F010: MFE2 Shared Library Integration](REQ-F010.md) — Future enhancement
 
 ---
 

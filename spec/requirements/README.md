@@ -28,15 +28,15 @@ Implemented and proposed features.
 
 | ID | Name | Status | Version |
 |:---|:-----|:--------|:--------|
-| [REQ-F001](features/REQ-F001.md) | MFE Shell (Angular 21) | ACTIVE | 1.0 |
-| [REQ-F002](features/REQ-F002.md) | MFE1 Remote (Angular 21) | ACTIVE | 1.0 |
-| [REQ-F003](features/REQ-F003.md) | MFE2 Remote (React 18) | ACTIVE | 1.0 |
-| [REQ-F004](features/REQ-F004.md) | Native Federation Configuration | ACTIVE | 1.0 |
-| [REQ-F005](features/REQ-F005.md) | CI/CD Workflows | ACTIVE | 1.0 |
-| [REQ-F006](features/REQ-F006.md) | MFE2 Shared Library Integration | PROPOSED | 1.0 |
-| [REQ-F007](features/REQ-F007.md) | E2E Testing Framework | PROPOSED | 1.0 |
-| [REQ-F008](features/REQ-F008.md) | Docker Compose Orchestration | PROPOSED | 1.0 |
-| [REQ-F009](features/REQ-F009.md) | Dynamic MFE Discovery | PROPOSED | 1.0 |
+| [REQ-F005](features/REQ-F005.md) | MFE Shell (Angular 21) | ACTIVE | 1.0 |
+| [REQ-F006](features/REQ-F006.md) | MFE1 Remote (Angular 21) | ACTIVE | 1.0 |
+| [REQ-F007](features/REQ-F007.md) | MFE2 Remote (React 18) | ACTIVE | 1.0 |
+| [REQ-F008](features/REQ-F008.md) | Native Federation Configuration | ACTIVE | 1.0 |
+| [REQ-F009](features/REQ-F009.md) | CI/CD Workflows | ACTIVE | 1.0 |
+| [REQ-F010](features/REQ-F010.md) | MFE2 Shared Library Integration | PROPOSED | 1.0 |
+| [REQ-F011](features/REQ-F011.md) | E2E Testing Framework | PROPOSED | 1.0 |
+| [REQ-F012](features/REQ-F012.md) | Docker Compose Orchestration | PROPOSED | 1.0 |
+| [REQ-F013](features/REQ-F013.md) | Dynamic MFE Discovery | PROPOSED | 1.0 |
 
 ---
 
@@ -46,10 +46,10 @@ Documentation specifications and improvements.
 
 | ID | Name | Status | Version |
 |:---|:-----|:--------|:--------|
-| [REQ-D001](documentation/REQ-D001.md) | Root README.md | ACTIVE | 1.0 |
-| [REQ-D002](documentation/REQ-D002.md) | Container READMEs (Shell & MFE1) | ACTIVE | 1.0 |
-| [REQ-D003](documentation/REQ-D003.md) | Copilot Instructions | ACTIVE | 1.0 |
-| [REQ-D004](documentation/REQ-D004.md) | Architecture Documentation Specification | PROPOSED | 1.0 |
+| [REQ-D014](documentation/REQ-D014.md) | Root README.md | ACTIVE | 1.0 |
+| [REQ-D015](documentation/REQ-D015.md) | Container READMEs (Shell & MFE1) | ACTIVE | 1.0 |
+| [REQ-D016](documentation/REQ-D016.md) | Copilot Instructions | ACTIVE | 1.0 |
+| [REQ-D017](documentation/REQ-D017.md) | Architecture Documentation Specification | PROPOSED | 1.0 |
 
 ---
 
@@ -57,8 +57,8 @@ Documentation specifications and improvements.
 
 | Status | Count | Examples |
 |--------|-------|----------|
-| **ACTIVE** | 12 | REQ-001, REQ-F001, REQ-D001, etc. |
-| **PROPOSED** | 5 | REQ-F006, REQ-F007, REQ-F008, REQ-F009, REQ-D004 |
+| **ACTIVE** | 12 | REQ-A001, REQ-F005, REQ-D014, etc. |
+| **PROPOSED** | 5 | REQ-F010, REQ-F011, REQ-F012, REQ-F013, REQ-D017 |
 | **SUPERSEDED** | 0 | (None yet - versioning ready) |
 
 ---

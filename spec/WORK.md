@@ -22,7 +22,7 @@ This document tracks all active work to implement and improve the MFE Shell syst
 ## Documentation Work
 
 ### DOC-001: Fix MFE1 Test Runner Documentation
-**Requirement:** REQ-F002 (MFE1 Remote), REQ-D002 (Container READMEs)  
+**Requirement:** REQ-F010 (MFE1 Remote), REQ-D015 (Container READMEs)  
 **Priority:** 🔴 CRITICAL  
 **Status:** ✅ DONE  
 **Effort:** 0.25 hours (15 minutes)  
@@ -65,7 +65,7 @@ Updated mfe1-container/README.md to provide clear MFE context and accurate test 
 ---
 
 ### DOC-002: Add npm link Prerequisite to Quick Start
-**Requirement:** REQ-D001 (Root README)  
+**Requirement:** REQ-D014 (Root README)  
 **Priority:** 🟠 HIGH  
 **Status:** ⏳ PENDING  
 **Effort:** 0.5 hours (30 minutes)  
@@ -99,7 +99,7 @@ Add one of these approaches:
 ---
 
 ### DOC-003: Replace shell-container README with MFE Context Documentation
-**Requirement:** REQ-D002 (Container READMEs)  
+**Requirement:** REQ-D015 (Container READMEs)  
 **Priority:** 🟠 HIGH  
 **Status:** ⏳ PENDING  
 **Effort:** 1 hour (60 minutes)  
@@ -136,7 +136,7 @@ Restructure to include:
 ---
 
 ### DOC-004: Update Test Framework Documentation
-**Requirement:** REQ-D001 (Root README)  
+**Requirement:** REQ-D014 (Root README)  
 **Priority:** 🟠 HIGH  
 **Status:** ⏳ PENDING  
 **Effort:** 0.5 hours (30 minutes)  
@@ -169,7 +169,7 @@ Create accurate testing documentation showing:
 ---
 
 ### DOC-005: Clarify Docker Port Mapping Diagram
-**Requirement:** REQ-D001 (Root README), REQ-A004 (Docker Deployment)  
+**Requirement:** REQ-D014 (Root README), REQ-A004 (Docker Deployment)  
 **Priority:** 🟡 MEDIUM  
 **Status:** ⏳ PENDING  
 **Effort:** 0.5 hours (30 minutes)  
@@ -203,7 +203,7 @@ Create or improve diagram showing:
 ---
 
 ### DOC-006: Create Formal Architecture Specification Document
-**Requirement:** REQ-D004 (Architecture Documentation Spec)  
+**Requirement:** REQ-D017 (Architecture Documentation Spec)  
 **Priority:** 🟡 MEDIUM  
 **Status:** ⏳ PENDING  
 **Effort:** 4 hours (240 minutes)  
@@ -268,7 +268,7 @@ Document the intended Docker setup:
 ---
 
 ### DOC-008: Update Angular CLI Version References
-**Requirement:** REQ-D002 (Container READMEs)  
+**Requirement:** REQ-D015 (Container READMEs)  
 **Priority:** 🟡 MEDIUM  
 **Status:** ⏳ PENDING  
 **Effort:** 0.25 hours (15 minutes)  
@@ -296,7 +296,7 @@ Search all docs and update to consistent version 21.2.1
 ---
 
 ### DOC-009: Update Copilot Instructions After README Fixes
-**Requirement:** REQ-D003 (Copilot Instructions)  
+**Requirement:** REQ-D016 (Copilot Instructions)  
 **Priority:** 🟡 MEDIUM  
 **Status:** ⏳ PENDING (blocked: waiting on other DOC items)  
 **Effort:** 0.5 hours (30 minutes)  
@@ -332,7 +332,7 @@ After completing DOC-001, DOC-002, DOC-003, DOC-004, DOC-005:
 ## Feature Work
 
 ### FEAT-002: Evaluate Shared Library Integration for MFE2
-**Requirement:** REQ-F006 (MFE2 Shared Library Integration)  
+**Requirement:** REQ-F010 (MFE2 Shared Library Integration)  
 **Priority:** 🟡 MEDIUM  
 **Status:** ⏳ PENDING  
 **Effort:** 8-16 hours  
@@ -356,12 +356,12 @@ Investigate and implement integration of mfe-shared library with MFE2 (React) to
 - [ ] No breaking changes to existing MFEs
 
 **Related Requirement:**
-- REQ-F006
+- REQ-F010
 
 ---
 
 ### FEAT-003: Implement MFE Registry System
-**Requirement:** REQ-F009 (Dynamic MFE Discovery)  
+**Requirement:** REQ-F013 (Dynamic MFE Discovery)  
 **Priority:** 🟢 LOW  
 **Status:** ⏳ PENDING  
 **Effort:** 16-24 hours  
@@ -386,14 +386,14 @@ Consider approaches:
 - [ ] Configuration is auditable and versioned
 
 **Related Requirement:**
-- REQ-F009
+- REQ-F013
 
 ---
 
 ## Testing Work
 
 ### TEST-001: Implement E2E Testing Framework
-**Requirement:** REQ-F007 (E2E Testing Framework)  
+**Requirement:** REQ-F011 (E2E Testing Framework)  
 **Priority:** 🟡 MEDIUM  
 **Status:** ⏳ PENDING  
 **Effort:** 12-20 hours  
@@ -418,14 +418,14 @@ Build end-to-end testing framework for Shell + MFEs integration scenarios. Curre
 - [ ] E2E tests for cross-MFE state sharing
 
 **Related Requirement:**
-- REQ-F007
+- REQ-F011
 
 ---
 
 ## Infrastructure Work
 
 ### DOCKER-001: Create Docker Compose Configuration
-**Requirement:** REQ-F008 (Docker Compose Orchestration)  
+**Requirement:** REQ-F012 (Docker Compose Orchestration)  
 **Priority:** 🟢 LOW  
 **Status:** ⏳ PENDING  
 **Effort:** 4-6 hours  
@@ -452,7 +452,7 @@ Build Docker Compose configuration for full-stack development and testing. Simpl
 - [ ] Easy to switch between dev and prod
 
 **Related Requirement:**
-- REQ-F008
+- REQ-F012
 
 ---
 
@@ -472,7 +472,7 @@ Build Docker Compose configuration for full-stack development and testing. Simpl
 
 ```
 DOC-001 ✅ (Completed)
-├── Addresses: REQ-F002, REQ-D002
+├── Addresses: REQ-F010, REQ-D015
 └── No blocking dependencies
 
 DOC-009 ⏳ (Blocked)

@@ -58,10 +58,10 @@ Implementation is complete, but documentation improvements are tracked:
 - [REQ-A002: Shared Library Singleton Pattern](REQ-A002.md)
 - [REQ-A003: Shell Dynamic Routing System](REQ-A003.md)
 - [REQ-A004: Docker Deployment & Containerization](REQ-A004.md)
-- [REQ-F001: MFE Shell](../features/REQ-F001.md)
-- [REQ-F002: MFE1 Remote](../features/REQ-F002.md)
-- [REQ-F003: MFE2 Remote](../features/REQ-F003.md)
-- [REQ-F004: Native Federation Configuration](../features/REQ-F004.md)
+- [REQ-F013: MFE Shell](../features/REQ-F013.md)
+- [REQ-F010: MFE1 Remote](../features/REQ-F010.md)
+- [REQ-F011: MFE2 Remote](../features/REQ-F011.md)
+- [REQ-F012: Native Federation Configuration](../features/REQ-F012.md)
 
 ---
 

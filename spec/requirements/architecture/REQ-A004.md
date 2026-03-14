@@ -56,7 +56,7 @@ All containers are properly configured and deployable:
 ## Related Requirements
 
 - [REQ-A001: Native Federation Architecture](REQ-A001.md)
-- [REQ-F008: Docker Compose Orchestration](../features/REQ-F008.md) — Future enhancement
+- [REQ-F012: Docker Compose Orchestration](../features/REQ-F012.md) — Future enhancement
 
 ---
 
