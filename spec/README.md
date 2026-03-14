@@ -26,6 +26,8 @@ This enables:
 ```
 spec/
 ├── README.md                          # This file - Navigation and guidance
+├── ARCHITECTURE.md                    # System architecture overview with Mermaid diagrams
+├── DOCUMENTATION_ANALYSIS.md          # Issue tracking (9 discrepancies identified)
 ├── requirements/                      # RFC-like requirements directory (SINGLE SOURCE)
 │   ├── README.md                      # Requirements index (overview of all 17)
 │   ├── architecture/                  # Architecture requirements (4 files)
@@ -37,8 +39,6 @@ spec/
 │   │   ├── REQ-F005.md through F013   # All features (implemented + proposed)
 │   └── documentation/                 # Documentation requirements (4 files)
 │       ├── REQ-D014.md through D017   # Root README, Container READMEs, Copilot, Architecture
-│
-└── DOCUMENTATION_ANALYSIS.md          # Issue tracking (9 discrepancies identified)
 ```
 
 **Consolidated Structure:**
@@ -53,6 +53,7 @@ spec/
 ## Quick Navigation
 
 ### 👉 Start Here
+- **Understanding the Architecture?** → Read `ARCHITECTURE.md` (system overview with diagrams)
 - **Understanding Requirements?** → Read `requirements/README.md` (index of all 17 requirements)
 - **Finding a specific requirement?** → Check `requirements/README.md` index table, then open the specific file
 - **Checking Work Status?** → Open any requirement file and scroll to "Work Items" section
