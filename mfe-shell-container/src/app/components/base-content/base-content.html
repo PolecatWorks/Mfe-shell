@@ -12,3 +12,7 @@
 
 <ng-container *ngComponentOutlet="viewerComponent"></ng-container>
 <ng-container *ngComponentOutlet="jsonShowComponent; inputs: { data: sampleJsonData }"></ng-container>
+<div style="margin-top: 20px;">
+  <h3>Federated Mermaid Component from MFE1</h3>
+  <ng-container *ngComponentOutlet="mermaidShowComponent; inputs: { content: sampleMermaidContent }"></ng-container>
+</div>
