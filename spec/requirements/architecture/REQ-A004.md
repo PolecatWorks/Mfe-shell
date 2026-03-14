@@ -47,9 +47,101 @@ All containers are properly configured and deployable:
 
 ## Work Items
 
-- [DOC-007: Clarify Docker MFE1 dependency intent](../WORK.md#DOC-007) — ⏳ Pending
-- [DOCKER-001: Create docker-compose.yml](../WORK.md#DOCKER-001) — ⏳ Pending (proposed)
-- [DOC-005: Clarify Docker port mapping diagram](../WORK.md#DOC-005) — ⏳ Pending
+This requirement is implemented through the following work items:
+
+### ⏳ DOC-007: Clarify Docker MFE1 Dependency Intent — PENDING
+
+**Priority:** 🟡 MEDIUM  
+**Status:** ⏳ PENDING  
+**Effort:** 0.5 hours (30 minutes)  
+
+**Description:** Clarify in Docker documentation whether mfe1-container should be a standalone app or always linked as part of Shell composition. Current setup is ambiguous about the intent.
+
+**Problem:**
+- Dockerfile for mfe1-container exists but dependency in docker-compose isn't clear
+- Unclear if mfe1 should run independently or only as part of Shell
+- Documentation doesn't explain the relationship
+
+**Solution:** Document the intended Docker setup:
+- Is mfe1 standalone for testing purposes?
+- Or is it only meant to run as part of compose stack?
+- What's the actual use case?
+
+**Files to Change:**
+- Docker-related docs and Dockerfiles
+
+**Acceptance Criteria:**
+- [ ] Intent of mfe1-container Docker setup is clear
+- [ ] Documentation matches actual deployment use case
+
+**Related Issues:** Issue #7 from DOCUMENTATION_ANALYSIS.md (MEDIUM severity)
+
+---
+
+### ⏳ DOC-005: Clarify Docker Port Mapping Diagram — PENDING
+
+**Priority:** 🟡 MEDIUM  
+**Status:** ⏳ PENDING  
+**Effort:** 0.5 hours (30 minutes)  
+
+**Description:** Clarify Docker port mapping diagram. Current diagram is confusing about internal vs. external ports and what ports are used for what purpose.
+
+**Problem:**
+- Current diagram doesn't clearly show container internal ports (8080)
+- Unclear which port is used for which application
+- Confusion between development ports and Docker ports
+
+**Solution:** Create or improve diagram showing:
+- Internal ports (container view): 8080 for all
+- External ports (host machine): 4200, 3000, 3002
+- Purpose of each port
+- How to access each app
+
+**Files to Change:**
+- Docker documentation and README diagrams
+
+**Acceptance Criteria:**
+- [ ] Diagram clearly shows internal vs. external ports
+- [ ] Purpose of each port is documented
+- [ ] Developer knows which URL to visit for each app
+
+**Related Issues:** Issue #2 from DOCUMENTATION_ANALYSIS.md (MEDIUM severity)
+
+**Also Related To:** [REQ-D014: Root README.md](../documentation/REQ-D014.md) — Shared documentation improvement
+
+---
+
+### ⏳ DOCKER-001: Create Docker Compose Configuration — PENDING (PROPOSED)
+
+**Priority:** 🟢 LOW  
+**Status:** ⏳ PENDING  
+**Effort:** 4 hours (240 minutes)  
+
+**Description:** Create docker-compose.yml for full-stack development and testing. Currently each container must be started manually or with separate commands.
+
+**Problem:**
+- Current approach: Manual startup of each container
+- No orchestration layer for full system testing
+- Difficult to stand up complete dev environment
+
+**Solution:** Create docker-compose.yml configuration that:
+- Defines all 3 services (Shell, MFE1, MFE2)
+- Sets up port mappings correctly
+- Enables health checks for all services
+- Optionally runs database/backend services if needed
+- Includes development-specific configurations
+
+**Files to Create:**
+- docker-compose.yml (new)
+- docker-compose.override.yml (optional, for dev overrides)
+
+**Acceptance Criteria:**
+- [ ] `docker-compose up` starts all services
+- [ ] All services are accessible at expected ports (4200, 3000, 3002)
+- [ ] Logs are readable and useful
+- [ ] Can stop and restart services cleanly
+
+**Related Requirements:** [REQ-F012: Docker Compose Orchestration](../features/REQ-F012.md) (proposed feature)
 
 ---
 

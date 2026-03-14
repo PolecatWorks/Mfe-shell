@@ -42,9 +42,39 @@ Docker Compose configuration not yet created.
 
 ## Work Items
 
-- [DOCKER-001: Create docker-compose.yml](../WORK.md#DOCKER-001) — ⏳ Pending
-  - Effort: 4-6 hours
-  - Priority: Low
+### ⏳ DOCKER-001: Create Docker Compose Configuration — PENDING
+
+**Priority:** 🟢 LOW  
+**Status:** ⏳ PENDING  
+**Effort:** 4-6 hours  
+
+**Description:** Build Docker Compose configuration for full-stack development and testing. Simplify startup from multiple manual commands to single `docker-compose up`.
+
+**Problem:**
+- Currently: Developers must start each container separately
+- No clear orchestration
+- Difficult to ensure all services start in correct order
+- CI/CD integration is manual
+
+**Solution:**
+- Create docker-compose.yml for local development
+- Create docker-compose.prod.yml for production
+- Include service health checks
+- Document usage
+
+**Acceptance Criteria:**
+- [ ] Single `docker-compose up` starts all services
+- [ ] Services start in correct dependency order
+- [ ] Health checks verify all services are ready
+- [ ] Easy to switch between dev and prod
+- [ ] Documentation covers common operations (up, down, logs, restart)
+
+**Deliverables:**
+- docker-compose.yml (development configuration)
+- docker-compose.prod.yml (production configuration)
+- Documentation of services and ports
+- Example commands for common workflows
+- Troubleshooting guide for compose issues
 
 ---
 

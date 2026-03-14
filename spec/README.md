@@ -3,9 +3,9 @@
 This directory contains all specifications, requirements, and work tracking for the MFE Shell project using an **RFC-inspired approach**. Each requirement has a clear status (Active, Proposed, Superseded) and version history, allowing visibility into how requirements evolve over time.
 
 The system serves as the single source of truth for:
-- **Requirements** - What must be built (with supersession tracking) — in `requirements/` directory
-- **Work Items** - Tasks to implement requirements (linked to requirements) — in `WORK.md`
-- **Implementation Results** - What was done and UAT status — embedded in requirement files
+- **Requirements** - What must be built (with specs and work items) — in `requirements/` directory
+- **Implementation Results** - What was done, changes made, and UAT status — embedded in requirement files
+- **Work Items** - Tasks to implement requirements — now part of each requirement file
 
 ## RFC-Inspired Approach
 
@@ -26,45 +26,51 @@ This enables:
 ```
 spec/
 ├── README.md                          # This file - Navigation and guidance
-├── requirements/                      # RFC-like requirements directory
-│   ├── README.md                      # Requirements index (SINGLE SOURCE OF TRUTH)
+├── requirements/                      # RFC-like requirements directory (SINGLE SOURCE)
+│   ├── README.md                      # Requirements index (overview of all 17)
 │   ├── architecture/                  # Architecture requirements (4 files)
 │   │   ├── REQ-A001.md                # Native Federation Architecture
 │   │   ├── REQ-A002.md                # Shared Library Singleton Pattern
 │   │   ├── REQ-A003.md                # Shell Dynamic Routing System
 │   │   └── REQ-A004.md                # Docker Deployment & Containerization
 │   ├── features/                      # Feature requirements (9 files)
-│   │   ├── REQ-F013.md through F009   # MFE Shell, MFE1, MFE2, CI/CD, + proposed
+│   │   ├── REQ-F005.md through F013   # All features (implemented + proposed)
 │   └── documentation/                 # Documentation requirements (4 files)
 │       ├── REQ-D014.md through D017   # Root README, Container READMEs, Copilot, Architecture
 │
-├── WORK.md                            # Active work items (linked to requirements/)
-│                                      # 15 items: 1 done, 14 pending
+├── DOCUMENTATION_ANALYSIS.md          # Issue tracking (9 discrepancies identified)
 │
-└── tasks/                             # Task implementations archived by requirement
-    └── README.md                      # Explains task implementation pattern
+└── tasks/                             # Task implementation pattern guide
+    └── README.md                      # Explains how to implement new tasks
 ```
 
-**Key Change:** Task implementation results (what was done, UAT steps) are now integrated directly into requirement files to maintain a single source of truth. See individual requirement files (e.g., `REQ-D015.md`) for implementation details.
+**Consolidated Structure:**
+- Each requirement file (REQ-###.md) now includes:
+  - Description & Rationale (always)
+  - Key Implementation Points (always)
+  - Current Status (always)
+  - **Implementation Results** (if completed)
+  - **Work Items** (with priority, status, effort, details)
+  - Related Requirements (cross-links)
 
 ## Quick Navigation
 
 ### 👉 Start Here
 - **Understanding Requirements?** → Read `requirements/README.md` (index of all 17 requirements)
 - **Finding a specific requirement?** → Check `requirements/README.md` index table, then open the specific file
-- **Checking Work Status?** → Read `WORK.md` (all tasks linked to requirements)
-- **Seeing implementation results?** → Open the requirement file (e.g., `requirements/documentation/REQ-D015.md`) — scroll to "Implementation Results" section
+- **Checking Work Status?** → Open any requirement file and scroll to "Work Items" section
+- **Seeing implementation results?** → Open the requirement file (e.g., `requirements/documentation/REQ-D015.md`) → scroll to "Implementation Results" or "Work Items"
 
 ### By Question
 | Question | Answer |
 |----------|--------|
 | What are the 17 requirements? | `requirements/README.md` - Index with links to all files |
 | Where is requirement REQ-D015? | `requirements/documentation/REQ-D015.md` - Container READMEs |
-| What's the current work status? | `WORK.md` - 1 ✅ done, 0 🔄 in progress, 14 ⏳ pending |
-| Which requirement maps to which work item? | `WORK.md` - Each task shows Requirement: REQ-### |
+| What's the current work status? | Any requirement file → "Work Items" section: 1 ✅ done, 14 ⏳ pending |
+| Which requirement maps to which work item? | Requirement file → "Work Items" section shows all linked tasks |
 | How do I know if a requirement was superseded? | `requirements/[category]/REQ-###.md` - Shows "Superseded by: X" |
 | What changed in mfe1-container/README.md? | `requirements/documentation/REQ-D015.md` - "Implementation Results" section |
-| What are the UAT steps for DOC-001? | `requirements/documentation/REQ-D015.md` - Embedded in requirement file |
+| What are the work items for a requirement? | Open the requirement file → "Work Items" section → all tasks listed |
 
 ---
 
@@ -78,19 +84,18 @@ Single source of truth, split into individual files:
 - **Versioned:** Each requirement can evolve with version numbers and supersession tracking
 - **Index:** `requirements/README.md` lists all with quick links
 
-### Work Items (WORK.md)
-Active tasks to implement requirements:
+### Work Items (In Requirement Files)
+Tasks to implement requirements are now embedded in each requirement file:
 - **15 total items:** 1 ✅ done, 14 ⏳ pending
-- **Each linked to:** Specific requirement(s) from requirements/ directory
-- **Includes:** Priority, Status, Effort, Acceptance Criteria, Files to Change
-- **Dependencies:** Tracks blocking relationships (e.g., DOC-009 blocked by DOC-001-005)
+- **Located in:** "Work Items" section of each requirement file
+- **Includes:** Priority, Status, Effort, Acceptance Criteria, Files to Change, Dependencies
+- **Example:** `requirements/documentation/REQ-D015.md` → "Work Items" section shows DOC-001, DOC-003, DOC-008
 
 ### Tasks (tasks/ directory)
-Implementation details and UAT for each work item:
-- **NOT duplicates** of WORK.md (they reference it)
-- **Focus:** What Changed + UAT Steps only
-- **One file:** Per completed or in-progress task
-- **Example:** `tasks/DOC-001.md` - Streamlined, no duplication
+Implementation pattern guide:
+- **NOT task files** (those are now in requirements/)
+- **Contains:** README.md explaining the consolidation pattern
+- **Purpose:** Guide for how to implement new work items (add to requirement file)
 
 ---
 
