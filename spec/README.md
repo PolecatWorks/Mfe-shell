@@ -38,10 +38,7 @@ spec/
 │   └── documentation/                 # Documentation requirements (4 files)
 │       ├── REQ-D014.md through D017   # Root README, Container READMEs, Copilot, Architecture
 │
-├── DOCUMENTATION_ANALYSIS.md          # Issue tracking (9 discrepancies identified)
-│
-└── tasks/                             # Task implementation pattern guide
-    └── README.md                      # Explains how to implement new tasks
+└── DOCUMENTATION_ANALYSIS.md          # Issue tracking (9 discrepancies identified)
 ```
 
 **Consolidated Structure:**
@@ -91,12 +88,6 @@ Tasks to implement requirements are now embedded in each requirement file:
 - **Includes:** Priority, Status, Effort, Acceptance Criteria, Files to Change, Dependencies
 - **Example:** `requirements/documentation/REQ-D015.md` → "Work Items" section shows DOC-001, DOC-003, DOC-008
 
-### Tasks (tasks/ directory)
-Implementation pattern guide:
-- **NOT task files** (those are now in requirements/)
-- **Contains:** README.md explaining the consolidation pattern
-- **Purpose:** Guide for how to implement new work items (add to requirement file)
-
 ---
 
 ## How Supersession Works
@@ -141,9 +132,9 @@ See: REQ-A001 v2.0 for current approach
 |-----------|-------|----------|
 | **Active Requirements** | 12 | `requirements/` with indexes per category |
 | **Proposed Requirements** | 5 | `requirements/` marked as PROPOSED |
-| **Work Items** | 15 | `WORK.md` |
-| **Completed Tasks** | 1 | `tasks/DOC-001.md` |
-| **Blocked Work** | 1 | `WORK.md#DOC-009` (waiting on DOC-001-005) |
+| **Work Items** | 15 | Embedded in requirement files (1 ✅ done, 14 ⏳ pending) |
+| **Implementation Results** | 1 | `requirements/documentation/REQ-D015.md` (DOC-001) |
+| **Blocked Work** | 1 | `requirements/documentation/REQ-D016.md#DOC-009` (waiting on DOC-002-005) |
 
 ---
 
@@ -153,19 +144,39 @@ See: REQ-A001 v2.0 for current approach
 2. **Create file:** `requirements/[category]/REQ-###.md`
 3. **Use template** (see any REQ file for format)
 4. **Update index:** Add to `requirements/README.md` table
-5. **Link from work:** Add corresponding item to `WORK.md` if work needed
+5. **Link work items:** Add "Work Items" section with all needed tasks
 
 ---
 
 ## Adding New Work Items
 
-1. **Read requirement:** Find related REQ-### in requirements/
-2. **Add to WORK.md:** Create entry with:
-   - Requirement: REQ-### reference
-   - Priority, Status, Effort
-   - Problem, Solution, Acceptance Criteria
-3. **Create task file:** `tasks/[ID].md` when implementing
-4. **Use template:** Reference `tasks/README.md` for template
+1. **Find requirement:** Locate related REQ-### in requirements/
+2. **Open requirement file:** Edit `requirements/[category]/REQ-###.md`
+3. **Add to Work Items section:** Include:
+   - Work item ID (e.g., DOC-002)
+   - Title and description
+   - Priority, Status, Effort estimate
+   - Problem statement and proposed solution
+   - Acceptance criteria
+   - Files to change/create
+   - Related issues and dependencies
+
+---
+
+## Implementing a Work Item
+
+When you complete a work item:
+
+1. **Update requirement file:** In the same REQ-### file, add "Implementation Results" section:
+   - What was changed (files modified)
+   - Changes made (detailed list)
+   - UAT test results (pass/fail status)
+   - Verification checklist
+   - Completion date
+
+2. **Update Work Items section:** Mark as ✅ COMPLETE
+
+3. **No separate files needed:** Everything lives in the requirement file
 
 ---
 
@@ -201,36 +212,38 @@ See: REQ-A001 v2.0 for current approach
 3. Each file has "Related Requirements" section for exploration
 
 **To understand what work is needed:**
-1. Open `WORK.md`
-2. Find task by ID (DOC-001, FEAT-002, etc.)
-3. Links to requirements show what it implements
-4. Links to tasks/ show UAT details
+1. Open specific requirement file (e.g., `requirements/documentation/REQ-D015.md`)
+2. Scroll to "Work Items" section
+3. See all tasks: status (done/pending), priority, effort, acceptance criteria
 
 **To trace a work item to its requirement:**
-1. Open `WORK.md`
-2. Find task item (e.g., DOC-002)
-3. See "Requirement: REQ-D014" at top
-4. Click link to `requirements/documentation/REQ-D014.md`
+1. Go directly to the requirement file (work items are embedded there)
+2. Example: DOC-003 → Open `requirements/documentation/REQ-D015.md` → "Work Items" section
+3. See full context: spec, problem, solution, implementation
+
+**To see implementation results:**
+1. Open requirement file (e.g., `requirements/documentation/REQ-D015.md`)
+2. Scroll to "Implementation Results" section
+3. See what changed, UAT results, verification checklist
 
 ---
 
 ## Legacy Files (for reference)
 
-These files from the transition are kept but superseded:
+These files from the transition are no longer used:
 - `SPECIFICATIONS.md` → Content merged into `requirements/`
-- `WORK_ITEMS.md` → Now `WORK.md` (same content, single file)
-- `DOCUMENTATION_ANALYSIS.md` → Issues now in `WORK.md`
+- `WORK.md` → Content merged into requirement files
+- `WORK_ITEMS.md` → Content merged into requirement files
+- `tasks/` directory → All content merged into requirement files
 - `architecture/`, `implemented/`, `pending/` → Not needed with new structure
-
-Can be archived after team adoption.
 
 ---
 
 ## Questions?
 
 - **What needs to be built?** → `requirements/README.md` (find your requirement)
-- **What work should I do?** → `WORK.md` (current status and priorities)
-- **How do I test something?** → `tasks/[ID].md` (UAT steps and checklist)
+- **What work should I do?** → Open any requirement file → "Work Items" section
+- **How do I see implementation results?** → Open requirement file → "Implementation Results" section
 - **How is this system organized?** → This file (you are here!)
 
 ---
