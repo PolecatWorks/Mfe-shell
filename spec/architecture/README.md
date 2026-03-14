@@ -25,5 +25,5 @@ GenericMfeWrapperComponent handles any remote regardless of framework (React, Vu
 
 ## Related
 
-- See [SPECIFICATIONS.md](../SPECIFICATIONS.md) for architecture spec index
+- See [requirements/README.md](../requirements/README.md) for architecture spec index
 - See [WORK_ITEMS.md](../WORK_ITEMS.md) for related work items (ARCH-001, DOC-006)

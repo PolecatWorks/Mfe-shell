@@ -1,6 +1,6 @@
-# REQ-F010: MFE1 Remote (Angular 21)
+# REQ-F010: MFE2 Shared Library Integration
 
-**Status:** ACTIVE  
+**Status:** PROPOSED  
 **Version:** 1.0  
 **Proposed:** 2026-03-14  
 **Supersedes:** None  
@@ -10,72 +10,61 @@
 
 ## Description
 
-First micro frontend built with Angular 21. Exposes routes and shared library integration. Can run standalone at http://localhost:3000 or integrated into Shell.
+Future integration of mfe-shared library with MFE2 (React) to share state and services across frameworks.
 
 ---
 
 ## Rationale
 
-- Demonstrates Angular micro frontend pattern
-- Shows how to share state via mfe-shared library
-- Provides reference implementation for future Angular MFEs
-- Supports both standalone development and integrated testing
+- Current approach: MFE2 duplicates UserContext locally
+- Improvement: Use shared library for consistent state
+- Benefit: Single source of truth for user state across all MFEs
+- Challenge: mfe-shared is Angular-based, MFE2 is React
 
 ---
 
 ## Key Implementation Points
 
-- Angular 21 with Native Federation remote configuration
-- Exposes routes via federation
-- Uses mfe-shared singleton library
-- Test runner: Karma + Jasmine
-- Standalone: `npm start` (requires `npm link` for mfe-shared)
-- Integrated: Loaded by Shell via federation
+- Research bridge patterns for Angular library → React usage
+- Consider wrapper/adapter pattern
+- Or create language-agnostic shared library interface
+- Maintain backward compatibility with existing integration
+- Avoid pulling full Angular into React app
 
 ---
 
 ## Current Status
 
-✅ **Implemented with documentation improvements**
+⏳ **Pending**
 
-MFE1 is fully functional. Documentation has been improved (DOC-001 complete).
+This is a proposed enhancement. Current MFE2 works well with local UserContext.
 
 ---
 
 ## Work Items
 
-- [DOC-001: Fix MFE1 Test Runner Documentation](../WORK.md#DOC-001) — ✅ DONE
-- [DOC-002: Add npm link prerequisite to Quick Start](../WORK.md#DOC-002) — ⏳ Pending
+- [FEAT-002: Evaluate shared library integration for MFE2](../WORK.md#FEAT-002) — ⏳ Pending
+  - Effort: 8-16 hours
+  - Priority: Medium
 
 ---
 
 ## Related Requirements
 
-- [REQ-A001: Native Federation Architecture](../architecture/REQ-A001.md)
 - [REQ-A002: Shared Library Singleton Pattern](../architecture/REQ-A002.md)
-- [REQ-F013: MFE Shell](REQ-F013.md)
-- [REQ-F010: MFE2 Shared Library Integration](REQ-F010.md) — Considers same pattern for React
+- [REQ-F003: MFE2 Remote](REQ-F003.md)
 
 ---
 
-## Running Modes
+## Considered Approaches
 
-**Standalone Mode:**
-```bash
-cd mfe1-container
-make mfe1-shared  # Link shared library
-npm install
-npm start
-# Access at http://localhost:3000
-```
-
-**Integrated Mode:**
-- Start Shell at http://localhost:4200
-- MFE1 is loaded by Shell as a route
-- Shares UserContext with Shell via mfe-shared
+1. **Wrapper Pattern:** Create adapter in mfe-shared for React consumption
+2. **Bridge Library:** Standalone library with framework-agnostic interfaces
+3. **State Management:** Use global state management (Redux, Zustand) for sharing
+4. **Service Worker:** Shared state via Service Worker postMessage
 
 ---
 
 **Last Updated:** 2026-03-14  
-**Owner:** Development Team  
-**Review Frequency:** When adding features or updating Angular version
+**Owner:** Architecture Team  
+**Review Frequency:** As React integration matures
