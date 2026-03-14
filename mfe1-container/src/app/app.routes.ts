@@ -2,12 +2,14 @@ import { Routes } from '@angular/router';
 import { Home } from './home/home';
 import { Chooser } from './chooser/chooser';
 import { Viewer } from './viewer/viewer';
+import { MermaidShow } from './mermaid-show/mermaid-show';
 import { AppComponent } from './app.component';
 
 export const routes: Routes = [
     { path: '', component: Home },
     { path: 'chooser', component: Chooser },
-    { path: 'viewer', component: Viewer }
+    { path: 'viewer', component: Viewer },
+    { path: 'mermaid', component: MermaidShow }
 ];
 
 export const remoteRoutes: Routes = [
