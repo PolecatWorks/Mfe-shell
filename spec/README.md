@@ -5,7 +5,7 @@ This directory contains all specifications, requirements, and work tracking for 
 The system serves as the single source of truth for:
 - **Requirements** - What must be built (with supersession tracking) — in `requirements/` directory
 - **Work Items** - Tasks to implement requirements (linked to requirements) — in `WORK.md`
-- **Task Documentation** - UAT steps and implementation guidance for each task — in `tasks/` directory
+- **Implementation Results** - What was done and UAT status — embedded in requirement files
 
 ## RFC-Inspired Approach
 
@@ -36,17 +36,16 @@ spec/
 │   ├── features/                      # Feature requirements (9 files)
 │   │   ├── REQ-F013.md through F009   # MFE Shell, MFE1, MFE2, CI/CD, + proposed
 │   └── documentation/                 # Documentation requirements (4 files)
-│       ├── REQ-D014.md through D004   # Root README, Container READMEs, Copilot, Architecture
+│       ├── REQ-D014.md through D017   # Root README, Container READMEs, Copilot, Architecture
 │
 ├── WORK.md                            # Active work items (linked to requirements/)
 │                                      # 15 items: 1 done, 14 pending
 │
-└── tasks/                             # Task implementations and UAT
-    ├── README.md                      # Index of all tasks
-    ├── DOC-001.md                     # ✅ Complete - MFE1 test runner docs
-    ├── DOC-002.md                     # 📋 Template for new tasks
-    └── [TASK-ID].md                   # One file per task (UAT focused)
+└── tasks/                             # Task implementations archived by requirement
+    └── README.md                      # Explains task implementation pattern
 ```
+
+**Key Change:** Task implementation results (what was done, UAT steps) are now integrated directly into requirement files to maintain a single source of truth. See individual requirement files (e.g., `REQ-D015.md`) for implementation details.
 
 ## Quick Navigation
 
@@ -54,18 +53,18 @@ spec/
 - **Understanding Requirements?** → Read `requirements/README.md` (index of all 17 requirements)
 - **Finding a specific requirement?** → Check `requirements/README.md` index table, then open the specific file
 - **Checking Work Status?** → Read `WORK.md` (all tasks linked to requirements)
-- **Implementing a Task?** → Read `tasks/[TASK-ID].md` (UAT steps and testing)
+- **Seeing implementation results?** → Open the requirement file (e.g., `requirements/documentation/REQ-D015.md`) — scroll to "Implementation Results" section
 
 ### By Question
 | Question | Answer |
 |----------|--------|
-| What are the 12 active requirements? | `requirements/README.md` - Index with links to all files |
-| Where is requirement REQ-F010? | `requirements/features/REQ-F010.md` - MFE1 Remote |
+| What are the 17 requirements? | `requirements/README.md` - Index with links to all files |
+| Where is requirement REQ-D015? | `requirements/documentation/REQ-D015.md` - Container READMEs |
 | What's the current work status? | `WORK.md` - 1 ✅ done, 0 🔄 in progress, 14 ⏳ pending |
 | Which requirement maps to which work item? | `WORK.md` - Each task shows Requirement: REQ-### |
 | How do I know if a requirement was superseded? | `requirements/[category]/REQ-###.md` - Shows "Superseded by: X" |
-| How do I test a completed task? | `tasks/[TASK-ID].md` - UAT steps and checklists |
-| What changed in mfe1-container/README.md? | `tasks/DOC-001.md` - What Was Changed section |
+| What changed in mfe1-container/README.md? | `requirements/documentation/REQ-D015.md` - "Implementation Results" section |
+| What are the UAT steps for DOC-001? | `requirements/documentation/REQ-D015.md` - Embedded in requirement file |
 
 ---
 
