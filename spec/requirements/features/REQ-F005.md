@@ -50,8 +50,8 @@ No immediate work items; CI/CD is stable.
 
 ## Related Requirements
 
-- [REQ-001: Native Federation Architecture](../architecture/REQ-001.md)
-- [REQ-004: Docker Deployment & Containerization](../architecture/REQ-004.md)
+- [REQ-A001: Native Federation Architecture](../architecture/REQ-A001.md)
+- [REQ-A004: Docker Deployment & Containerization](../architecture/REQ-A004.md)
 
 ---
 

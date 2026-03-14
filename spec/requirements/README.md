@@ -15,10 +15,10 @@ Core architectural decisions and patterns.
 
 | ID | Name | Status | Version |
 |:---|:-----|:-------|:--------|
-| [REQ-001](architecture/REQ-001.md) | Native Federation Architecture | ACTIVE | 1.0 |
-| [REQ-002](architecture/REQ-002.md) | Shared Library (mfe-shared) Singleton Pattern | ACTIVE | 1.0 |
-| [REQ-003](architecture/REQ-003.md) | Shell Dynamic Routing System | ACTIVE | 1.0 |
-| [REQ-004](architecture/REQ-004.md) | Docker Deployment & Containerization | ACTIVE | 1.0 |
+| [REQ-A001](architecture/REQ-A001.md) | Native Federation Architecture | ACTIVE | 1.0 |
+| [REQ-A002](architecture/REQ-A002.md) | Shared Library (mfe-shared) Singleton Pattern | ACTIVE | 1.0 |
+| [REQ-A003](architecture/REQ-A003.md) | Shell Dynamic Routing System | ACTIVE | 1.0 |
+| [REQ-A004](architecture/REQ-A004.md) | Docker Deployment & Containerization | ACTIVE | 1.0 |
 
 ---
 

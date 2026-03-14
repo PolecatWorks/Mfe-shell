@@ -49,7 +49,7 @@ No immediate work items; configuration is stable.
 
 ## Related Requirements
 
-- [REQ-001: Native Federation Architecture](../architecture/REQ-001.md)
+- [REQ-A001: Native Federation Architecture](../architecture/REQ-A001.md)
 - [REQ-F001: MFE Shell](REQ-F001.md)
 - [REQ-F002: MFE1 Remote](REQ-F002.md)
 - [REQ-F003: MFE2 Remote](REQ-F003.md)

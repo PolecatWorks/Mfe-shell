@@ -29,10 +29,10 @@ spec/
 ├── requirements/                      # RFC-like requirements directory
 │   ├── README.md                      # Requirements index (SINGLE SOURCE OF TRUTH)
 │   ├── architecture/                  # Architecture requirements (4 files)
-│   │   ├── REQ-001.md                # Native Federation Architecture
-│   │   ├── REQ-002.md                # Shared Library Singleton Pattern
-│   │   ├── REQ-003.md                # Shell Dynamic Routing System
-│   │   └── REQ-004.md                # Docker Deployment & Containerization
+│   │   ├── REQ-A001.md                # Native Federation Architecture
+│   │   ├── REQ-A002.md                # Shared Library Singleton Pattern
+│   │   ├── REQ-A003.md                # Shell Dynamic Routing System
+│   │   └── REQ-A004.md                # Docker Deployment & Containerization
 │   ├── features/                      # Feature requirements (9 files)
 │   │   ├── REQ-F001.md through F009   # MFE Shell, MFE1, MFE2, CI/CD, + proposed
 │   └── documentation/                 # Documentation requirements (4 files)
@@ -99,16 +99,16 @@ Implementation details and UAT for each work item:
 
 When a requirement evolves or changes:
 
-1. **Create new version** (e.g., REQ-001-v2.md or update existing file)
+1. **Create new version** (e.g., REQ-A001-v2.md or update existing file)
 2. **Mark old version as superseded** in header
 3. **Preserve old file** for historical reference
 4. **Update work items** to reference new requirement
 
 **Example in a requirement file:**
 ```markdown
-### REQ-001: Native Federation Architecture (ACTIVE)
+### REQ-A001: Native Federation Architecture (ACTIVE)
 **Version:** 2.0 (UPDATED 2026-04-15)
-**Supersedes:** REQ-001 v1.0
+**Supersedes:** REQ-A001 v1.0
 **Superseded by:** None
 
 Changes in v2.0:
@@ -119,14 +119,14 @@ Changes in v2.0:
 
 ## Superseded
 
-### REQ-001-v1: Native Federation Architecture (SUPERSEDED)
+### REQ-A001-v1: Native Federation Architecture (SUPERSEDED)
 **Version:** 1.0
 **Proposed:** 2026-03-14
 **Superseded:** 2026-04-15
 **Reason:** v2.0 adds lazy-loaded remote support
 
 Old approach: [description]
-See: REQ-001 v2.0 for current approach
+See: REQ-A001 v2.0 for current approach
 ```
 
 ---

@@ -169,7 +169,7 @@ Create accurate testing documentation showing:
 ---
 
 ### DOC-005: Clarify Docker Port Mapping Diagram
-**Requirement:** REQ-D001 (Root README), REQ-004 (Docker Deployment)  
+**Requirement:** REQ-D001 (Root README), REQ-A004 (Docker Deployment)  
 **Priority:** 🟡 MEDIUM  
 **Status:** ⏳ PENDING  
 **Effort:** 0.5 hours (30 minutes)  
@@ -236,7 +236,7 @@ Create document covering:
 ---
 
 ### DOC-007: Clarify Docker MFE1 Dependency Intent
-**Requirement:** REQ-004 (Docker Deployment)  
+**Requirement:** REQ-A004 (Docker Deployment)  
 **Priority:** 🟡 MEDIUM  
 **Status:** ⏳ PENDING  
 **Effort:** 0.5 hours (30 minutes)  

@@ -50,7 +50,7 @@ Docker Compose configuration not yet created.
 
 ## Related Requirements
 
-- [REQ-004: Docker Deployment & Containerization](../architecture/REQ-004.md)
+- [REQ-A004: Docker Deployment & Containerization](../architecture/REQ-A004.md)
 
 ---
 

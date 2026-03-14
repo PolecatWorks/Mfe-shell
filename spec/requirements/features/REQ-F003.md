@@ -51,8 +51,8 @@ No immediate work items; MFE2 is stable.
 
 ## Related Requirements
 
-- [REQ-001: Native Federation Architecture](../architecture/REQ-001.md)
-- [REQ-003: Shell Dynamic Routing System](../architecture/REQ-003.md)
+- [REQ-A001: Native Federation Architecture](../architecture/REQ-A001.md)
+- [REQ-A003: Shell Dynamic Routing System](../architecture/REQ-A003.md)
 - [REQ-F001: MFE Shell](REQ-F001.md)
 - [REQ-F006: MFE2 Shared Library Integration](REQ-F006.md) — Future enhancement
 
