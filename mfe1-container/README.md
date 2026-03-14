@@ -1,16 +1,43 @@
-# Mfe1Container
+# MFE1 Container (Angular Micro Frontend)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.19.
+⚠️ **This is a Micro Frontend (MFE) that integrates with the Shell host application.**
+
+For full architecture details, federation setup, and shared library documentation, see the main [README.md](../README.md).
+
+---
+
+## About This MFE
+
+MFE1 is a remote micro frontend built with Angular 21 that exposes routes via Native Federation. It can run:
+- **Standalone** at http://localhost:3000 (using `make mfe1-dev`)
+- **Integrated** within the Shell (http://localhost:4200)
+
+This MFE uses the singleton `mfe-shared` library to access shared state with the Shell.
+
+---
+
+**Angular Project Info:** Generated with Angular CLI version 21.2.1
 
 ## Development server
 
-To start a local development server, run:
+### Standalone Mode
+To run MFE1 as a standalone application:
 
 ```bash
 ng serve
+# or via Makefile
+make mfe1-dev
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Once the server is running, open your browser and navigate to `http://localhost:3000/`. The application will automatically reload whenever you modify any of the source files.
+
+**Note:** Before running standalone, ensure the shared library is linked:
+```bash
+make mfe1-shared
+```
+
+### Integrated Mode
+To see MFE1 running within the Shell, follow the instructions in the main [README.md](../README.md#quick-start).
 
 ## Code scaffolding
 
@@ -38,11 +65,15 @@ This will compile your project and store the build artifacts in the `dist/` dire
 
 ## Running unit tests
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+This MFE uses [Karma](https://karma-runner.github.io) with [Jasmine](https://jasmine.github.io/) for unit testing.
+
+To execute unit tests, use the following command:
 
 ```bash
 ng test
 ```
+
+**Note:** The Shell (`mfe-shell-container`) uses Vitest instead of Karma. Each MFE may have different test runners. See the main [README.md](../README.md) for testing setup across all MFEs.
 
 ## Running end-to-end tests
 
