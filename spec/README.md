@@ -232,10 +232,10 @@ When you complete a work item:
 
 These files from the transition are no longer used:
 - `SPECIFICATIONS.md` → Content merged into `requirements/`
-- `WORK.md` → Content merged into requirement files
-- `WORK_ITEMS.md` → Content merged into requirement files
-- `tasks/` directory → All content merged into requirement files
-- `architecture/`, `implemented/`, `pending/` → Not needed with new structure
+- `WORK.md` → Content merged into requirement files ✅ Deleted
+- `WORK_ITEMS.md` → Content merged into requirement files ✅ Deleted
+- `tasks/` directory → All content merged into requirement files ✅ Deleted
+- `architecture/`, `implemented/`, `pending/` directories → Consolidated into requirements/ ✅ Deleted
 
 ---
 
