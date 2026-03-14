@@ -13,6 +13,14 @@ import { loadRemoteModule } from '@angular-architects/native-federation';
 export class BaseContent implements OnInit {
   viewerComponent: Type<any> | null = null;
   jsonShowComponent: Type<any> | null = null;
+  mermaidShowComponent: Type<any> | null = null;
+
+  sampleMermaidContent = `
+    graph LR
+      Shell[MFE Shell] -- loads --> M1[MFE1]
+      M1 -- provides --> MS{MermaidShow}
+      MS -- renders --> Result[Federated Diagram]
+  `;
 
   sampleJsonData = {
     name: 'Sample User',
@@ -40,6 +48,14 @@ export class BaseContent implements OnInit {
       this.cdr.detectChanges();
     } catch (error) {
       console.error('Error loading JsonShow component from mfe1:', error);
+    }
+
+    try {
+      const module = await loadRemoteModule('mfe1', './MermaidShow');
+      this.mermaidShowComponent = module.MermaidShow;
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error('Error loading MermaidShow component from mfe1:', error);
     }
   }
 
