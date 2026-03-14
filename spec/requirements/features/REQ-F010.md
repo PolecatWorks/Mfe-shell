@@ -43,9 +43,37 @@ This is a proposed enhancement. Current MFE2 works well with local UserContext.
 
 ## Work Items
 
-- [FEAT-002: Evaluate shared library integration for MFE2](../WORK.md#FEAT-002) — ⏳ Pending
-  - Effort: 8-16 hours
-  - Priority: Medium
+### ⏳ FEAT-002: Evaluate Shared Library Integration for MFE2 — PENDING
+
+**Priority:** 🟡 MEDIUM  
+**Status:** ⏳ PENDING  
+**Effort:** 8-16 hours  
+
+**Description:** Investigate and implement integration of mfe-shared library with MFE2 (React) to share state and services across frameworks.
+
+**Problem:**
+- MFE2 currently duplicates UserContext locally
+- State isn't synced with Shell/MFE1 context
+- Missing opportunity for code reuse
+
+**Solution:**
+- Research bridge patterns for Angular library → React usage
+- Consider wrapper/adapter pattern
+- Or create language-agnostic shared library interface
+- Maintain backward compatibility with existing integration
+- Avoid pulling full Angular into React app
+
+**Acceptance Criteria:**
+- [ ] MFE2 can access UserContext from mfe-shared
+- [ ] State is synchronized with Shell/MFE1
+- [ ] No breaking changes to existing MFEs
+- [ ] Documentation updated with new integration pattern
+
+**Deliverables:**
+- Updated mfe-shared to support React consumption (if wrapper approach)
+- Updated MFE2 to use shared context
+- Integration testing for cross-framework state sharing
+- Documentation of chosen pattern and rationale
 
 ---
 

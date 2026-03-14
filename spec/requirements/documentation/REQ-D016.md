@@ -44,8 +44,38 @@ Instructions exist but will need updates after other doc fixes complete.
 
 ## Work Items
 
-- [DOC-009: Update copilot-instructions.md](../WORK.md#DOC-009) — ⏳ Pending (blocked)
-  - Blocked by: DOC-001, DOC-002, DOC-003, DOC-004, DOC-005
+### ⏳ DOC-009: Update Copilot Instructions After README Fixes — PENDING (BLOCKED)
+
+**Priority:** 🟡 MEDIUM  
+**Status:** ⏳ PENDING  
+**Effort:** 0.5 hours (30 minutes)  
+**Blocked By:** DOC-001 ✅ DONE, DOC-002, DOC-003, DOC-004, DOC-005
+
+**Description:** Update .github/copilot-instructions.md after all README fixes are complete. Currently references old documentation that will be changed.
+
+**Problem:**
+- Copilot instructions reference specific README sections that will change
+- Instructions need to reflect updated test runner docs
+- References to structure of README.md will be outdated
+
+**Solution:** After completing DOC-001, DOC-002, DOC-003, DOC-004, DOC-005:
+- Update command examples in copilot-instructions.md
+- Update references to README structure
+- Refresh test framework guidance
+
+**Files to Change:**
+- .github/copilot-instructions.md
+
+**Acceptance Criteria:**
+- [ ] All README references are current
+- [ ] Command examples match new documentation
+- [ ] Test framework guidance is accurate
+
+**Related Issues:** Issue #9 from DOCUMENTATION_ANALYSIS.md (LOW severity)
+
+**Dependency Chain:**
+- Blocked by: DOC-002, DOC-003, DOC-004, DOC-005 (must complete these first)
+- Related to: REQ-D014, REQ-D015 (will reference updated docs)
 
 ---
 

@@ -42,9 +42,39 @@ This is a future enhancement. Current manual configuration works well for small 
 
 ## Work Items
 
-- [FEAT-003: Implement MFE registry](../WORK.md#FEAT-003) — ⏳ Pending
-  - Effort: 16-24 hours
-  - Priority: Low
+### ⏳ FEAT-003: Implement MFE Registry System — PENDING
+
+**Priority:** 🟢 LOW  
+**Status:** ⏳ PENDING  
+**Effort:** 16-24 hours  
+
+**Description:** Build auto-discovery or registry mechanism for MFEs to eliminate manual shell-config.json updates.
+
+**Problem:**
+- Currently: Manual updates to shell-config.json for each new MFE
+- Slow iteration cycle for MFE onboarding
+- Error-prone configuration management
+
+**Solution:** Consider approaches:
+1. Registry server that MFEs register with at startup
+2. DNS/service discovery (Consul, etc.)
+3. Git-driven configuration (ArgoCD pattern)
+4. Hybrid approach combining multiple strategies
+
+**Acceptance Criteria:**
+- [ ] New MFEs can be added without modifying shell-config.json
+- [ ] System is backward compatible with current manual config
+- [ ] Configuration is auditable and versioned
+- [ ] Discovery mechanism is reliable and performant
+- [ ] Fallback to manual config if discovery fails
+
+**Deliverables:**
+- Registry service implementation (if registry approach chosen)
+- MFE registration mechanism
+- Shell discovery client
+- Configuration migration tooling
+- Comprehensive documentation
+- Fallback procedures
 
 ---
 
