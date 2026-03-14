@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import './styles.css';
+import AngularJsonShow from './AngularJsonShow';
 
 interface UserContext {
   username: string;
@@ -132,6 +133,11 @@ const CharacterDetail = () => {
       <h3>{character.title}</h3>
       <div className="leprechaun-message" style={{ textAlign: 'left' }}>
         <p>{character.description}</p>
+      </div>
+
+      <div style={{ margin: '20px 0' }}>
+        <h4>Angular JsonShow Component:</h4>
+        <AngularJsonShow data={character} />
       </div>
 
       <button className="emerald-btn" onClick={() => navigate('/characters')}>
