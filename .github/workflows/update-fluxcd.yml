@@ -126,8 +126,8 @@ jobs:
 
           # Get the last modified commit SHA for each MFE component
           SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-ci-main.yml)
-          MFE1_SHA=$(git log -1 --format=%H -- mfe1-container/ .github/workflows/mfe1-ci-main.yml .github/workflows/mfe-shell-ci-main.yml)
-          MFE2_SHA=$(git log -1 --format=%H -- mfe2-container/ .github/workflows/mfe2-ci-main.yml .github/workflows/mfe-shell-ci-main.yml)
+          MFE1_SHA=$(git log -1 --format=%H -- mfe1-container/ .github/workflows/mfe1-ci-main.yml .github/workflows/mfe-shell-ci-main.yml mfe-shell-container/)
+          MFE2_SHA=$(git log -1 --format=%H -- mfe2-container/ .github/workflows/mfe2-ci-main.yml .github/workflows/mfe-shell-ci-main.yml mfe-shell-container/)
 
           # Apply updates unconditionally. `yq` will harmlessly overwrite tags if they haven't changed,
           # and `git diff` will naturally ignore files with no actual changes.
