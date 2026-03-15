@@ -75,7 +75,7 @@ This requirement is implemented through the following work items:
 - [ ] Users can follow all steps sequentially without npm errors
 - [ ] Prerequisite is called out before attempting to run MFE1
 
-**Related Issues:** Issue #3 and #6 from DOCUMENTATION_ANALYSIS.md (MEDIUM severity)
+**Related Issues:** Issue #3 and #6 from GAP_ANALYSIS.md (MEDIUM severity)
 
 ---
 
@@ -105,7 +105,7 @@ This requirement is implemented through the following work items:
 - [ ] Commands to run tests are accurate for each
 - [ ] Explanation of why each framework is used
 
-**Related Issues:** Issue #4 from DOCUMENTATION_ANALYSIS.md (MEDIUM severity)
+**Related Issues:** Issue #4 from GAP_ANALYSIS.md (MEDIUM severity)
 
 ---
 
@@ -136,7 +136,7 @@ This requirement is implemented through the following work items:
 - [ ] Purpose of each port is documented
 - [ ] Developer knows which URL to visit for each app
 
-**Related Issues:** Issue #2 from DOCUMENTATION_ANALYSIS.md (MEDIUM severity)
+**Related Issues:** Issue #2 from GAP_ANALYSIS.md (MEDIUM severity)
 
 **Also Related To:** [REQ-A004: Docker Deployment & Containerization](../architecture/REQ-A004.md) — Shares Docker port mapping documentation needs
 

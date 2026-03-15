@@ -71,7 +71,7 @@ Instructions exist but will need updates after other doc fixes complete.
 - [ ] Command examples match new documentation
 - [ ] Test framework guidance is accurate
 
-**Related Issues:** Issue #9 from DOCUMENTATION_ANALYSIS.md (LOW severity)
+**Related Issues:** Issue #9 from GAP_ANALYSIS.md (LOW severity)
 
 **Dependency Chain:**
 - Blocked by: DOC-002, DOC-003, DOC-004, DOC-005 (must complete these first)

@@ -74,7 +74,7 @@ This requirement is implemented through the following work items:
 - [ ] Intent of mfe1-container Docker setup is clear
 - [ ] Documentation matches actual deployment use case
 
-**Related Issues:** Issue #7 from DOCUMENTATION_ANALYSIS.md (MEDIUM severity)
+**Related Issues:** Issue #7 from GAP_ANALYSIS.md (MEDIUM severity)
 
 ---
 
@@ -105,7 +105,7 @@ This requirement is implemented through the following work items:
 - [ ] Purpose of each port is documented
 - [ ] Developer knows which URL to visit for each app
 
-**Related Issues:** Issue #2 from DOCUMENTATION_ANALYSIS.md (MEDIUM severity)
+**Related Issues:** Issue #2 from GAP_ANALYSIS.md (MEDIUM severity)
 
 **Also Related To:** [REQ-D014: Root README.md](../documentation/REQ-D014.md) — Shared documentation improvement
 

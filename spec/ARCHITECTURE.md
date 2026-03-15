@@ -676,5 +676,5 @@ docker-compose up
 3. **Docker Compose:** Full-stack docker-compose.yml would simplify development
 4. **E2E Tests:** End-to-end testing framework not implemented
 
-See [DOCUMENTATION_ANALYSIS.md](DOCUMENTATION_ANALYSIS.md) for detailed issue tracking.
+See [GAP_ANALYSIS.md](GAP_ANALYSIS.md) for detailed issue tracking.
 
