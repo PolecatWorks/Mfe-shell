@@ -8,12 +8,12 @@ import { JsonPipe, CommonModule } from '@angular/common';
   template: `
     <div class="json-viewer-container">
       <div class="header">
-        <div class="dots">
-          <span class="dot red"></span>
-          <span class="dot yellow"></span>
-          <span class="dot green"></span>
-        </div>
         <span class="title">JSON Content</span>
+        <button class="copy-button" (click)="copyToClipboard()" [class.copied]="copied" title="Copy to clipboard">
+          <svg *ngIf="!copied" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <svg *ngIf="copied" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#4caf50" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>{{ copied ? 'Copied' : 'Copy' }}</span>
+        </button>
       </div>
       <div class="content">
         @if (data) {
@@ -39,26 +39,12 @@ import { JsonPipe, CommonModule } from '@angular/common';
 
     .header {
       background: #252526;
-      padding: 8px 12px;
+      padding: 6px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
-
-    .dots {
-      display: flex;
-      gap: 6px;
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-    .red { background: #ff5f56; }
-    .yellow { background: #ffbd2e; }
-    .green { background: #27c93f; }
 
     .title {
       color: #9cdcfe;
@@ -67,6 +53,33 @@ import { JsonPipe, CommonModule } from '@angular/common';
       text-transform: uppercase;
       letter-spacing: 0.5px;
       opacity: 0.7;
+    }
+
+    .copy-button {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #d4d4d4;
+      border-radius: 4px;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .copy-button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    .copy-button.copied {
+      border-color: rgba(76, 175, 80, 0.4);
+      color: #4caf50;
     }
 
     .content {
@@ -100,4 +113,18 @@ import { JsonPipe, CommonModule } from '@angular/common';
 })
 export class JsonShow {
   @Input() data: any;
+  copied = false;
+
+  async copyToClipboard() {
+    if (!this.data) return;
+    
+    try {
+      const jsonStr = JSON.stringify(this.data, null, 2);
+      await navigator.clipboard.writeText(jsonStr);
+      this.copied = true;
+      setTimeout(() => this.copied = false, 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  }
 }
