@@ -31,6 +31,7 @@ jobs:
               - '.github/workflows/mfe1-ci-pr.yml'
               - '.github/workflows/mfe1-ci-main.yml'
               - '.github/workflows/mfe-shell-ci-pr.yml'
+              - 'mfe-shell-container/**'
             shell:
               - 'mfe-shell-container/**'
               - '.github/workflows/mfe-shell-ci-pr.yml'
