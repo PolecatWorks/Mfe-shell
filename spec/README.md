@@ -27,7 +27,7 @@ This enables:
 spec/
 ├── README.md                          # This file - Navigation and guidance
 ├── ARCHITECTURE.md                    # System architecture overview with Mermaid diagrams
-├── DOCUMENTATION_ANALYSIS.md          # Issue tracking (9 discrepancies identified)
+├── GAP_ANALYSIS.md          # Comprehensive gap analysis
 ├── requirements/                      # RFC-like requirements directory (SINGLE SOURCE)
 │   ├── README.md                      # Requirements index (overview of all 17)
 │   ├── architecture/                  # Architecture requirements (4 files)

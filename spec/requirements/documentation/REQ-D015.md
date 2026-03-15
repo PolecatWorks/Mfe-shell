@@ -146,7 +146,7 @@ This requirement is implemented through the following work items:
 - [ ] Developer knows how to boot integrated system
 - [ ] Troubleshooting section covers federation issues
 
-**Related Issues:** Issue #5 from DOCUMENTATION_ANALYSIS.md (MEDIUM severity)
+**Related Issues:** Issue #5 from GAP_ANALYSIS.md (MEDIUM severity)
 
 ---
 
