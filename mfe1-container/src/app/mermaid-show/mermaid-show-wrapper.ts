@@ -22,8 +22,9 @@ export async function mount(container: HTMLElement, props: any) {
   });
 
   // Set the inputs
-  if (props && props.content) {
-    componentRef.setInput('content', props.content);
+  const data = props?.data || props;
+  if (data && data.content) {
+    componentRef.setInput('content', data.content);
   }
 
   // Attach the component view to the ApplicationRef

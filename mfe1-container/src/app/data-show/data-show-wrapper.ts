@@ -22,10 +22,11 @@ export async function mount(container: HTMLElement, props: any) {
   });
 
   // Set the inputs
-  if (props) {
-    if (props.title) componentRef.setInput('title', props.title);
-    if (props.datasets) componentRef.setInput('datasets', props.datasets);
-    if (props.xType) componentRef.setInput('xType', props.xType);
+  const data = props?.data || props;
+  if (data) {
+    if (data.title) componentRef.setInput('title', data.title);
+    if (data.datasets) componentRef.setInput('datasets', data.datasets);
+    if (data.xType) componentRef.setInput('xType', data.xType);
   }
 
   // Attach the component view to the ApplicationRef
