@@ -17,6 +17,16 @@ MFE1 is an Angular-based Micro Frontend that provides data visualization compone
 - **Implementation:** Uses `mermaid.js` for rendering. Supports dark theme by default.
 - **Wrapper:** `MermaidShowWrapper` allows mounting in non-Angular environments.
 
+### 3. Data Show
+- **Selector:** `app-data-show`
+- **Purpose:** Renders a D3-based line graph with multiple datasets.
+- **Inputs:**
+  - `title: string`: Chart title.
+  - `datasets: Dataset[]`: Array of dataset objects.
+  - `xType: 'time' | 'linear' | 'band'`: Type of X axis scale.
+- **Implementation:** Uses `D3.js` for SVG-based visualization. Supports animations and tooltips.
+- **Wrapper:** `DataShowWrapper` allows mounting in non-Angular environments.
+
 ## Technical Details
 - **Framework:** Angular 21
 - **Styling:** SCSS / Tailwind (optional)
