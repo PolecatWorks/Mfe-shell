@@ -35,13 +35,13 @@ interface Dataset {
   `,
   styles: [`
     .chart-container {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 16px;
-      padding: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+      background: rgba(15, 23, 42, 0.85); /* Deep slate backdrop */
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
       margin: 1.5rem 0;
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       width: 100%;
@@ -52,22 +52,22 @@ interface Dataset {
     }
 
     .chart-container:hover {
-      border-color: rgba(255, 255, 255, 0.2);
-      box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.6);
       transform: translateY(-4px);
     }
 
     .chart-header h3 {
-      margin: 0 0 16px 0;
-      color: rgba(255, 255, 255, 0.9);
-      font-weight: 500;
-      font-size: 1.1rem;
-      letter-spacing: 0.5px;
+      margin: 0 0 20px 0;
+      color: #f8fafc; /* High contrast white-ish */
+      font-weight: 600;
+      font-size: 1.25rem;
+      letter-spacing: -0.025em;
     }
 
     .svg-wrapper {
       width: 100%;
-      height: 300px;
+      height: 320px;
       position: relative;
     }
 
@@ -79,40 +79,45 @@ interface Dataset {
     .legend {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
-      margin-top: 20px;
+      gap: 20px;
+      margin-top: 24px;
       justify-content: center;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .color-box {
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
 
     .label {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 0.85rem;
+      color: #e2e8f0; /* Slate 200 */
+      font-size: 0.9rem;
+      font-weight: 500;
     }
 
     ::ng-deep .axis text {
-      fill: rgba(255, 255, 255, 0.5);
-      font-size: 10px;
-      font-family: 'Inter', sans-serif;
+      fill: #94a3b8; /* Slate 400 - high contrast for data labels */
+      font-size: 11px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 500;
     }
 
     ::ng-deep .axis line, ::ng-deep .axis path {
-      stroke: rgba(255, 255, 255, 0.1);
+      stroke: rgba(255, 255, 255, 0.2);
     }
 
     ::ng-deep .grid line {
-      stroke: rgba(255, 255, 255, 0.05);
+      stroke: rgba(255, 255, 255, 0.08);
     }
 
     ::ng-deep .grid path {
@@ -121,16 +126,17 @@ interface Dataset {
 
     ::ng-deep .line {
       fill: none;
-      stroke-width: 3;
+      stroke-width: 3.5;
       stroke-linecap: round;
       stroke-linejoin: round;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
     }
 
     ::ng-deep .dot {
-      stroke-width: 2;
-      stroke: rgba(0, 0, 0, 0.3);
+      stroke-width: 2.5;
+      stroke: rgba(15, 23, 42, 0.8);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     ::ng-deep .dot:hover {
