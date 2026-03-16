@@ -106,18 +106,18 @@ interface Dataset {
     }
 
     ::ng-deep .axis text {
-      fill: #94a3b8; /* Slate 400 - high contrast for data labels */
+      fill: #cbd5e1; /* Lighter slate for better contrast on dark background */
       font-size: 11px;
       font-family: 'Inter', system-ui, sans-serif;
       font-weight: 500;
     }
 
     ::ng-deep .axis line, ::ng-deep .axis path {
-      stroke: rgba(255, 255, 255, 0.2);
+      stroke: rgba(255, 255, 255, 0.3);
     }
 
     ::ng-deep .grid line {
-      stroke: rgba(255, 255, 255, 0.08);
+      stroke: rgba(255, 255, 255, 0.12);
     }
 
     ::ng-deep .grid path {
