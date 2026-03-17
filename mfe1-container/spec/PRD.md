@@ -27,6 +27,13 @@ MFE1 is an Angular-based Micro Frontend that provides data visualization compone
 - **Implementation:** Uses `D3.js` for SVG-based visualization. Supports animations and tooltips.
 - **Wrapper:** `DataShowWrapper` allows mounting in non-Angular environments.
 
+### 4. Markdown Show
+- **Selector:** `app-markdown-show`
+- **Purpose:** Renders markdown text as pretty HTML.
+- **Inputs:** `content: string`
+- **Implementation:** Uses `marked` library for parsing. Supports GFM and automatic line breaks. Dark-mode first design with glassmorphism.
+- **Wrapper:** `MarkdownShowWrapper` allows mounting in non-Angular environments.
+
 ## Technical Details
 - **Framework:** Angular 21
 - **Styling:** SCSS / Tailwind (optional)

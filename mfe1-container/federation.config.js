@@ -15,6 +15,8 @@ module.exports = withNativeFederation({
     './MermaidShowWrapper': './src/app/mermaid-show/mermaid-show-wrapper.ts',
     './DataShow': './src/app/data-show/data-show.ts',
     './DataShowWrapper': './src/app/data-show/data-show-wrapper.ts',
+    './MarkdownShow': './src/app/markdown-show/markdown-show.ts',
+    './MarkdownShowWrapper': './src/app/markdown-show/markdown-show-wrapper.ts',
   },
 
   shared: {
