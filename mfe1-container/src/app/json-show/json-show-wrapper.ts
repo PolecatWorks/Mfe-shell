@@ -22,12 +22,15 @@ export async function mount(container: HTMLElement, props: any) {
   });
 
   // Set the inputs
-  if (props && props.data) {
-    componentRef.setInput('data', props.data);
+  if (props && props.content) {
+    componentRef.setInput('content', props.content);
   }
 
   // Attach the component view to the ApplicationRef so it participates in change detection
   appRef.attachView(componentRef.hostView);
+
+  // Trigger immediate change detection for this component
+  componentRef.changeDetectorRef.detectChanges();
 
   // Store references for cleanup
   appRefs.set(container, appRef);

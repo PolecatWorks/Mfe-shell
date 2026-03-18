@@ -17,6 +17,8 @@ module.exports = withNativeFederation({
     './DataShowWrapper': './src/app/data-show/data-show-wrapper.ts',
     './MarkdownShow': './src/app/markdown-show/markdown-show.ts',
     './MarkdownShowWrapper': './src/app/markdown-show/markdown-show-wrapper.ts',
+    './TextShow': './src/app/text-show/text-show.ts',
+    './TextShowWrapper': './src/app/text-show/text-show-wrapper.ts',
   },
 
   shared: {

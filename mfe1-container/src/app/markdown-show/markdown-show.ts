@@ -212,7 +212,7 @@ import { marked } from 'marked';
   `],
 })
 export class MarkdownShow implements OnChanges {
-  @Input() content: string = '';
+  @Input() content: any = '';
 
   renderedHtml: SafeHtml = '';
 
@@ -230,13 +230,18 @@ export class MarkdownShow implements OnChanges {
   }
 
   private renderMarkdown() {
-    if (!this.content) {
+    // If content is an object, look for a 'content' property inside it
+    const displayContent = (this.content && typeof this.content === 'object') 
+      ? this.content.content 
+      : this.content;
+
+    if (!displayContent) {
       this.renderedHtml = '';
       return;
     }
 
     try {
-      const html = marked.parse(this.content) as string;
+      const html = marked.parse(displayContent) as string;
       this.renderedHtml = this.sanitizer.bypassSecurityTrustHtml(html);
     } catch (error) {
       console.error('Markdown rendering failed', error);

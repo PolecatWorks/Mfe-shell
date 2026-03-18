@@ -16,8 +16,8 @@ import { JsonPipe, CommonModule } from '@angular/common';
         </button>
       </div>
       <div class="content">
-        @if (data) {
-          <pre><code>{{ data | json }}</code></pre>
+        @if (content) {
+          <pre><code>{{ content | json }}</code></pre>
         } @else {
           <div class="empty-state">
             <p>No data provided.</p>
@@ -112,14 +112,14 @@ import { JsonPipe, CommonModule } from '@angular/common';
   `],
 })
 export class JsonShow {
-  @Input() data: any;
+  @Input() content: any;
   copied = false;
 
   async copyToClipboard() {
-    if (!this.data) return;
-    
+    if (!this.content) return;
+
     try {
-      const jsonStr = JSON.stringify(this.data, null, 2);
+      const jsonStr = JSON.stringify(this.content, null, 2);
       await navigator.clipboard.writeText(jsonStr);
       this.copied = true;
       setTimeout(() => this.copied = false, 2000);

@@ -14,6 +14,10 @@ export class BaseContent implements OnInit {
   viewerComponent: Type<any> | null = null;
   jsonShowComponent: Type<any> | null = null;
   mermaidShowComponent: Type<any> | null = null;
+  markdownShowComponent: Type<any> | null = null;
+  textShowComponent: Type<any> | null = null;
+
+  sampleTextContent = 'This is a simple text provision that can be used before, after, and between more elaborate components.\nIt only supports line wrapping and basic styling.';
 
   sampleMermaidContent = `
     graph LR
@@ -27,6 +31,16 @@ export class BaseContent implements OnInit {
     age: 30,
     hobbies: ['reading', 'coding', 'gaming']
   };
+
+  sampleMarkdownContent = `
+# Markdown Show Demo
+This is a **federated** markdown component loaded from \`mfe1\`.
+
+### Features:
+- Rendered using \`marked\`
+- Styled with glassmorphism
+- Part of the orchestrator workflow
+  `;
 
   constructor(
     public context: SharedContextService,
@@ -56,6 +70,22 @@ export class BaseContent implements OnInit {
       this.cdr.detectChanges();
     } catch (error) {
       console.error('Error loading MermaidShow component from mfe1:', error);
+    }
+
+    try {
+      const module = await loadRemoteModule('mfe1', './MarkdownShow');
+      this.markdownShowComponent = module.MarkdownShow;
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error('Error loading MarkdownShow component from mfe1:', error);
+    }
+
+    try {
+      const module = await loadRemoteModule('mfe1', './TextShow');
+      this.textShowComponent = module.TextShow;
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error('Error loading TextShow component from mfe1:', error);
     }
   }
 
