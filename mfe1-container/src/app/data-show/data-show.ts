@@ -25,8 +25,8 @@ interface Dataset {
       <div class="svg-wrapper">
         <svg #svg></svg>
       </div>
-      <div class="legend" *ngIf="datasets && datasets.length > 0">
-        <div *ngFor="let ds of datasets; let i = index" class="legend-item">
+      <div class="legend" *ngIf="content && content.length > 0">
+        <div *ngFor="let ds of content; let i = index" class="legend-item">
           <span class="color-box" [style.background-color]="getColor(i)"></span>
           <span class="label">{{ ds.label }}</span>
         </div>
@@ -161,7 +161,7 @@ interface Dataset {
 })
 export class DataShow implements AfterViewInit, OnChanges {
   @Input() title: string = '';
-  @Input() datasets: Dataset[] = [];
+  @Input() content: Dataset[] = [];
   @Input() xType: 'time' | 'linear' | 'band' = 'linear';
 
   @ViewChild('svg') svgRef!: ElementRef<SVGSVGElement>;
@@ -188,7 +188,7 @@ export class DataShow implements AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if ((changes['datasets'] || changes['title']) && this.svgRef) {
+    if ((changes['content'] || changes['title']) && this.svgRef) {
       this.renderChart();
     }
   }
@@ -198,7 +198,7 @@ export class DataShow implements AfterViewInit, OnChanges {
   }
 
   private renderChart() {
-    if (!this.datasets || this.datasets.length === 0 || !this.svgRef) return;
+    if (!this.content || this.content.length === 0 || !this.svgRef) return;
 
     const svg = d3.select(this.svgRef.nativeElement);
     svg.selectAll('*').remove();
@@ -211,8 +211,8 @@ export class DataShow implements AfterViewInit, OnChanges {
 
     // Setup Scales
     let x: any;
-    const allX = this.datasets.flatMap(d => d.values.map(v => v.x));
-    const allY = this.datasets.flatMap(d => d.values.map(v => v.y));
+    const allX = this.content.flatMap(d => d.values.map(v => v.x));
+    const allY = this.content.flatMap(d => d.values.map(v => v.y));
 
     if (this.xType === 'time') {
       x = d3.scaleTime()
@@ -267,7 +267,7 @@ export class DataShow implements AfterViewInit, OnChanges {
       .style('opacity', 0);
 
     // Draw Lines
-    this.datasets.forEach((dataset, i) => {
+    this.content.forEach((dataset, i) => {
       const color = dataset.color || this.getColor(i);
 
       const path = g.append('path')

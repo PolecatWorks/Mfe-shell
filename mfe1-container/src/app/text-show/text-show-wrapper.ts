@@ -1,6 +1,6 @@
 import { ApplicationRef, createComponent, EnvironmentInjector } from '@angular/core';
 import { createApplication } from '@angular/platform-browser';
-import { MermaidShow } from './mermaid-show';
+import { TextShow } from './text-show';
 
 const appRefs = new Map<HTMLElement, ApplicationRef>();
 const componentRefs = new Map<HTMLElement, any>();
@@ -16,14 +16,14 @@ export async function mount(container: HTMLElement, props: any) {
 
   // Create the component instance and attach it to the provided DOM element
   const environmentInjector = appRef.injector.get(EnvironmentInjector);
-  const componentRef = createComponent(MermaidShow, {
+  const componentRef = createComponent(TextShow, {
     environmentInjector,
     hostElement: container,
   });
 
   // Set the inputs
-  if (props && props.content) {
-    componentRef.setInput('content', props.content);
+  if (props) {
+    componentRef.setInput('content', props);
   }
 
   // Attach the component view to the ApplicationRef
