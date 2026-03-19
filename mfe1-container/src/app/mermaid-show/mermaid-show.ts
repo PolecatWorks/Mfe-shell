@@ -64,9 +64,15 @@ export class MermaidShow implements AfterViewInit, OnChanges {
   private async renderDiagram() {
     if (!this.content || !this.mermaidDiv) return;
 
+    let cleanContent = this.content.trim();
+    // Strip markdown code fences if present via regex
+    cleanContent = cleanContent.replace(/^```[a-z]*\s*\n?/i, '').replace(/\n?```\s*$/i, '');
+    cleanContent = cleanContent.trim();
+    console.log('[MermaidShow] Rendering with cleaned content:', cleanContent);
+
     try {
       const uniqueId = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-      const { svg } = await mermaid.render(uniqueId, this.content);
+      const { svg } = await mermaid.render(uniqueId, cleanContent);
       this.mermaidDiv.nativeElement.innerHTML = svg;
     } catch (error) {
       console.error('Mermaid rendering failed', error);

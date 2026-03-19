@@ -11,26 +11,27 @@
 </p>
 
 <div style="margin-top: 20px;">
-  <ng-container *ngComponentOutlet="textShowComponent; inputs: { content: 'This text is BEFORE any other elaborate component.' }"></ng-container>
+  <ng-container
+    *ngComponentOutlet="textShowComponent; inputs: { content: 'This text is BEFORE any other elaborate component.' }"></ng-container>
 </div>
 
 <ng-container *ngComponentOutlet="viewerComponent"></ng-container>
 <ng-container *ngComponentOutlet="jsonShowComponent; inputs: { content: sampleJsonData }"></ng-container>
 
 <div style="margin-top: 20px;">
-  <ng-container *ngComponentOutlet="textShowComponent; inputs: { content: 'This text is BETWEEN the JSON and Markdown components.' }"></ng-container>
+  <ng-container
+    *ngComponentOutlet="textShowComponent; inputs: { content: 'This text is BETWEEN the JSON and Markdown components.' }"></ng-container>
 </div>
 
 <div style="margin-top: 20px;">
-  <h3>Federated Mermaid Component from MFE1</h3>
   <ng-container *ngComponentOutlet="mermaidShowComponent; inputs: { content: sampleMermaidContent }"></ng-container>
 </div>
 
 <div style="margin-top: 20px;">
-  <h3>Federated Markdown Component from MFE1</h3>
   <ng-container *ngComponentOutlet="markdownShowComponent; inputs: { content: sampleMarkdownContent }"></ng-container>
 </div>
 
 <div style="margin-top: 20px;">
-  <ng-container *ngComponentOutlet="textShowComponent; inputs: { content: 'This text is AFTER all other elaborate components.' }"></ng-container>
+  <ng-container
+    *ngComponentOutlet="textShowComponent; inputs: { content: 'This text is AFTER all other elaborate components.' }"></ng-container>
 </div>
