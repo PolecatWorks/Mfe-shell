@@ -16,8 +16,6 @@ export class App {
   title = 'mfe-shell-container';
 
   constructor(private sharedContext: SharedContextService, private oauthService: OAuthService) {
-    console.log('App: SharedContextService injected');
-
     if (!isDevMode()) {
       this.oauthService.loadDiscoveryDocumentAndLogin().catch(err => {
         console.error('Failed to load discovery document or login', err);
