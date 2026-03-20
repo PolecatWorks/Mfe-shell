@@ -1,3 +1,8 @@
+map $http_origin $cors_origin {
+    default "";
+    "~^http://localhost(:\d+)?$" "$http_origin";
+}
+
 server {
     listen 8080;
     server_name localhost;
@@ -18,7 +23,7 @@ server {
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|json)$ {
         expires 1y;
         add_header Cache-Control "public, no-transform";
-        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Origin' $cors_origin;
         # Note: If a file is in /mfe1/, it was already handled by the ^~ block above
     }
 
