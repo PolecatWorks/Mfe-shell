@@ -1,6 +1,9 @@
 {
   "name": "mfe-shell-container",
   "version": "0.0.0",
+  "workspaces": [
+    "projects/mfe-shared"
+  ],
   "scripts": {
     "ng": "ng",
     "mfe-shared": "ng build mfe-shared",
@@ -38,7 +41,7 @@
     "@opentelemetry/api-logs": "^0.213.0",
     "@opentelemetry/exporter-logs-otlp-http": "^0.213.0",
     "@opentelemetry/sdk-logs": "^0.213.0",
-    "@polecatworks/mfe-shared": "0.0.0-main",
+    "@polecatworks/mfe-shared": "*",
     "@softarc/native-federation-node": "^3.5.1",
     "angular-oauth2-oidc": "^20.0.2",
     "es-module-shims": "^2.8.0",
