@@ -13,10 +13,16 @@ export interface MenuConfig {
   route: string;
 }
 
+export interface OTelConfig {
+  collectorUrl: string;
+  logLevel: string;
+}
+
 export interface MfeConfig {
   remotes: Record<string, string>;
   mfeRoutes: MfeRouteConfig[];
   menu: MenuConfig[];
+  otel?: OTelConfig;
 }
 
 export const MFE_CONFIG = new InjectionToken<MfeConfig>('MFE_CONFIG');

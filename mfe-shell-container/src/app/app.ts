@@ -1,8 +1,9 @@
-import { Component, isDevMode } from '@angular/core';
+import { Component, isDevMode, Inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter } from 'rxjs/operators';
-import { SharedContextService } from 'mfe-shared';
+import { SharedContextService, SharedOtelService } from 'mfe-shared';
+import { MFE_CONFIG, MfeConfig } from './mfe-config';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,16 @@ import { SharedContextService } from 'mfe-shared';
 export class App {
   title = 'mfe-shell-container';
 
-  constructor(private sharedContext: SharedContextService, private oauthService: OAuthService) {
+  constructor(
+    private sharedContext: SharedContextService,
+    private oauthService: OAuthService,
+    private otelService: SharedOtelService,
+    @Inject(MFE_CONFIG) private mfeConfig: MfeConfig
+  ) {
+    if (this.mfeConfig.otel) {
+      this.otelService.initialize(this.mfeConfig.otel);
+    }
+
     if (!isDevMode()) {
       this.oauthService.loadDiscoveryDocumentAndLogin().catch(err => {
         console.error('Failed to load discovery document or login', err);
