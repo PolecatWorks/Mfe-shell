@@ -213,12 +213,12 @@ export class DataShow implements AfterViewInit, OnChanges {
     let x: any;
     const allX: any[] = [];
     const allY: number[] = [];
-    for (const d of this.content) {
-      if (!d.values) continue;
-      for (const v of d.values) {
-        if (!v) continue;
-        allX.push(v.x);
-        allY.push(v.y);
+    for (const dataset of this.content) {
+      if (!dataset.values) continue;
+      for (const value of dataset.values) {
+        if (!value) continue;
+        allX.push(value.x);
+        allY.push(value.y);
       }
     }
 

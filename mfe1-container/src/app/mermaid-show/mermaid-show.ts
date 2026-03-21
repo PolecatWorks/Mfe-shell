@@ -1,5 +1,6 @@
 import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import mermaid from 'mermaid';
+import { LoggerService } from '../services/logger.service';
 
 @Component({
   selector: 'app-mermaid-show',
@@ -42,7 +43,7 @@ export class MermaidShow implements AfterViewInit, OnChanges {
 
   private isInitialized = false;
 
-  constructor() {
+  constructor(private logger: LoggerService) {
     mermaid.initialize({
       startOnLoad: false,
       theme: 'dark',
@@ -68,14 +69,14 @@ export class MermaidShow implements AfterViewInit, OnChanges {
     // Strip markdown code fences if present via regex
     cleanContent = cleanContent.replace(/^```[a-z]*\s*\n?/i, '').replace(/\n?```\s*$/i, '');
     cleanContent = cleanContent.trim();
-    console.log('[MermaidShow] Rendering with cleaned content:', cleanContent);
+    this.logger.log('[MermaidShow] Rendering with cleaned content:', cleanContent);
 
     try {
       const uniqueId = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
       const { svg } = await mermaid.render(uniqueId, cleanContent);
       this.mermaidDiv.nativeElement.innerHTML = svg;
     } catch (error) {
-      console.error('Mermaid rendering failed', error);
+      this.logger.error('Mermaid rendering failed', error);
       this.mermaidDiv.nativeElement.innerHTML = `<div style="color: #ff4d4d; font-family: monospace;">Error rendering Mermaid diagram</div>`;
     }
   }
