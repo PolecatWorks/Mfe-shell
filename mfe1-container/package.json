@@ -25,7 +25,7 @@
     "@opentelemetry/api-logs": "^0.213.0",
     "@opentelemetry/exporter-logs-otlp-http": "^0.213.0",
     "@opentelemetry/sdk-logs": "^0.213.0",
-    "@polecatworks/mfe-shared": "0.0.0-main",
+    "@polecatworks/mfe-shared": "latest",
     "@softarc/native-federation-node": "^3.5.1",
     "@types/d3": "^7.4.3",
     "d3": "^7.9.0",
