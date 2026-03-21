@@ -35,16 +35,61 @@ jobs:
 
   wait-for-shared:
     needs: check-paths
+    if: needs.check-paths.outputs.backend == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for mfe-shared publish
+      - name: Determine Shared Dependency SHA
+        id: shared-dep
         if: needs.check-paths.outputs.shared == 'true'
-        uses: lewagon/wait-on-check-action@v1.3.4
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          echo "Shared changes detected in PR. Waiting for workflow on SHA: $PR_HEAD_SHA"
+          echo "WORKFLOW_SHA=$PR_HEAD_SHA" >> $GITHUB_ENV
+
+      - name: Wait for MFE Shared Workflow
+        if: needs.check-paths.outputs.shared == 'true'
+        uses: actions/github-script@v7
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          check-name: 'Publish mfe-shared Success'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 15
+          script: |
+            const workflowId = 'mfe-shared-publish-pr.yml';
+            const maxRetries = 60; // Wait up to 30 minutes (30s interval)
+            const intervalSeconds = 30;
+            const commitSha = process.env.WORKFLOW_SHA;
+
+            console.log(`Waiting for workflow ${workflowId} on commit ${commitSha}...`);
+
+            for (let i = 0; i < maxRetries; i++) {
+              try {
+                const runs = await github.rest.actions.listWorkflowRuns({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: workflowId,
+                  head_sha: commitSha,
+                });
+
+                if (runs.data.total_count === 0) {
+                  console.log('Workflow run not found yet. Waiting...');
+                } else {
+                  const run = runs.data.workflow_runs[0];
+                  console.log(`Found workflow run: ${run.id} (Status: ${run.status}, Conclusion: ${run.conclusion})`);
+
+                  if (run.status === 'completed') {
+                    if (run.conclusion === 'success') {
+                      console.log('MFE Shared workflow completed successfully.');
+                      return;
+                    } else {
+                      core.setFailed(`MFE Shared workflow failed with conclusion: ${run.conclusion}`);
+                      return;
+                    }
+                  }
+                }
+              } catch (error) {
+                console.log(`Error checking workflow status: ${error.message}. Retrying...`);
+              }
+              await new Promise(r => setTimeout(r, intervalSeconds * 1000));
+            }
+            core.setFailed('Timeout waiting for MFE Shared workflow to complete.');
 
   build:
     needs: [check-paths, wait-for-shared]
