@@ -1,17 +1,18 @@
-# Use mfe-shell image for mfe-shared library
-ARG MFE_SHELL_IMAGE=mfe-shell-container:latest
-FROM ${MFE_SHELL_IMAGE} AS mfe-shell
-
+# Use node alpine as build env
 FROM node:22-alpine AS build
 
 WORKDIR /app
 
-# Copy and install mfe-shared library from mfe-shell image
-COPY --from=mfe-shell /usr/share/mfe-shared /tmp/mfe-shared
+# Accept GitHub token for private/scoped package installation
+ARG NODE_AUTH_TOKEN
 
-# Build mfe1
-WORKDIR /app
+# Copy application code
 COPY package.json package-lock.json ./
+
+# Add .npmrc for GitHub Packages inside the container before install
+RUN echo "@polecatworks:registry=https://npm.pkg.github.com" > .npmrc && \
+    echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+
 RUN npm ci
 
 # Force mfe-shared to be a real directory (not a symlink) to fix resolution issues

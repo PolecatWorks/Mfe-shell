@@ -1,6 +1,9 @@
 {
-  "name": "mfe-shared",
+  "name": "@polecatworks/mfe-shared",
   "version": "0.0.1",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "peerDependencies": {
     "@angular/common": "^21.1.0",
     "@angular/core": "^21.1.0",

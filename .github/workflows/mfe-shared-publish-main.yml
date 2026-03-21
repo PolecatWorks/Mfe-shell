@@ -1,0 +1,72 @@
+name: Publish mfe-shared (Main)
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  check-paths:
+    runs-on: ubuntu-latest
+    outputs:
+      library: ${{ steps.filter.outputs.library }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            library:
+              - 'mfe-shell-container/projects/mfe-shared/**'
+              - '.github/workflows/mfe-shared-publish-main.yml'
+
+  publish:
+    needs: check-paths
+    if: needs.check-paths.outputs.library == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@polecatworks'
+
+      - name: Install Dependencies
+        working-directory: mfe-shell-container
+        run: npm ci
+
+      - name: Build Library
+        working-directory: mfe-shell-container
+        run: npx ng build mfe-shared --configuration production
+
+      - name: Determine Content SHA
+        id: sha
+        working-directory: mfe-shell-container
+        run: |
+          CONTENT_SHA=$(git log -1 --format=%H -- projects/mfe-shared/)
+          echo "CONTENT_SHA=$CONTENT_SHA" >> $GITHUB_ENV
+
+      - name: Version and Publish (Main Tag)
+        working-directory: mfe-shell-container/dist/mfe-shared
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm version 0.0.0-main --no-git-tag-version
+          npm publish --access public
+
+      - name: Version and Publish (SHA Tag)
+        working-directory: mfe-shell-container/dist/mfe-shared
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm version 0.0.0-sha-${{ env.CONTENT_SHA }} --no-git-tag-version
+          # Ignore standard publish errors if this SHA was already published by a PR merge
+          npm publish --access public || true
