@@ -70,3 +70,19 @@ jobs:
           npm version 0.0.0-sha-${{ env.CONTENT_SHA }} --no-git-tag-version
           # Ignore standard publish errors if this SHA was already published by a PR merge
           npm publish --access public || true
+
+  ci-success:
+    name: Publish mfe-shared Success
+    needs: [check-paths, publish]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Status
+        run: |
+          if [[ "${{ needs.check-paths.outputs.library }}" == 'true' ]]; then
+            if [[ "${{ needs.publish.result }}" != 'success' ]]; then
+               echo "Publish failed!"
+               exit 1
+            fi
+          fi
+          echo "Success!"

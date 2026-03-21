@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
+      shared: ${{ steps.filter.outputs.shared }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,9 +30,24 @@ jobs:
               - 'mfe1-container/**'
               - '.github/workflows/mfe1-ci-pr.yml'
               - '.github/workflows/mfe1-ci-main.yml'
+            shared:
+              - 'mfe-shell-container/projects/mfe-shared/**'
+
+  wait-for-shared:
+    needs: check-paths
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for mfe-shared publish
+        if: needs.check-paths.outputs.shared == 'true'
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          check-name: 'Publish mfe-shared Success'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 15
 
   build:
-    needs: [check-paths]
+    needs: [check-paths, wait-for-shared]
     if: needs.check-paths.outputs.backend == 'true'
     strategy:
       fail-fast: false
@@ -61,8 +77,15 @@ jobs:
 
           # For PRs, strictly use dev image path
           echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1/dev" >> $GITHUB_ENV
-
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
+          # Determine Shared Target
+          if [[ "${{ needs.check-paths.outputs.shared }}" == 'true' ]]; then
+            SHARED_SHA=$(git log -1 --format=%H -- mfe-shell-container/projects/mfe-shared/)
+            echo "MFE_SHARED_VERSION=0.0.0-sha-$SHARED_SHA" >> $GITHUB_ENV
+          else
+            echo "MFE_SHARED_VERSION=0.0.0-main" >> $GITHUB_ENV
+          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -94,6 +117,7 @@ jobs:
           push: true
           build-args: |
             NODE_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            MFE_SHARED_VERSION=${{ env.MFE_SHARED_VERSION }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
           outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true
