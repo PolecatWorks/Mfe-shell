@@ -6,18 +6,16 @@ FROM node:22-alpine AS build
 
 WORKDIR /app
 
-# Copy and link mfe-shared library from mfe-shell image
+# Copy and install mfe-shared library from mfe-shell image
 COPY --from=mfe-shell /usr/share/mfe-shared /tmp/mfe-shared
-WORKDIR /tmp/mfe-shared
-RUN npm link
 
-# Copy mfe1 application
+# Build mfe1
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Link mfe-shared into mfe1
-RUN npm link mfe-shared
+# Force mfe-shared to be a real directory (not a symlink) to fix resolution issues
+RUN rm -rf node_modules/mfe-shared && cp -r /tmp/mfe-shared node_modules/mfe-shared
 
 COPY . .
 
