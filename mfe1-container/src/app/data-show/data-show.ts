@@ -216,6 +216,7 @@ export class DataShow implements AfterViewInit, OnChanges {
     for (const dataset of this.content) {
       if (!dataset.values) continue;
       for (const value of dataset.values) {
+        if (!value) continue;
         allX.push(value.x);
         allY.push(value.y);
       }

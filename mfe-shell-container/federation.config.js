@@ -13,7 +13,7 @@ module.exports = withNativeFederation({
     'rxjs/ajax',
     'rxjs/fetch',
     'rxjs/testing',
-    'rxjs/webSocket',
+    'rxjs/webSocket'
     // Add further packages you don't need at runtime
   ],
 

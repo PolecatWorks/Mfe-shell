@@ -56,5 +56,9 @@
             "name": "Angry Agent",
             "route": "/home/angry-agent"
         }
-    ]
+    ],
+    "otel": {
+        "collectorUrl": "http://localhost:4318/v1/logs",
+        "logLevel": "error"
+    }
 }

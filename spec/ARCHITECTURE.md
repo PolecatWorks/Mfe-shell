@@ -200,12 +200,14 @@ graph TB
         subgraph "Services"
             Context["SharedContextService<br/>(UserContext)"]
             HTTP["SharedHttpService<br/>(interceptors)"]
+            OTel["SharedOtelService<br/>(OpenTelemetry)"]
             Logging["LoggingService"]
         end
         
         subgraph "Models"
             User["UserContext Interface"]
             Config["AppConfig Interface"]
+            OTelCfg["OTelConfig Interface"]
         end
         
         subgraph "Utilities"
@@ -217,15 +219,18 @@ graph TB
     BuildTarget --> Public
     Public --> Context
     Public --> HTTP
+    Public --> OTel
     Public --> Logging
     Public --> User
     Public --> Config
+    Public --> OTelCfg
     Public --> Cache
     Public --> Format
     
     style Public fill:#F39C12
     style Context fill:#FF6B6B
     style HTTP fill:#4ECDC4
+    style OTel fill:#A8E6CF
     style User fill:#95E1D3
 ```
 
@@ -234,7 +239,7 @@ graph TB
 - **Purpose:** Share state and services across Shell and MFE1
 - **Linking:** Must run `make mfe1-shared` before starting
 - **Served As:** npm local dependency with file: protocol
-- **Packages:** SharedContextService, SharedHttpService, UserContext
+- **Packages:** SharedContextService, SharedHttpService, SharedOtelService, UserContext
 
 **Location:** `mfe-shell-container/projects/mfe-shared/`
 

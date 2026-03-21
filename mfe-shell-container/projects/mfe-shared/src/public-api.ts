@@ -4,3 +4,4 @@
 
 export * from './lib/shared-context.service';
 export * from './lib/shared-http.service';
+export * from './lib/shared-otel.service';
