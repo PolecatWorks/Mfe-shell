@@ -2,7 +2,7 @@ import { Component, isDevMode, Inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter } from 'rxjs/operators';
-import { SharedContextService, SharedOtelService } from 'mfe-shared';
+import { SharedContextService, SharedOtelService } from '@polecatworks/mfe-shared';
 import { MFE_CONFIG, MfeConfig } from './mfe-config';
 
 @Component({
