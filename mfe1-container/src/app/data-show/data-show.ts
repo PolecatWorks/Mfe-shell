@@ -211,8 +211,14 @@ export class DataShow implements AfterViewInit, OnChanges {
 
     // Setup Scales
     let x: any;
-    const allX = this.content.flatMap(d => d.values.map(v => v.x));
-    const allY = this.content.flatMap(d => d.values.map(v => v.y));
+    const allX: any[] = [];
+    const allY: number[] = [];
+    for (const dataset of this.content) {
+      for (const value of dataset.values) {
+        allX.push(value.x);
+        allY.push(value.y);
+      }
+    }
 
     if (this.xType === 'time') {
       x = d3.scaleTime()
