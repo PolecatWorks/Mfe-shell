@@ -14,6 +14,8 @@ module.exports = withNativeFederation({
     'rxjs/fetch',
     'rxjs/testing',
     'rxjs/webSocket',
+    '@opentelemetry/sdk-logs',
+    '@opentelemetry/exporter-logs-otlp-http'
     // Add further packages you don't need at runtime
   ],
 
