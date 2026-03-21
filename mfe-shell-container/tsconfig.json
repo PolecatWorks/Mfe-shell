@@ -7,7 +7,7 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "paths": {
-      "mfe-shared": [
+      "@polecatworks/mfe-shared": [
         "./dist/mfe-shared"
       ]
     },
