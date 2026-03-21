@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { SharedContextService } from 'mfe-shared';
+import { SharedContextService } from '@polecatworks/mfe-shared';
 import { MatButtonModule } from '@angular/material/button';
 import { MermaidShow } from '../mermaid-show/mermaid-show';
 

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe, JsonPipe } from '@angular/common';
-import { SharedContextService } from 'mfe-shared';
+import { SharedContextService } from '@polecatworks/mfe-shared';
 
 @Component({
   selector: 'app-viewer',
