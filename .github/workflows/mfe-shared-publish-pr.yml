@@ -55,21 +55,18 @@ jobs:
           CONTENT_SHA=$(git log -1 --format=%H -- projects/mfe-shared/)
           echo "CONTENT_SHA=$CONTENT_SHA" >> $GITHUB_ENV
 
-      - name: Version and Publish (PR Tag)
-        working-directory: mfe-shell-container/dist/mfe-shared
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm version 0.0.0-pr-${{ github.event.pull_request.number }} --no-git-tag-version
-          npm publish --access public
-
-      - name: Version and Publish (SHA Tag)
+      - name: Version and Publish
         working-directory: mfe-shell-container/dist/mfe-shared
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm version 0.0.0-sha-${{ env.CONTENT_SHA }} --no-git-tag-version
-          npm publish --access public || true
+          
+          # Attempt to publish the unique SHA version (without making it 'latest')
+          npm publish --tag pr-${{ github.event.pull_request.number }} --access public || true
+          
+          # Ensure the PR tag points to it, in case the publish was skipped due to existing version
+          npm dist-tag add @polecatworks/mfe-shared@0.0.0-sha-${{ env.CONTENT_SHA }} pr-${{ github.event.pull_request.number }} || true
 
       - name: Comment PR
         uses: actions/github-script@v7
@@ -79,7 +76,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🚀 \`mfe-shared\` npm package published for testing!\n\n**Install command:** \`npm install @polecatworks/mfe-shared@0.0.0-pr-${context.issue.number}\``
+              body: `🚀 \`mfe-shared\` npm package published for testing!\n\n**Install command:** \`npm install @polecatworks/mfe-shared@pr-${context.issue.number}\``
             })
 
   ci-success:

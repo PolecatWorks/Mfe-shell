@@ -129,7 +129,7 @@ jobs:
             SHARED_SHA=$(git log -1 --format=%H -- mfe-shell-container/projects/mfe-shared/)
             echo "MFE_SHARED_VERSION=0.0.0-sha-$SHARED_SHA" >> $GITHUB_ENV
           else
-            echo "MFE_SHARED_VERSION=0.0.0-main" >> $GITHUB_ENV
+            echo "MFE_SHARED_VERSION=latest" >> $GITHUB_ENV
           fi
 
       - name: Set up Docker Buildx

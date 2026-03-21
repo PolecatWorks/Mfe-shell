@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Accept GitHub token and specific shared version for dynamic PR testing
 ARG NODE_AUTH_TOKEN
-ARG MFE_SHARED_VERSION=0.0.0-main
+ARG MFE_SHARED_VERSION=latest
 
 # Copy application code
 COPY package.json package-lock.json ./

@@ -54,22 +54,19 @@ jobs:
           CONTENT_SHA=$(git log -1 --format=%H -- projects/mfe-shared/)
           echo "CONTENT_SHA=$CONTENT_SHA" >> $GITHUB_ENV
 
-      - name: Version and Publish (Main Tag)
-        working-directory: mfe-shell-container/dist/mfe-shared
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm version 0.0.0-main --no-git-tag-version
-          npm publish --access public
-
-      - name: Version and Publish (SHA Tag)
+      - name: Version and Publish
         working-directory: mfe-shell-container/dist/mfe-shared
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm version 0.0.0-sha-${{ env.CONTENT_SHA }} --no-git-tag-version
-          # Ignore standard publish errors if this SHA was already published by a PR merge
-          npm publish --access public || true
+          
+          # Attempt to publish the unique SHA version (defaults to latest tag for brand new versions)
+          npm publish --tag main --access public || true
+          
+          # Force the 'main' and 'latest' dist-tags to point to this exact SHA version
+          npm dist-tag add @polecatworks/mfe-shared@0.0.0-sha-${{ env.CONTENT_SHA }} main || true
+          npm dist-tag add @polecatworks/mfe-shared@0.0.0-sha-${{ env.CONTENT_SHA }} latest || true
 
   ci-success:
     name: Publish mfe-shared Success
