@@ -16,7 +16,6 @@ RUN echo "@polecatworks:registry=https://npm.pkg.github.com" > .npmrc && \
 RUN npm ci
 
 # Force mfe-shared to be a real directory (not a symlink) to fix resolution issues
-RUN rm -rf node_modules/mfe-shared && cp -r /tmp/mfe-shared node_modules/mfe-shared
 
 COPY . .
 
