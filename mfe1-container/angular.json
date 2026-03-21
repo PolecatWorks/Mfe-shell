@@ -89,7 +89,6 @@
 				"esbuild": {
 					"builder": "@angular/build:application",
 					"options": {
-						"preserveSymlinks": true,
 						"outputPath": "dist/mfe1-container",
 						"index": "src/index.html",
 						"browser": "src/main.ts",
