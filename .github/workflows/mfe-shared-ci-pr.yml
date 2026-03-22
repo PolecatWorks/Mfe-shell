@@ -62,12 +62,10 @@ jobs:
         run: |
           npm version 0.0.0-sha-${{ env.CONTENT_SHA }} --no-git-tag-version
           
-          # Attempt to publish the unique SHA version (without making it 'latest')
-          if ! npm publish --tag pr-${{ github.event.pull_request.number }} --access public; then
-             echo "Publish skipped, likely due to existing version. Tagging SHA..."
-          fi
+          # Attempt to publish the unique SHA version (without making it 'latest' automatically)
+          npm publish --access public || echo "Publish skipped, likely due to existing version. Tagging SHA..."
           
-          # Ensure the PR tag points to it
+          # Ensure the PR tag points definitively to this SHA version
           npm dist-tag add @polecatworks/mfe-shared@0.0.0-sha-${{ env.CONTENT_SHA }} pr-${{ github.event.pull_request.number }}
 
       - name: Comment PR
