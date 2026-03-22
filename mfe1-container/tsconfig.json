@@ -19,8 +19,8 @@
     "module": "ES2022",
     "baseUrl": "./",
     "paths": {
-      "mfe-shared": [
-        "node_modules/mfe-shared"
+      "@polecatworks/mfe-shared": [
+        "node_modules/@polecatworks/mfe-shared"
       ]
     }
   },
@@ -32,6 +32,6 @@
   },
   "include": [
     "src",
-    "node_modules/mfe-shared"
+    "node_modules/@polecatworks/mfe-shared"
   ]
 }
