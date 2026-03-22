@@ -36,9 +36,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@polecatworks'
+          node-version: "22"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@polecatworks"
 
       - name: Install Dependencies
         working-directory: mfe-shell-container
@@ -61,10 +61,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm version 0.0.0-sha-${{ env.CONTENT_SHA }} --no-git-tag-version
-          
+
           # Attempt to publish the unique SHA version using the PR tag (prevents taking over 'latest')
           npm publish --tag pr-${{ github.event.pull_request.number }} --access public || echo "Publish skipped, likely due to existing version. Tagging SHA..."
-          
+
           # Ensure the PR tag definitively points to this SHA version
           npm dist-tag add @polecatworks/mfe-shared@0.0.0-sha-${{ env.CONTENT_SHA }} pr-${{ github.event.pull_request.number }}
 
