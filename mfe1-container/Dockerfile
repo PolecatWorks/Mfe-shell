@@ -4,19 +4,16 @@ FROM node:22-alpine AS build
 WORKDIR /app
 
 # Accept GitHub token and specific shared version for dynamic PR testing
-ARG NODE_AUTH_TOKEN
 ARG MFE_SHARED_VERSION=latest
 
 # Copy application code
-COPY package.json package-lock.json ./
-
-# Add .npmrc for GitHub Packages inside the container before install
-RUN echo "@polecatworks:registry=https://npm.pkg.github.com" > .npmrc && \
-    echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+COPY package.json package-lock.json .npmrc ./
 
 # Explicitly install desired mfe-shared version to update the lockfile accurately before full CI install
-RUN npm install @polecatworks/mfe-shared@${MFE_SHARED_VERSION} --package-lock-only --ignore-scripts
-RUN npm ci
+RUN --mount=type=secret,id=NODE_AUTH_TOKEN,env=NODE_AUTH_TOKEN \
+    npm install @polecatworks/mfe-shared@${MFE_SHARED_VERSION} --package-lock-only --ignore-scripts
+RUN --mount=type=secret,id=NODE_AUTH_TOKEN,env=NODE_AUTH_TOKEN \
+    npm ci
 
 # Force mfe-shared to be a real directory (not a symlink) to fix resolution issues
 

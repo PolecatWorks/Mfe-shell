@@ -3,9 +3,10 @@ FROM node:22-alpine AS build
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .npmrc ./
 COPY projects/mfe-shared/package.json ./projects/mfe-shared/package.json
-RUN npm ci
+RUN --mount=type=secret,id=NODE_AUTH_TOKEN,env=NODE_AUTH_TOKEN \
+    npm ci
 
 COPY . .
 RUN npm run build -- --configuration production
