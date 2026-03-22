@@ -1,0 +1,96 @@
+name: Publish mfe-shared (PR)
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  check-paths:
+    runs-on: ubuntu-latest
+    outputs:
+      library: ${{ steps.filter.outputs.library }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            library:
+              - 'mfe-shell-container/projects/mfe-shared/**'
+              - '.github/workflows/mfe-shared-ci-pr.yml'
+
+  publish:
+    needs: check-paths
+    if: needs.check-paths.outputs.library == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@polecatworks'
+
+      - name: Install Dependencies
+        working-directory: mfe-shell-container
+        run: npm ci
+
+      - name: Build Library
+        working-directory: mfe-shell-container
+        run: npx ng build mfe-shared --configuration production
+
+      - name: Determine Content SHA
+        id: sha
+        working-directory: mfe-shell-container
+        run: |
+          CONTENT_SHA=$(git log -1 --format=%H -- projects/mfe-shared/)
+          echo "CONTENT_SHA=$CONTENT_SHA" >> $GITHUB_ENV
+
+      - name: Version and Publish
+        working-directory: mfe-shell-container/dist/mfe-shared
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm version 0.0.0-sha-${{ env.CONTENT_SHA }} --no-git-tag-version
+          
+          # Attempt to publish the unique SHA version (without making it 'latest')
+          npm publish --tag pr-${{ github.event.pull_request.number }} --access public || true
+          
+          # Ensure the PR tag points to it, in case the publish was skipped due to existing version
+          npm dist-tag add @polecatworks/mfe-shared@0.0.0-sha-${{ env.CONTENT_SHA }} pr-${{ github.event.pull_request.number }} || true
+
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🚀 \`mfe-shared\` npm package published for testing!\n\n**Install command:** \`npm install @polecatworks/mfe-shared@pr-${context.issue.number}\``
+            })
+
+  ci-success:
+    name: Publish mfe-shared Success
+    needs: [check-paths, publish]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Status
+        run: |
+          if [[ "${{ needs.check-paths.outputs.library }}" == 'true' ]]; then
+            if [[ "${{ needs.publish.result }}" != 'success' ]]; then
+               echo "Publish failed!"
+               exit 1
+            fi
+          fi
+          echo "Success!"

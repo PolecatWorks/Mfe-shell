@@ -50,7 +50,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const workflowId = 'mfe-shared-publish-main.yml';
+            const workflowId = 'mfe-shared-ci-main.yml';
             const maxRetries = 60; // Wait up to 30 minutes (30s interval)
             const intervalSeconds = 30;
             const commitSha = process.env.WORKFLOW_SHA;
