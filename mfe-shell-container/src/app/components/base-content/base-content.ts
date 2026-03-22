@@ -1,7 +1,7 @@
 import { Component, OnInit, Type, ChangeDetectorRef } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { SharedContextService } from 'mfe-shared';
+import { SharedContextService } from '@polecatworks/mfe-shared';
 import { loadRemoteModule } from '@angular-architects/native-federation';
 
 @Component({

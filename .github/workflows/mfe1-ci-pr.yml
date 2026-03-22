@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
-      shell: ${{ steps.filter.outputs.shell }}
+      shared: ${{ steps.filter.outputs.shared }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,37 +30,29 @@ jobs:
               - 'mfe1-container/**'
               - '.github/workflows/mfe1-ci-pr.yml'
               - '.github/workflows/mfe1-ci-main.yml'
-              - '.github/workflows/mfe-shell-ci-pr.yml'
-              - 'mfe-shell-container/**'
-            shell:
-              - 'mfe-shell-container/**'
-              - '.github/workflows/mfe-shell-ci-pr.yml'
+            shared:
+              - 'mfe-shell-container/projects/mfe-shared/**'
 
-  wait-for-shell:
+  wait-for-shared:
     needs: check-paths
     if: needs.check-paths.outputs.backend == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        if: needs.check-paths.outputs.shell == 'true'
-        with:
-          fetch-depth: 0
-
-      - name: Determine Shell Dependency SHA
-        id: shell-dep
-        if: needs.check-paths.outputs.shell == 'true'
+      - name: Determine Shared Dependency SHA
+        id: shared-dep
+        if: needs.check-paths.outputs.shared == 'true'
         env:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          echo "Shell changes detected in PR. Waiting for workflow on SHA: $PR_HEAD_SHA"
+          echo "Shared changes detected in PR. Waiting for workflow on SHA: $PR_HEAD_SHA"
           echo "WORKFLOW_SHA=$PR_HEAD_SHA" >> $GITHUB_ENV
 
-      - name: Wait for MFE Shell Workflow
-        if: needs.check-paths.outputs.shell == 'true'
+      - name: Wait for MFE Shared Workflow
+        if: needs.check-paths.outputs.shared == 'true'
         uses: actions/github-script@v7
         with:
           script: |
-            const workflowId = 'mfe-shell-ci-pr.yml';
+            const workflowId = 'mfe-shared-ci-pr.yml';
             const maxRetries = 60; // Wait up to 30 minutes (30s interval)
             const intervalSeconds = 30;
             const commitSha = process.env.WORKFLOW_SHA;
@@ -84,10 +76,10 @@ jobs:
 
                   if (run.status === 'completed') {
                     if (run.conclusion === 'success') {
-                      console.log('MFE Shell workflow completed successfully.');
+                      console.log('MFE Shared workflow completed successfully.');
                       return;
                     } else {
-                      core.setFailed(`MFE Shell workflow failed with conclusion: ${run.conclusion}`);
+                      core.setFailed(`MFE Shared workflow failed with conclusion: ${run.conclusion}`);
                       return;
                     }
                   }
@@ -97,10 +89,10 @@ jobs:
               }
               await new Promise(r => setTimeout(r, intervalSeconds * 1000));
             }
-            core.setFailed('Timeout waiting for MFE Shell workflow to complete.');
+            core.setFailed('Timeout waiting for MFE Shared workflow to complete.');
 
   build:
-    needs: [check-paths, wait-for-shell]
+    needs: [check-paths, wait-for-shared]
     if: needs.check-paths.outputs.backend == 'true'
     strategy:
       fail-fast: false
@@ -124,35 +116,21 @@ jobs:
 
       - name: Prepare environment
         id: prepare
-        env:
-          SHELL_CHANGED: ${{ needs.check-paths.outputs.shell }}
         run: |
           platform=${{ matrix.platform }}
           repo_name="${{ github.repository }}"
 
           # For PRs, strictly use dev image path
           echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe1/dev" >> $GITHUB_ENV
-
-          # Calculate Content SHA for tagging
-          SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-ci-pr.yml)
-
-          SHELL_REPO_NAME="${repo_name}-mfe-shell"
-
-          if [[ "$SHELL_CHANGED" == "true" ]]; then
-             # Shell changed in PR. Wait-for-shell ran on PR HEAD.
-             # Input image is the dev image from this PR (tagged with content SHA)
-             SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME/dev" | tr '[:upper:]' '[:lower:]')
-             MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:sha-${SHELL_SHA}"
-          else
-             # Shell NOT changed.
-             # Use main image (prod)
-             SHELL_IMAGE_NAME=$(echo "$SHELL_REPO_NAME" | tr '[:upper:]' '[:lower:]')
-             MFE_SHELL_IMAGE_FULL="${{ env.REGISTRY }}/${SHELL_IMAGE_NAME}:main"
-          fi
-
-          echo "Using shell image: $MFE_SHELL_IMAGE_FULL"
-          echo "MFE_SHELL_IMAGE_FULL=${MFE_SHELL_IMAGE_FULL}" >> $GITHUB_ENV
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
+          # Determine Shared Target
+          if [[ "${{ needs.check-paths.outputs.shared }}" == 'true' ]]; then
+            SHARED_SHA=$(git log -1 --format=%H -- mfe-shell-container/projects/mfe-shared/)
+            echo "MFE_SHARED_VERSION=0.0.0-sha-$SHARED_SHA" >> $GITHUB_ENV
+          else
+            echo "MFE_SHARED_VERSION=latest" >> $GITHUB_ENV
+          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -178,12 +156,14 @@ jobs:
 
       - name: Build and push Docker image
         id: build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: mfe1-container
+          secrets: |
+            NODE_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }}
           push: true
           build-args: |
-            MFE_SHELL_IMAGE=${{ env.MFE_SHELL_IMAGE_FULL }}
+            MFE_SHARED_VERSION=${{ env.MFE_SHARED_VERSION }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
           outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true

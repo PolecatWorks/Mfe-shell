@@ -1,21 +1,21 @@
-# Use mfe-shell image for mfe-shared library
-ARG MFE_SHELL_IMAGE=mfe-shell-container:latest
-FROM ${MFE_SHELL_IMAGE} AS mfe-shell
-
+# Use node alpine as build env
 FROM node:22-alpine AS build
 
 WORKDIR /app
 
-# Copy and install mfe-shared library from mfe-shell image
-COPY --from=mfe-shell /usr/share/mfe-shared /tmp/mfe-shared
+# Accept GitHub token and specific shared version for dynamic PR testing
+ARG MFE_SHARED_VERSION=latest
 
-# Build mfe1
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
+# Copy application code
+COPY package.json package-lock.json .npmrc ./
+
+# Explicitly install desired mfe-shared version to update the lockfile accurately before full CI install
+RUN --mount=type=secret,id=NODE_AUTH_TOKEN,env=NODE_AUTH_TOKEN \
+    npm install @polecatworks/mfe-shared@${MFE_SHARED_VERSION} --package-lock-only --ignore-scripts
+RUN --mount=type=secret,id=NODE_AUTH_TOKEN,env=NODE_AUTH_TOKEN \
+    npm ci
 
 # Force mfe-shared to be a real directory (not a symlink) to fix resolution issues
-RUN rm -rf node_modules/mfe-shared && cp -r /tmp/mfe-shared node_modules/mfe-shared
 
 COPY . .
 

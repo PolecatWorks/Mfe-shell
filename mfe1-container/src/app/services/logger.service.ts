@@ -1,5 +1,5 @@
 import { Injectable, isDevMode } from '@angular/core';
-import { SharedOtelService } from 'mfe-shared';
+import { SharedOtelService } from '@polecatworks/mfe-shared';
 
 @Injectable({
   providedIn: 'root'

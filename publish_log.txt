@@ -1,0 +1,249 @@
+publish	Set up job	﻿2026-03-21T21:01:06.8001338Z Current runner version: '2.332.0'
+publish	Set up job	2026-03-21T21:01:06.8025773Z ##[group]Runner Image Provisioner
+publish	Set up job	2026-03-21T21:01:06.8027196Z Hosted Compute Agent
+publish	Set up job	2026-03-21T21:01:06.8027892Z Version: 20260213.493
+publish	Set up job	2026-03-21T21:01:06.8028481Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+publish	Set up job	2026-03-21T21:01:06.8029242Z Build Date: 2026-02-13T00:28:41Z
+publish	Set up job	2026-03-21T21:01:06.8029883Z Worker ID: {49d43472-9382-403c-bd00-c865e80a4353}
+publish	Set up job	2026-03-21T21:01:06.8030621Z Azure Region: westcentralus
+publish	Set up job	2026-03-21T21:01:06.8031147Z ##[endgroup]
+publish	Set up job	2026-03-21T21:01:06.8032671Z ##[group]Operating System
+publish	Set up job	2026-03-21T21:01:06.8033266Z Ubuntu
+publish	Set up job	2026-03-21T21:01:06.8033743Z 24.04.3
+publish	Set up job	2026-03-21T21:01:06.8034322Z LTS
+publish	Set up job	2026-03-21T21:01:06.8034766Z ##[endgroup]
+publish	Set up job	2026-03-21T21:01:06.8035308Z ##[group]Runner Image
+publish	Set up job	2026-03-21T21:01:06.8035905Z Image: ubuntu-24.04
+publish	Set up job	2026-03-21T21:01:06.8036440Z Version: 20260309.50.1
+publish	Set up job	2026-03-21T21:01:06.8037784Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260309.50/images/ubuntu/Ubuntu2404-Readme.md
+publish	Set up job	2026-03-21T21:01:06.8039546Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260309.50
+publish	Set up job	2026-03-21T21:01:06.8040476Z ##[endgroup]
+publish	Set up job	2026-03-21T21:01:06.8041766Z ##[group]GITHUB_TOKEN Permissions
+publish	Set up job	2026-03-21T21:01:06.8043858Z Contents: read
+publish	Set up job	2026-03-21T21:01:06.8044499Z Metadata: read
+publish	Set up job	2026-03-21T21:01:06.8045059Z Packages: write
+publish	Set up job	2026-03-21T21:01:06.8045627Z PullRequests: write
+publish	Set up job	2026-03-21T21:01:06.8046156Z ##[endgroup]
+publish	Set up job	2026-03-21T21:01:06.8048440Z Secret source: Actions
+publish	Set up job	2026-03-21T21:01:06.8049147Z Prepare workflow directory
+publish	Set up job	2026-03-21T21:01:06.8436055Z Prepare all required actions
+publish	Set up job	2026-03-21T21:01:06.8474621Z Getting action download info
+publish	Set up job	2026-03-21T21:01:07.2355177Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+publish	Set up job	2026-03-21T21:01:07.4027017Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+publish	Set up job	2026-03-21T21:01:07.5225057Z Download action repository 'actions/github-script@v7' (SHA:f28e40c7f34bde8b3046d885e986cb6290c5673b)
+publish	Set up job	2026-03-21T21:01:08.3430351Z Complete job name: publish
+publish	Checkout repository	﻿2026-03-21T21:01:08.4216119Z ##[group]Run actions/checkout@v4
+publish	Checkout repository	2026-03-21T21:01:08.4217245Z with:
+publish	Checkout repository	2026-03-21T21:01:08.4217698Z   fetch-depth: 0
+publish	Checkout repository	2026-03-21T21:01:08.4218199Z   repository: PolecatWorks/Mfe-shell
+publish	Checkout repository	2026-03-21T21:01:08.4218941Z   token: ***
+publish	Checkout repository	2026-03-21T21:01:08.4219378Z   ssh-strict: true
+publish	Checkout repository	2026-03-21T21:01:08.4219829Z   ssh-user: git
+publish	Checkout repository	2026-03-21T21:01:08.4220280Z   persist-credentials: true
+publish	Checkout repository	2026-03-21T21:01:08.4220778Z   clean: true
+publish	Checkout repository	2026-03-21T21:01:08.4221238Z   sparse-checkout-cone-mode: true
+publish	Checkout repository	2026-03-21T21:01:08.4221781Z   fetch-tags: false
+publish	Checkout repository	2026-03-21T21:01:08.4222222Z   show-progress: true
+publish	Checkout repository	2026-03-21T21:01:08.4222683Z   lfs: false
+publish	Checkout repository	2026-03-21T21:01:08.4223101Z   submodules: false
+publish	Checkout repository	2026-03-21T21:01:08.4223572Z   set-safe-directory: true
+publish	Checkout repository	2026-03-21T21:01:08.4224303Z ##[endgroup]
+publish	Checkout repository	2026-03-21T21:01:08.5299743Z Syncing repository: PolecatWorks/Mfe-shell
+publish	Checkout repository	2026-03-21T21:01:08.5302001Z ##[group]Getting Git version info
+publish	Checkout repository	2026-03-21T21:01:08.5302879Z Working directory is '/home/runner/work/Mfe-shell/Mfe-shell'
+publish	Checkout repository	2026-03-21T21:01:08.5303992Z [command]/usr/bin/git version
+publish	Checkout repository	2026-03-21T21:01:08.5391727Z git version 2.53.0
+publish	Checkout repository	2026-03-21T21:01:08.5418702Z ##[endgroup]
+publish	Checkout repository	2026-03-21T21:01:08.5434170Z Temporarily overriding HOME='/home/runner/work/_temp/99544306-5c85-4f07-b53e-67097e06a360' before making global git config changes
+publish	Checkout repository	2026-03-21T21:01:08.5437128Z Adding repository directory to the temporary git global config as a safe directory
+publish	Checkout repository	2026-03-21T21:01:08.5440688Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Mfe-shell/Mfe-shell
+publish	Checkout repository	2026-03-21T21:01:08.5480695Z Deleting the contents of '/home/runner/work/Mfe-shell/Mfe-shell'
+publish	Checkout repository	2026-03-21T21:01:08.5484637Z ##[group]Initializing the repository
+publish	Checkout repository	2026-03-21T21:01:08.5489982Z [command]/usr/bin/git init /home/runner/work/Mfe-shell/Mfe-shell
+publish	Checkout repository	2026-03-21T21:01:08.5581551Z hint: Using 'master' as the name for the initial branch. This default branch name
+publish	Checkout repository	2026-03-21T21:01:08.5583017Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+publish	Checkout repository	2026-03-21T21:01:08.5584998Z hint: to use in all of your new repositories, which will suppress this warning,
+publish	Checkout repository	2026-03-21T21:01:08.5586085Z hint: call:
+publish	Checkout repository	2026-03-21T21:01:08.5587055Z hint:
+publish	Checkout repository	2026-03-21T21:01:08.5588304Z hint: 	git config --global init.defaultBranch <name>
+publish	Checkout repository	2026-03-21T21:01:08.5589560Z hint:
+publish	Checkout repository	2026-03-21T21:01:08.5590769Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+publish	Checkout repository	2026-03-21T21:01:08.5592727Z hint: 'development'. The just-created branch can be renamed via this command:
+publish	Checkout repository	2026-03-21T21:01:08.5594262Z hint:
+publish	Checkout repository	2026-03-21T21:01:08.5595044Z hint: 	git branch -m <name>
+publish	Checkout repository	2026-03-21T21:01:08.5595972Z hint:
+publish	Checkout repository	2026-03-21T21:01:08.5597494Z hint: Disable this message with "git config set advice.defaultBranchName false"
+publish	Checkout repository	2026-03-21T21:01:08.5599668Z Initialized empty Git repository in /home/runner/work/Mfe-shell/Mfe-shell/.git/
+publish	Checkout repository	2026-03-21T21:01:08.5602875Z [command]/usr/bin/git remote add origin https://github.com/PolecatWorks/Mfe-shell
+publish	Checkout repository	2026-03-21T21:01:08.5637089Z ##[endgroup]
+publish	Checkout repository	2026-03-21T21:01:08.5638077Z ##[group]Disabling automatic garbage collection
+publish	Checkout repository	2026-03-21T21:01:08.5642596Z [command]/usr/bin/git config --local gc.auto 0
+publish	Checkout repository	2026-03-21T21:01:08.5673684Z ##[endgroup]
+publish	Checkout repository	2026-03-21T21:01:08.5675171Z ##[group]Setting up auth
+publish	Checkout repository	2026-03-21T21:01:08.5681797Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+publish	Checkout repository	2026-03-21T21:01:08.5714761Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+publish	Checkout repository	2026-03-21T21:01:08.6041635Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+publish	Checkout repository	2026-03-21T21:01:08.6076010Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+publish	Checkout repository	2026-03-21T21:01:08.6304073Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+publish	Checkout repository	2026-03-21T21:01:08.6343245Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+publish	Checkout repository	2026-03-21T21:01:08.6578244Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+publish	Checkout repository	2026-03-21T21:01:08.6613846Z ##[endgroup]
+publish	Checkout repository	2026-03-21T21:01:08.6615409Z ##[group]Fetching the repository
+publish	Checkout repository	2026-03-21T21:01:08.6625035Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/* +dab7f2f0693de711ad4068f5a4473157feb6f944:refs/remotes/pull/91/merge
+publish	Checkout repository	2026-03-21T21:01:09.4123230Z From https://github.com/PolecatWorks/Mfe-shell
+publish	Checkout repository	2026-03-21T21:01:09.4148354Z  * [new branch]      data-docs                                -> origin/data-docs
+publish	Checkout repository	2026-03-21T21:01:09.4164189Z  * [new branch]      feature/mfe-shared-github-packages       -> origin/feature/mfe-shared-github-packages
+publish	Checkout repository	2026-03-21T21:01:09.4167056Z  * [new branch]      main                                     -> origin/main
+publish	Checkout repository	2026-03-21T21:01:09.4171835Z  * [new branch]      optimize-data-show-loops-7129962632677405492 -> origin/optimize-data-show-loops-7129962632677405492
+publish	Checkout repository	2026-03-21T21:01:09.4175914Z  * [new ref]         dab7f2f0693de711ad4068f5a4473157feb6f944 -> pull/91/merge
+publish	Checkout repository	2026-03-21T21:01:09.4189585Z ##[endgroup]
+publish	Checkout repository	2026-03-21T21:01:09.4191599Z ##[group]Determining the checkout info
+publish	Checkout repository	2026-03-21T21:01:09.4193828Z ##[endgroup]
+publish	Checkout repository	2026-03-21T21:01:09.4198773Z [command]/usr/bin/git sparse-checkout disable
+publish	Checkout repository	2026-03-21T21:01:09.4245554Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+publish	Checkout repository	2026-03-21T21:01:09.4278816Z ##[group]Checking out the ref
+publish	Checkout repository	2026-03-21T21:01:09.4283073Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/91/merge
+publish	Checkout repository	2026-03-21T21:01:09.4533321Z Note: switching to 'refs/remotes/pull/91/merge'.
+publish	Checkout repository	2026-03-21T21:01:09.4534677Z
+publish	Checkout repository	2026-03-21T21:01:09.4536146Z You are in 'detached HEAD' state. You can look around, make experimental
+publish	Checkout repository	2026-03-21T21:01:09.4539181Z changes and commit them, and you can discard any commits you make in this
+publish	Checkout repository	2026-03-21T21:01:09.4541861Z state without impacting any branches by switching back to a branch.
+publish	Checkout repository	2026-03-21T21:01:09.4543470Z
+publish	Checkout repository	2026-03-21T21:01:09.4544480Z If you want to create a new branch to retain commits you create, you may
+publish	Checkout repository	2026-03-21T21:01:09.4547209Z do so (now or later) by using -c with the switch command. Example:
+publish	Checkout repository	2026-03-21T21:01:09.4548721Z
+publish	Checkout repository	2026-03-21T21:01:09.4549251Z   git switch -c <new-branch-name>
+publish	Checkout repository	2026-03-21T21:01:09.4550258Z
+publish	Checkout repository	2026-03-21T21:01:09.4550765Z Or undo this operation with:
+publish	Checkout repository	2026-03-21T21:01:09.4551472Z
+publish	Checkout repository	2026-03-21T21:01:09.4551866Z   git switch -
+publish	Checkout repository	2026-03-21T21:01:09.4552420Z
+publish	Checkout repository	2026-03-21T21:01:09.4553380Z Turn off this advice by setting config variable advice.detachedHead to false
+publish	Checkout repository	2026-03-21T21:01:09.4554809Z
+publish	Checkout repository	2026-03-21T21:01:09.4556434Z HEAD is now at dab7f2f Merge 57fd79e74a8abb18a0ad2f5bcb5174d62913da4f into d36b8a48f8e63b29f97ace4304fcfa13547d7fca
+publish	Checkout repository	2026-03-21T21:01:09.4563435Z ##[endgroup]
+publish	Checkout repository	2026-03-21T21:01:09.4590229Z [command]/usr/bin/git log -1 --format=%H
+publish	Checkout repository	2026-03-21T21:01:09.4616231Z dab7f2f0693de711ad4068f5a4473157feb6f944
+publish	Setup Node.js	﻿2026-03-21T21:01:09.4927607Z ##[group]Run actions/setup-node@v4
+publish	Setup Node.js	2026-03-21T21:01:09.4928772Z with:
+publish	Setup Node.js	2026-03-21T21:01:09.4929564Z   node-version: 22
+publish	Setup Node.js	2026-03-21T21:01:09.4930611Z   registry-url: https://npm.pkg.github.com
+publish	Setup Node.js	2026-03-21T21:01:09.4931882Z   scope: @polecatworks
+publish	Setup Node.js	2026-03-21T21:01:09.4932833Z   always-auth: false
+publish	Setup Node.js	2026-03-21T21:01:09.4933730Z   check-latest: false
+publish	Setup Node.js	2026-03-21T21:01:09.4934921Z   token: ***
+publish	Setup Node.js	2026-03-21T21:01:09.4935708Z ##[endgroup]
+publish	Setup Node.js	2026-03-21T21:01:09.6869564Z Found in cache @ /opt/hostedtoolcache/node/22.22.1/x64
+publish	Setup Node.js	2026-03-21T21:01:09.6875490Z ##[group]Environment details
+publish	Setup Node.js	2026-03-21T21:01:11.9945824Z node: v22.22.1
+publish	Setup Node.js	2026-03-21T21:01:11.9946449Z npm: 10.9.4
+publish	Setup Node.js	2026-03-21T21:01:11.9946980Z yarn: 1.22.22
+publish	Setup Node.js	2026-03-21T21:01:11.9948155Z ##[endgroup]
+publish	Install Dependencies	﻿2026-03-21T21:01:12.0083155Z ##[group]Run npm ci
+publish	Install Dependencies	2026-03-21T21:01:12.0083491Z [36;1mnpm ci[0m
+publish	Install Dependencies	2026-03-21T21:01:12.0144153Z shell: /usr/bin/bash -e {0}
+publish	Install Dependencies	2026-03-21T21:01:12.0144469Z env:
+publish	Install Dependencies	2026-03-21T21:01:12.0144747Z   NPM_CONFIG_USERCONFIG: /home/runner/work/_temp/.npmrc
+publish	Install Dependencies	2026-03-21T21:01:12.0145180Z   NODE_AUTH_TOKEN: XXXXX-XXXXX-XXXXX-XXXXX
+publish	Install Dependencies	2026-03-21T21:01:12.0145473Z ##[endgroup]
+publish	Install Dependencies	2026-03-21T21:01:31.5373677Z
+publish	Install Dependencies	2026-03-21T21:01:31.5380744Z added 1018 packages, and audited 1021 packages in 19s
+publish	Install Dependencies	2026-03-21T21:01:31.5381204Z
+publish	Install Dependencies	2026-03-21T21:01:31.5381496Z 204 packages are looking for funding
+publish	Install Dependencies	2026-03-21T21:01:31.5381935Z   run `npm fund` for details
+publish	Install Dependencies	2026-03-21T21:01:31.6485720Z
+publish	Install Dependencies	2026-03-21T21:01:31.6486383Z 14 vulnerabilities (1 moderate, 13 high)
+publish	Install Dependencies	2026-03-21T21:01:31.6487173Z
+publish	Install Dependencies	2026-03-21T21:01:31.6487646Z To address issues that do not require attention, run:
+publish	Install Dependencies	2026-03-21T21:01:31.6488309Z   npm audit fix
+publish	Install Dependencies	2026-03-21T21:01:31.6488544Z
+publish	Install Dependencies	2026-03-21T21:01:31.6489005Z To address all issues (including breaking changes), run:
+publish	Install Dependencies	2026-03-21T21:01:31.6489734Z   npm audit fix --force
+publish	Install Dependencies	2026-03-21T21:01:31.6490025Z
+publish	Install Dependencies	2026-03-21T21:01:31.6490266Z Run `npm audit` for details.
+publish	Build Library	﻿2026-03-21T21:01:31.7245159Z ##[group]Run npx ng build mfe-shared --configuration production
+publish	Build Library	2026-03-21T21:01:31.7245669Z [36;1mnpx ng build mfe-shared --configuration production[0m
+publish	Build Library	2026-03-21T21:01:31.7293996Z shell: /usr/bin/bash -e {0}
+publish	Build Library	2026-03-21T21:01:31.7294269Z env:
+publish	Build Library	2026-03-21T21:01:31.7294506Z   NPM_CONFIG_USERCONFIG: /home/runner/work/_temp/.npmrc
+publish	Build Library	2026-03-21T21:01:31.7294826Z   NODE_AUTH_TOKEN: XXXXX-XXXXX-XXXXX-XXXXX
+publish	Build Library	2026-03-21T21:01:31.7295081Z ##[endgroup]
+publish	Build Library	2026-03-21T21:01:32.8328981Z Building Angular Package
+publish	Build Library	2026-03-21T21:01:33.1974896Z
+publish	Build Library	2026-03-21T21:01:33.1976303Z ------------------------------------------------------------------------------
+publish	Build Library	2026-03-21T21:01:33.1977710Z Building entry point '@polecatworks/mfe-shared'
+publish	Build Library	2026-03-21T21:01:33.1978599Z ------------------------------------------------------------------------------
+publish	Build Library	2026-03-21T21:01:33.1988738Z - Compiling with Angular sources in partial compilation mode.
+publish	Build Library	2026-03-21T21:01:34.4589170Z [32m✔[39m Compiling with Angular sources in partial compilation mode.
+publish	Build Library	2026-03-21T21:01:34.5818562Z [32m✔[39m Generating FESM and DTS bundles
+publish	Build Library	2026-03-21T21:01:34.5869819Z - Copying assets
+publish	Build Library	2026-03-21T21:01:34.5870551Z [32m✔[39m Copying assets
+publish	Build Library	2026-03-21T21:01:34.5871079Z - Writing package manifest
+publish	Build Library	2026-03-21T21:01:34.5871738Z [32m✔[39m Writing package manifest
+publish	Build Library	2026-03-21T21:01:34.5872502Z [32m✔[39m Built @polecatworks/mfe-shared
+publish	Build Library	2026-03-21T21:01:34.5897182Z
+publish	Build Library	2026-03-21T21:01:34.5897769Z ------------------------------------------------------------------------------
+publish	Build Library	2026-03-21T21:01:34.5898493Z Built Angular Package
+publish	Build Library	2026-03-21T21:01:34.5899393Z - from: /home/runner/work/Mfe-shell/Mfe-shell/mfe-shell-container/projects/mfe-shared
+publish	Build Library	2026-03-21T21:01:34.5900558Z - to:   /home/runner/work/Mfe-shell/Mfe-shell/mfe-shell-container/dist/mfe-shared
+publish	Build Library	2026-03-21T21:01:34.5901638Z ------------------------------------------------------------------------------
+publish	Build Library	2026-03-21T21:01:34.5902186Z
+publish	Build Library	2026-03-21T21:01:34.5902616Z Build at: 2026-03-21T21:01:34.587Z - Time: 1416ms
+publish	Build Library	2026-03-21T21:01:34.5903006Z
+publish	Determine Content SHA	﻿2026-03-21T21:01:34.7379515Z ##[group]Run CONTENT_SHA=$(git log -1 --format=%H -- projects/mfe-shared/)
+publish	Determine Content SHA	2026-03-21T21:01:34.7380478Z [36;1mCONTENT_SHA=$(git log -1 --format=%H -- projects/mfe-shared/)[0m
+publish	Determine Content SHA	2026-03-21T21:01:34.7380913Z [36;1mecho "CONTENT_SHA=$CONTENT_SHA" >> $GITHUB_ENV[0m
+publish	Determine Content SHA	2026-03-21T21:01:34.7429929Z shell: /usr/bin/bash -e {0}
+publish	Determine Content SHA	2026-03-21T21:01:34.7430155Z env:
+publish	Determine Content SHA	2026-03-21T21:01:34.7430377Z   NPM_CONFIG_USERCONFIG: /home/runner/work/_temp/.npmrc
+publish	Determine Content SHA	2026-03-21T21:01:34.7430705Z   NODE_AUTH_TOKEN: XXXXX-XXXXX-XXXXX-XXXXX
+publish	Determine Content SHA	2026-03-21T21:01:34.7430959Z ##[endgroup]
+publish	Version and Publish (PR Tag)	﻿2026-03-21T21:01:34.7573132Z ##[group]Run npm version 0.0.0-pr-91 --no-git-tag-version
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:34.7573550Z [36;1mnpm version 0.0.0-pr-91 --no-git-tag-version[0m
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:34.7573851Z [36;1mnpm publish --access public[0m
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:34.7617013Z shell: /usr/bin/bash -e {0}
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:34.7617269Z env:
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:34.7617492Z   NPM_CONFIG_USERCONFIG: /home/runner/work/_temp/.npmrc
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:34.7618054Z   NODE_AUTH_TOKEN: ***
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:34.7618299Z   CONTENT_SHA: b72dc21058968c91b2d669e6c4b2871b37d85b65
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:34.7618583Z ##[endgroup]
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:34.8971578Z v0.0.0-pr-91
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2950208Z npm notice
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2953406Z npm notice 📦  @polecatworks/mfe-shared@0.0.0-pr-91
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2954042Z npm notice Tarball Contents
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2956080Z npm notice 1.8kB README.md
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2957124Z npm notice 5.7kB fesm2022/polecatworks-mfe-shared.mjs
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2958088Z npm notice 10.4kB fesm2022/polecatworks-mfe-shared.mjs.map
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2959976Z npm notice 803B package.json
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2960620Z npm notice 3.5kB types/polecatworks-mfe-shared.d.ts
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2961291Z npm notice Tarball Details
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2961835Z npm notice name: @polecatworks/mfe-shared
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2962506Z npm notice version: 0.0.0-pr-91
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2963179Z npm notice filename: polecatworks-mfe-shared-0.0.0-pr-91.tgz
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2963841Z npm notice package size: 5.1 kB
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2964367Z npm notice unpacked size: 22.3 kB
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2965013Z npm notice shasum: bb90aa932a89b53e69ba2def5af23fc04487696b
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2965823Z npm notice integrity: sha512-O2nZgbI2FFFyb[...]SVf/uYn4/fCUw==
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2966414Z npm notice total files: 5
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2966921Z npm notice
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.2981804Z npm notice Publishing to https://npm.pkg.github.com/ with tag latest and public access
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.5737651Z npm error code E409
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.5738861Z npm error 409 Conflict - PUT https://npm.pkg.github.com/@polecatworks%2fmfe-shared - Cannot publish over existing version
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.5746516Z npm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-03-21T21_01_34_951Z-debug-0.log
+publish	Version and Publish (PR Tag)	2026-03-21T21:01:35.5848198Z ##[error]Process completed with exit code 1.
+publish	Post Checkout repository	﻿2026-03-21T21:01:35.5963600Z Post job cleanup.
+publish	Post Checkout repository	2026-03-21T21:01:35.6917669Z [command]/usr/bin/git version
+publish	Post Checkout repository	2026-03-21T21:01:35.6954252Z git version 2.53.0
+publish	Post Checkout repository	2026-03-21T21:01:35.7005812Z Temporarily overriding HOME='/home/runner/work/_temp/dda48e4a-6f1b-4085-a8ea-f8656e1bca64' before making global git config changes
+publish	Post Checkout repository	2026-03-21T21:01:35.7007638Z Adding repository directory to the temporary git global config as a safe directory
+publish	Post Checkout repository	2026-03-21T21:01:35.7012390Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Mfe-shell/Mfe-shell
+publish	Post Checkout repository	2026-03-21T21:01:35.7047985Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+publish	Post Checkout repository	2026-03-21T21:01:35.7082476Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+publish	Post Checkout repository	2026-03-21T21:01:35.7322153Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+publish	Post Checkout repository	2026-03-21T21:01:35.7344604Z http.https://github.com/.extraheader
+publish	Post Checkout repository	2026-03-21T21:01:35.7357825Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+publish	Post Checkout repository	2026-03-21T21:01:35.7388935Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+publish	Post Checkout repository	2026-03-21T21:01:35.7619319Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+publish	Post Checkout repository	2026-03-21T21:01:35.7650611Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+publish	Complete job	﻿2026-03-21T21:01:35.7999633Z Cleaning up orphan processes
+publish	Complete job	2026-03-21T21:01:35.8355105Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/setup-node@v4. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

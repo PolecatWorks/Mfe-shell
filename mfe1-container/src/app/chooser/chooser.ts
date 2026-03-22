@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { SharedContextService, UserContext } from 'mfe-shared';
+import { SharedContextService, UserContext } from '@polecatworks/mfe-shared';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({

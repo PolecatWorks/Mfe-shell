@@ -1,0 +1,20 @@
+MFE Shell CI Success	fail	3s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205561/job/68038579618
+MFE1 CI Success	fail	2s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205550/job/68038585907
+MFE2 CI Success	fail	2s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205559/job/68038589112
+linux/amd64 MFE Shell Docker	fail	16s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205561/job/68038561139
+linux/amd64 MFE1 Docker	fail	25s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205550/job/68038561502
+linux/arm64 MFE Shell Docker	fail	21s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205561/job/68038561129
+linux/arm64 MFE1 Docker	fail	28s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205550/job/68038561499
+publish	fail	11s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205582/job/68038561335
+wait-for-shell	fail	34s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205559/job/68038561143
+${{ matrix.platform }} MFE2 Docker	skipping	0	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205559/job/68038589046
+Merge Docker manifests	skipping	0	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205550/job/68038586069
+Merge Docker manifests	skipping	0	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205559/job/68038589162
+Merge Docker manifests	skipping	0	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205561/job/68038579627
+Helm CI Success	pass	3s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205548/job/68038560969
+lint	skipping	0	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205548/job/68038561055
+check-paths	pass	4s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205548/job/68038555922
+check-paths	pass	5s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205550/job/68038555942
+check-paths	pass	4s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205559/job/68038555906
+check-paths	pass	4s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205561/job/68038555927
+check-paths	pass	5s	https://github.com/PolecatWorks/Mfe-shell/actions/runs/23388205582/job/68038555859
