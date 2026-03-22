@@ -61,12 +61,14 @@ jobs:
         run: |
           npm version 0.0.0-sha-${{ env.CONTENT_SHA }} --no-git-tag-version
           
-          # Attempt to publish the unique SHA version (defaults to latest tag for brand new versions)
-          npm publish --tag main --access public || true
+          # Attempt to publish the unique SHA version
+          if ! npm publish --tag main --access public; then
+            echo "Publish failed, likely due to existing version. Correcting dist-tags..."
+          fi
           
           # Force the 'main' and 'latest' dist-tags to point to this exact SHA version
-          npm dist-tag add @polecatworks/mfe-shared@0.0.0-sha-${{ env.CONTENT_SHA }} main || true
-          npm dist-tag add @polecatworks/mfe-shared@0.0.0-sha-${{ env.CONTENT_SHA }} latest || true
+          npm dist-tag add @polecatworks/mfe-shared@0.0.0-sha-${{ env.CONTENT_SHA }} main
+          npm dist-tag add @polecatworks/mfe-shared@0.0.0-sha-${{ env.CONTENT_SHA }} latest
 
   ci-success:
     name: Publish mfe-shared Success
