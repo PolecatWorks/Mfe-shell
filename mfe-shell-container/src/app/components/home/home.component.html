@@ -1,5 +1,6 @@
-<mat-sidenav-container class="shell-container" autosize>
-  <mat-sidenav mode="side" opened="true" class="nav-rail">
+<div class="shell-layout">
+  <!-- Navigation Rail -->
+  <aside class="nav-rail">
     <div class="rail-header">
       <div class="app-logo">
         <mat-icon>polymer</mat-icon>
@@ -36,9 +37,10 @@
         <mat-icon>share</mat-icon>
       </button>
     </div>
-  </mat-sidenav>
+  </aside>
 
-  <mat-sidenav-content class="main-viewport">
+  <!-- Main Viewport Area -->
+  <section class="main-viewport">
     <main class="content-wrapper" [@routeAnimations]="getRouteAnimationData(outlet)">
       <div class="content">
         <router-outlet #outlet="outlet" />
@@ -65,5 +67,5 @@
         }
       </div>
     </main>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  </section>
+</div>
