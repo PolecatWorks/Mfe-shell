@@ -11,6 +11,7 @@ export interface MfeRouteConfig {
 export interface MenuConfig {
   name: string;
   route: string;
+  icon?: string;
 }
 
 export interface OTelConfig {
