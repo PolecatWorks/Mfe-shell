@@ -32,8 +32,8 @@ mfe-shared-dev:
 	cd mfe-shell-container && npm run mfe-shared
 	cd mfe-shell-container/dist/mfe-shared && npm link
 
-mfe-shell-dev: mfe-shell-container/node_modules/.bin/ng mfe-shared-dev
-	cd mfe-shell-container && npm link @polecatworks/mfe-shared && npm run start
+mfe-shell-dev: mfe-shell-container/node_modules/.bin/ng
+	cd mfe-shell-container && npm run start
 
 mfe-shell-docker:
 	cd mfe-shell-container && docker build ${mfe-shell_DOCKER_BUILD_OPTS} -t mfe-shell-container .
@@ -46,8 +46,8 @@ mfe1-container/node_modules/.bin/ng: mfe1-container/package.json
 	@echo "Installing node modules in mfe1-container"
 	cd $(BASE_DIR)/mfe1-container && npm install
 
-mfe1-dev: mfe1-container/node_modules/.bin/ng mfe-shared-dev
-	cd mfe1-container && npm link @polecatworks/mfe-shared && ng serve --port ${mfe1_PORT}
+mfe1-dev: mfe1-container/node_modules/.bin/ng
+	cd mfe1-container && ng serve --port ${mfe1_PORT}
 
 mfe1-docker:
 	cd mfe1-container && docker build ${mfe1_DOCKER_BUILD_OPTS} -t mfe1-container .
