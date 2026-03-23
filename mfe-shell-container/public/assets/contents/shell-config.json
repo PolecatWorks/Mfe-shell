@@ -30,31 +30,38 @@
     "menu": [
         {
             "name": "Home",
-            "route": "/home"
+            "route": "/home",
+            "icon": "home"
         },
         {
             "name": "Base",
-            "route": "/home/base"
+            "route": "/home/base",
+            "icon": "dashboard"
         },
         {
             "name": "Profile",
-            "route": "/home/profile"
+            "route": "/home/profile",
+            "icon": "person"
         },
         {
             "name": "Settings",
-            "route": "/home/settings"
+            "route": "/home/settings",
+            "icon": "settings"
         },
         {
             "name": "MFE 1",
-            "route": "/home/mfe1"
+            "route": "/home/mfe1",
+            "icon": "extension"
         },
         {
-            "name": "React MFE Irish",
-            "route": "/home/mfe2"
+            "name": "React MFE",
+            "route": "/home/mfe2",
+            "icon": "widgets"
         },
         {
             "name": "Angry Agent",
-            "route": "/home/angry-agent"
+            "route": "/home/angry-agent",
+            "icon": "smart_toy"
         }
     ],
     "otel": {
