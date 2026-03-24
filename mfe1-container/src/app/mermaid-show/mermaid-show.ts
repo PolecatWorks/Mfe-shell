@@ -12,12 +12,11 @@ import { LoggerService } from '../services/logger.service';
   `,
   styles: [`
     .mermaid-container {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
+      background: #fdfdfd;
       border-radius: 12px;
       padding: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      border: 1px solid #e1e2e4;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       margin: 1rem 0;
       transition: all 0.3s ease;
       display: flex;
@@ -26,8 +25,9 @@ import { LoggerService } from '../services/logger.service';
       min-height: 100px;
     }
     .mermaid-container:hover {
-      border-color: rgba(255, 255, 255, 0.2);
+      border-color: #003ec7;
       transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 62, 199, 0.08);
     }
     .mermaid-target {
       width: 100%;
@@ -46,7 +46,17 @@ export class MermaidShow implements AfterViewInit, OnChanges {
   constructor(private logger: LoggerService) {
     mermaid.initialize({
       startOnLoad: false,
-      theme: 'dark',
+      theme: 'neutral',
+      themeVariables: {
+        primaryColor: '#e1e2e4',
+        primaryTextColor: '#1d1b20',
+        primaryBorderColor: '#79747e',
+        lineColor: '#49454f',
+        secondaryColor: '#fef7ff',
+        tertiaryColor: '#f3edf7',
+        fontSize: '14px',
+        fontFamily: 'Manrope, sans-serif',
+      },
       securityLevel: 'loose',
     });
   }
