@@ -19,6 +19,7 @@ module.exports = withNativeFederation({
     './MarkdownShowWrapper': './src/app/markdown-show/markdown-show-wrapper.ts',
     './TextShow': './src/app/text-show/text-show.ts',
     './TextShowWrapper': './src/app/text-show/text-show-wrapper.ts',
+    './SampleForm': './src/app/sample-form/sample-form.ts',
   },
 
   shared: {

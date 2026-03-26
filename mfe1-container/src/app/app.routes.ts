@@ -4,6 +4,7 @@ import { Chooser } from './chooser/chooser';
 import { Viewer } from './viewer/viewer';
 import { MermaidShow } from './mermaid-show/mermaid-show';
 import { DataShow } from './data-show/data-show';
+import { SampleForm } from './sample-form/sample-form';
 import { AppComponent } from './app.component';
 
 export const routes: Routes = [
@@ -11,7 +12,8 @@ export const routes: Routes = [
     { path: 'chooser', component: Chooser },
     { path: 'viewer', component: Viewer },
     { path: 'mermaid', component: MermaidShow },
-    { path: 'data', component: DataShow }
+    { path: 'data', component: DataShow },
+    { path: 'sample-form', component: SampleForm }
 ];
 
 export const remoteRoutes: Routes = [
