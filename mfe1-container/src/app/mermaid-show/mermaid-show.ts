@@ -35,6 +35,11 @@ import { LoggerService } from '../services/logger.service';
       display: flex;
       justify-content: center;
     }
+    .mermaid-target svg {
+      max-width: 100% !important;
+      height: auto !important;
+      border-radius: 8px;
+    }
   `],
 })
 export class MermaidShow implements AfterViewInit, OnChanges {
