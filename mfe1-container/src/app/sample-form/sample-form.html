@@ -1,0 +1,36 @@
+<div class="mfe1-sample-form-wrapper">
+  <h2>Sample Information Form</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="sample-form-container">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" placeholder="John Doe">
+      <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Address</mat-label>
+      <textarea matInput formControlName="address" placeholder="123 Main St, City, Country" rows="3"></textarea>
+      <mat-error *ngIf="form.get('address')?.hasError('required')">Address is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Contact Details</mat-label>
+      <input matInput formControlName="contactDetails" placeholder="Email or Phone">
+      <mat-error *ngIf="form.get('contactDetails')?.hasError('required')">Contact Details are required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Other Parameters</mat-label>
+      <mat-select formControlName="parameters" multiple>
+        <mat-option *ngFor="let option of parametersList" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="form-actions">
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Submit</button>
+    </div>
+  </form>
+</div>

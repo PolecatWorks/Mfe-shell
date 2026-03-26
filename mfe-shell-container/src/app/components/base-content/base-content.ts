@@ -16,6 +16,7 @@ export class BaseContent implements OnInit {
   mermaidShowComponent: Type<any> | null = null;
   markdownShowComponent: Type<any> | null = null;
   textShowComponent: Type<any> | null = null;
+  sampleFormComponent: Type<any> | null = null;
 
   sampleTextContent = 'This is a simple text provision that can be used before, after, and between more elaborate components.\nIt only supports line wrapping and basic styling.';
 
@@ -86,6 +87,14 @@ This is a **federated** markdown component loaded from \`mfe1\`.
       this.cdr.detectChanges();
     } catch (error) {
       console.error('Error loading TextShow component from mfe1:', error);
+    }
+
+    try {
+      const module = await loadRemoteModule('mfe1', './SampleForm');
+      this.sampleFormComponent = module.SampleForm;
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error('Error loading SampleForm component from mfe1:', error);
     }
   }
 
