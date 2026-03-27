@@ -29,6 +29,12 @@ export async function mount(container: HTMLElement, props: any) {
     if (props.phoneNumber) componentRef.setInput('phoneNumber', props.phoneNumber);
     if (props.address) componentRef.setInput('address', props.address);
     if (props.actions) componentRef.setInput('actions', props.actions);
+
+    if (props.onAction) {
+      componentRef.instance.actionEvent.subscribe((payload: any) => {
+        props.onAction('submit', payload);
+      });
+    }
   }
 
   // Attach the component view to the ApplicationRef

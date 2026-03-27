@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,6 +26,8 @@ export class PersonalDataForm implements OnInit {
   @Input() phoneNumber: string = '';
   @Input() address: string = '';
   @Input() actions: string[] = ['submit', 'cancel'];
+
+  @Output() actionEvent = new EventEmitter<any>();
 
   form: FormGroup;
 
@@ -57,7 +59,7 @@ export class PersonalDataForm implements OnInit {
     if (this.form.valid) {
       this.logger.log('Personal Data Form Submitted:', this.form.value);
       console.log('Personal Data Form Submitted:', this.form.value);
-      alert('Form submitted successfully!');
+      this.actionEvent.emit(this.form.value);
     } else {
       this.logger.warn('Form is invalid', this.form.errors);
       this.form.markAllAsTouched();
