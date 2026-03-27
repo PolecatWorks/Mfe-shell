@@ -1,6 +1,6 @@
 import { ApplicationRef, createComponent, EnvironmentInjector } from '@angular/core';
 import { createApplication } from '@angular/platform-browser';
-import { MermaidShow } from './mermaid-show';
+import { PersonalDataForm } from './personal-data-form';
 
 const appRefs = new Map<HTMLElement, ApplicationRef>();
 const componentRefs = new Map<HTMLElement, any>();
@@ -16,23 +16,25 @@ export async function mount(container: HTMLElement, props: any) {
 
   // Create the component instance and attach it to the provided DOM element
   const environmentInjector = appRef.injector.get(EnvironmentInjector);
-  const componentRef = createComponent(MermaidShow, {
+  const componentRef = createComponent(PersonalDataForm, {
     environmentInjector,
     hostElement: container,
   });
 
-  // Set the inputs
-  if (props && props.content) {
-    if (props.title) {
-        componentRef.setInput('title', props.title);
-    }
-    componentRef.setInput('content', props.content);
+  // Set the inputs from props
+  if (props) {
+    if (props.firstName) componentRef.setInput('firstName', props.firstName);
+    if (props.lastName) componentRef.setInput('lastName', props.lastName);
+    if (props.email) componentRef.setInput('email', props.email);
+    if (props.phoneNumber) componentRef.setInput('phoneNumber', props.phoneNumber);
+    if (props.address) componentRef.setInput('address', props.address);
+    if (props.actions) componentRef.setInput('actions', props.actions);
   }
 
   // Attach the component view to the ApplicationRef
   appRef.attachView(componentRef.hostView);
 
-  // Trigger immediate change detection for this component
+  // Trigger immediate change detection
   componentRef.changeDetectorRef.detectChanges();
 
   // Store references for cleanup
