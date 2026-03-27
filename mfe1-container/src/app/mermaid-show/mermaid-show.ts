@@ -1,12 +1,17 @@
 import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import mermaid from 'mermaid';
 import { LoggerService } from '../services/logger.service';
 
 @Component({
   selector: 'app-mermaid-show',
   standalone: true,
+  imports: [CommonModule],
   template: `
     <div class="mermaid-container">
+      @if (title) {
+        <h3 class="mermaid-title">{{ title }}</h3>
+      }
       <div #mermaidDiv class="mermaid-target"></div>
     </div>
   `,
@@ -14,15 +19,23 @@ import { LoggerService } from '../services/logger.service';
     .mermaid-container {
       background: #fdfdfd;
       border-radius: 12px;
-      padding: 20px;
+      padding: 24px;
       border: 1px solid #e1e2e4;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       margin: 1rem 0;
       transition: all 0.3s ease;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
       min-height: 100px;
+    }
+    .mermaid-title {
+      margin: 0 0 16px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1d1b20;
+      align-self: flex-start;
+      font-family: 'Manrope', sans-serif;
     }
     .mermaid-container:hover {
       border-color: #003ec7;
@@ -43,6 +56,7 @@ import { LoggerService } from '../services/logger.service';
   `],
 })
 export class MermaidShow implements AfterViewInit, OnChanges {
+  @Input() title: string = '';
   @Input() content: string = '';
   @ViewChild('mermaidDiv') mermaidDiv!: ElementRef;
 

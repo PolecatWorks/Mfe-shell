@@ -20,6 +20,8 @@ module.exports = withNativeFederation({
     './TextShow': './src/app/text-show/text-show.ts',
     './TextShowWrapper': './src/app/text-show/text-show-wrapper.ts',
     './SampleForm': './src/app/sample-form/sample-form.ts',
+    './PersonalDataForm': './src/app/personal-data-form/personal-data-form.ts',
+    './PersonalDataFormWrapper': './src/app/personal-data-form/personal-data-form-wrapper.ts',
   },
 
   shared: {
