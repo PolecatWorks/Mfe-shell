@@ -1,6 +1,7 @@
 import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import mermaid from 'mermaid';
+import DOMPurify from 'dompurify';
 import { LoggerService } from '../services/logger.service';
 
 @Component({
@@ -103,7 +104,9 @@ export class MermaidShow implements AfterViewInit, OnChanges {
     try {
       const uniqueId = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
       const { svg } = await mermaid.render(uniqueId, cleanContent);
-      this.mermaidDiv.nativeElement.innerHTML = svg;
+      // Sanitize the SVG output from mermaid to prevent XSS
+      const sanitizedSvg = DOMPurify.sanitize(svg);
+      this.mermaidDiv.nativeElement.innerHTML = sanitizedSvg;
     } catch (error) {
       this.logger.error('Mermaid rendering failed', error);
       this.mermaidDiv.nativeElement.innerHTML = `<div style="color: #ff4d4d; font-family: monospace;">Error rendering Mermaid diagram</div>`;
