@@ -58,7 +58,6 @@ export class PersonalDataForm implements OnInit {
   onSubmit(): void {
     if (this.form.valid) {
       this.logger.log('Personal Data Form Submitted:', this.form.value);
-      console.log('Personal Data Form Submitted:', this.form.value);
       this.actionEvent.emit(this.form.value);
     } else {
       this.logger.warn('Form is invalid', this.form.errors);
@@ -68,7 +67,6 @@ export class PersonalDataForm implements OnInit {
 
   onCancel(): void {
     this.logger.log('Personal Data Form Canceled');
-    console.log('Personal Data Form Canceled');
     this.form.reset();
   }
 }

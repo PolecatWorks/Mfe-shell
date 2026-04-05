@@ -42,8 +42,6 @@ export class SampleForm implements OnInit {
   onSubmit(): void {
     if (this.form.valid) {
       this.logger.log('Sample Form Submitted:', this.form.value);
-      // Fallback for immediate visibility in case logger is disabled
-      console.log('Sample Form Submitted:', this.form.value);
     } else {
       this.logger.warn('Form is invalid', this.form.errors);
     }
