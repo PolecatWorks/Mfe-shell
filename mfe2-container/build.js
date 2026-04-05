@@ -5,7 +5,8 @@ const fs = require('fs');
 const path = require('path');
 
 (async () => {
-  const isBuild = process.argv.includes('--build');
+  const args = new Set(process.argv);
+  const isBuild = args.has('--build');
 
   // Configure Adapter
   const adapter = createEsBuildAdapter({
