@@ -54,6 +54,13 @@ import { LoggerService } from '../services/logger.service';
       height: auto !important;
       border-radius: 8px;
     }
+    .mermaid-target svg .label {
+      fill: #1d1b20 !important;
+      color: #1d1b20 !important;
+    }
+    .mermaid-target svg .label text {
+      fill: #1d1b20 !important;
+    }
   `],
 })
 export class MermaidShow implements AfterViewInit, OnChanges {
@@ -66,18 +73,23 @@ export class MermaidShow implements AfterViewInit, OnChanges {
   constructor(private logger: LoggerService) {
     mermaid.initialize({
       startOnLoad: false,
-      theme: 'neutral',
+      theme: 'base',
       themeVariables: {
-        primaryColor: '#e1e2e4',
+        primaryColor: '#eef2ff',
         primaryTextColor: '#1d1b20',
-        primaryBorderColor: '#79747e',
+        primaryBorderColor: '#003ec7',
         lineColor: '#49454f',
-        secondaryColor: '#fef7ff',
-        tertiaryColor: '#f3edf7',
+        secondaryColor: '#f8faff',
+        tertiaryColor: '#ffffff',
         fontSize: '14px',
         fontFamily: 'Manrope, sans-serif',
       },
       securityLevel: 'loose',
+      htmlLabels: false, // Disable HTML labels to use SVG text elements (more compatible with DOMPurify)
+      flowchart: {
+        htmlLabels: false,
+        useMaxWidth: true,
+      }
     });
   }
 
@@ -98,14 +110,24 @@ export class MermaidShow implements AfterViewInit, OnChanges {
     let cleanContent = this.content.trim();
     // Strip markdown code fences if present via regex
     cleanContent = cleanContent.replace(/^```[a-z]*\s*\n?/i, '').replace(/\n?```\s*$/i, '');
+    
+    // Strip HTML tags from the mermaid code to prevent foreignObject issues and DOMPurify stripping
+    cleanContent = cleanContent.replace(/<[^>]*>/g, '');
+    
     cleanContent = cleanContent.trim();
     this.logger.log('[MermaidShow] Rendering with cleaned content:', cleanContent);
 
     try {
       const uniqueId = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
       const { svg } = await mermaid.render(uniqueId, cleanContent);
-      // Sanitize the SVG output from mermaid to prevent XSS
-      const sanitizedSvg = DOMPurify.sanitize(svg);
+      
+      // Sanitize the SVG output from mermaid. 
+      // Since we disabled htmlLabels, we don't need highly complex rules for foreignObject.
+      const sanitizedSvg = DOMPurify.sanitize(svg, {
+        USE_PROFILES: { svg: true, svgFilters: true },
+        ADD_TAGS: ['style', 'defs', 'marker'],
+        ADD_ATTR: ['class', 'style', 'width', 'height', 'x', 'y', 'transform', 'viewBox', 'xmlns', 'fill', 'stroke', 'd', 'points', 'r', 'cx', 'cy', 'x1', 'y1', 'x2', 'y2', 'marker-end', 'xmlns:xlink'],
+      });
       this.mermaidDiv.nativeElement.innerHTML = sanitizedSvg;
     } catch (error) {
       this.logger.error('Mermaid rendering failed', error);
