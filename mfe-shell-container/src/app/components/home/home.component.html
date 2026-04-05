@@ -41,9 +41,9 @@
 
   <!-- Main Viewport Area -->
   <section class="main-viewport">
-    <main class="content-wrapper" [@routeAnimations]="getRouteAnimationData(outlet)">
+    <main class="content-wrapper" [@routeAnimations]="animationState">
       <div class="content">
-        <router-outlet #outlet="outlet" />
+        <router-outlet #outlet="outlet" (activate)="updateAnimationState(outlet)" (deactivate)="updateAnimationState(outlet)" />
 
         @if (!outlet.isActivated) {
         <div class="dashboard-container">
