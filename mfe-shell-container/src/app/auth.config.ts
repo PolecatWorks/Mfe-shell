@@ -48,7 +48,7 @@ export function initializeAuthConfig(
           div.innerHTML = `
             <h1 style="margin-bottom: 20px;">Configuration Error</h1>
             <p style="font-size: 1.2rem; margin-bottom: 30px; color: #ccc;">Failed to load authentication configuration.</p>
-            <p style="font-size: 0.9rem; color: #888; margin-bottom: 30px;">${error.message || 'Unknown error'}</p>
+            <p id="error-message" style="font-size: 0.9rem; color: #888; margin-bottom: 30px;"></p>
             <div style="margin-bottom: 20px; color: #fff;">
               <p>To fix this, create <code>src/assets/contents/auth-config.json</code> with content:</p>
               <pre style="background: #333; padding: 10px; text-align: left; display: inline-block;">
@@ -60,7 +60,7 @@ export function initializeAuthConfig(
 }
               </pre>
             </div>
-            <button onclick="window.location.reload()" style="
+            <button id="retry-button" style="
               padding: 10px 20px;
               font-size: 1rem;
               cursor: pointer;
@@ -70,6 +70,16 @@ export function initializeAuthConfig(
               border-radius: 4px;
             ">Retry</button>
           `;
+
+          const errorMessageElement = div.querySelector('#error-message');
+          if (errorMessageElement) {
+            errorMessageElement.textContent = error.message || 'Unknown error';
+          }
+
+          const retryButton = div.querySelector('#retry-button');
+          if (retryButton) {
+            retryButton.addEventListener('click', () => window.location.reload());
+          }
           document.body.appendChild(div);
           // Return non-completing observable or throw to stop app init
           return throwError(() => error);
