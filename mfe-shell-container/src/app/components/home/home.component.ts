@@ -31,6 +31,7 @@ export class HomeComponent implements OnInit {
   );
 
   menuItems: MenuConfig[] = [];
+  animationState = 'default';
 
   ngOnInit() {
     if (this.config && this.config.menu) {
@@ -42,11 +43,11 @@ export class HomeComponent implements OnInit {
     window.location.reload();
   }
 
-  getRouteAnimationData(outlet: RouterOutlet) {
+  updateAnimationState(outlet: RouterOutlet) {
     if (outlet && outlet.isActivated) {
-      // Use the route path to uniquely identify the state for the animation trigger
-      return outlet.activatedRoute.routeConfig?.path || 'default';
+      this.animationState = outlet.activatedRoute.routeConfig?.path || 'default';
+    } else {
+      this.animationState = 'none';
     }
-    return 'none';
   }
 }
