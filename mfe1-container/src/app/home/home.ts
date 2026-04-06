@@ -3,10 +3,12 @@ import { AsyncPipe } from '@angular/common';
 import { SharedContextService } from '@polecatworks/mfe-shared';
 import { MatButtonModule } from '@angular/material/button';
 import { MermaidShow } from '../mermaid-show/mermaid-show';
+import { BarChartShow } from '../bar-chart-show/bar-chart-show';
+import { ScatterPlotShow } from '../scatter-plot-show/scatter-plot-show';
 
 @Component({
   selector: 'app-home',
-  imports: [AsyncPipe, MatButtonModule, MermaidShow],
+  imports: [AsyncPipe, MatButtonModule, MermaidShow, BarChartShow, ScatterPlotShow],
   template: `
     <div class="home-container">
         <h2>MFE1 Component (Home)</h2>
@@ -19,6 +21,16 @@ import { MermaidShow } from '../mermaid-show/mermaid-show';
         <div class="demo-section">
           <h3>Mermaid Diagram Show</h3>
           <app-mermaid-show [content]="sampleDiagram"></app-mermaid-show>
+        </div>
+
+        <div class="demo-section">
+          <h3>Bar Chart Show</h3>
+          <app-bar-chart-show title="Fruit Sales" [content]="sampleBarData"></app-bar-chart-show>
+        </div>
+
+        <div class="demo-section">
+          <h3>Scatter Plot Show</h3>
+          <app-scatter-plot-show title="Random Points" [content]="sampleScatterData"></app-scatter-plot-show>
         </div>
     </div>
   `,
@@ -55,6 +67,36 @@ export class Home {
       B -->|renders| D{MermaidShow}
       D -->|Result| E[Beautiful Diagrams]
   `;
+
+  sampleBarData = [
+    { label: 'Apples', value: 45 },
+    { label: 'Oranges', value: 30 },
+    { label: 'Bananas', value: 70 },
+    { label: 'Pears', value: 20 }
+  ];
+
+  sampleScatterData = [
+    {
+      label: 'Dataset 1',
+      values: [
+        { x: 10, y: 20 },
+        { x: 20, y: 50 },
+        { x: 30, y: 40 },
+        { x: 40, y: 80 },
+        { x: 50, y: 30 }
+      ]
+    },
+    {
+      label: 'Dataset 2',
+      values: [
+        { x: 15, y: 10 },
+        { x: 25, y: 30 },
+        { x: 35, y: 60 },
+        { x: 45, y: 40 },
+        { x: 55, y: 70 }
+      ]
+    }
+  ];
 
   setRobRoy() {
     this.sharedContext.setContext({
