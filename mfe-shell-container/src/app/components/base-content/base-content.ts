@@ -17,6 +17,7 @@ export class BaseContent implements OnInit {
   markdownShowComponent: Type<any> | null = null;
   textShowComponent: Type<any> | null = null;
   sampleFormComponent: Type<any> | null = null;
+  pieChartShowComponent: Type<any> | null = null;
 
   sampleTextContent = 'This is a simple text provision that can be used before, after, and between more elaborate components.\nIt only supports line wrapping and basic styling.';
 
@@ -42,6 +43,13 @@ This is a **federated** markdown component loaded from \`mfe1\`.
 - Styled with glassmorphism
 - Part of the orchestrator workflow
   `;
+
+  samplePieChartData = [
+    { label: 'Category A', value: 30 },
+    { label: 'Category B', value: 50 },
+    { label: 'Category C', value: 20 },
+    { label: 'Category D', value: 15 }
+  ];
 
   constructor(
     public context: SharedContextService,
@@ -95,6 +103,14 @@ This is a **federated** markdown component loaded from \`mfe1\`.
       this.cdr.detectChanges();
     } catch (error) {
       console.error('Error loading SampleForm component from mfe1:', error);
+    }
+
+    try {
+      const module = await loadRemoteModule('mfe1', './PieChartShow');
+      this.pieChartShowComponent = module.PieChartShow;
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error('Error loading PieChartShow component from mfe1:', error);
     }
   }
 

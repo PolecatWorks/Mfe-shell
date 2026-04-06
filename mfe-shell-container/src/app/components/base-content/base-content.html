@@ -39,3 +39,7 @@
 <div style="margin-top: 20px;">
   <ng-container *ngComponentOutlet="sampleFormComponent"></ng-container>
 </div>
+
+<div style="margin-top: 20px;">
+  <ng-container *ngComponentOutlet="pieChartShowComponent; inputs: { title: 'Sample Pie Chart', content: samplePieChartData }"></ng-container>
+</div>

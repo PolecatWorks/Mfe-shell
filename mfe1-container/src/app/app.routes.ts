@@ -4,6 +4,7 @@ import { Chooser } from './chooser/chooser';
 import { Viewer } from './viewer/viewer';
 import { MermaidShow } from './mermaid-show/mermaid-show';
 import { DataShow } from './data-show/data-show';
+import { PieChartShow } from './pie-chart-show/pie-chart-show';
 import { SampleForm } from './sample-form/sample-form';
 import { AppComponent } from './app.component';
 
@@ -13,6 +14,7 @@ export const routes: Routes = [
     { path: 'viewer', component: Viewer },
     { path: 'mermaid', component: MermaidShow },
     { path: 'data', component: DataShow },
+    { path: 'pie-chart', component: PieChartShow },
     { path: 'sample-form', component: SampleForm }
 ];
 
