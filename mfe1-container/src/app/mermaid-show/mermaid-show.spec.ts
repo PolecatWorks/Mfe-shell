@@ -1,13 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MermaidShow } from './mermaid-show';
+import { SharedOtelService } from '@polecatworks/mfe-shared';
+import { LoggerService } from '../services/logger.service';
 
 describe('MermaidShow', () => {
   let component: MermaidShow;
   let fixture: ComponentFixture<MermaidShow>;
+  let mockLoggerService: jasmine.SpyObj<LoggerService>;
 
   beforeEach(async () => {
+    mockLoggerService = jasmine.createSpyObj('LoggerService', ['log', 'warn', 'error']);
+
     await TestBed.configureTestingModule({
-      imports: [MermaidShow]
+      imports: [MermaidShow],
+      providers: [
+        { provide: LoggerService, useValue: mockLoggerService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MermaidShow);
