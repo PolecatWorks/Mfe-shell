@@ -20,7 +20,7 @@ describe('DataShow', () => {
   });
 
   it('should have empty datasets by default', () => {
-    expect(component.datasets).toEqual([]);
+    expect(component.content).toEqual([]);
   });
 
   it('should accept datasets input', () => {
@@ -30,8 +30,8 @@ describe('DataShow', () => {
         values: [{ x: 1, y: 10 }]
       }
     ];
-    component.datasets = mockDatasets;
-    expect(component.datasets.length).toBe(1);
-    expect(component.datasets[0].label).toBe('Test');
+    component.content = mockDatasets;
+    expect(component.content.length).toBe(1);
+    expect(component.content[0].label).toBe('Test');
   });
 });
