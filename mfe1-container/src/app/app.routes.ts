@@ -5,6 +5,8 @@ import { Viewer } from './viewer/viewer';
 import { MermaidShow } from './mermaid-show/mermaid-show';
 import { DataShow } from './data-show/data-show';
 import { PieChartShow } from './pie-chart-show/pie-chart-show';
+import { BarChartShow } from './bar-chart-show/bar-chart-show';
+import { ScatterPlotShow } from './scatter-plot-show/scatter-plot-show';
 import { SampleForm } from './sample-form/sample-form';
 import { AppComponent } from './app.component';
 
@@ -15,6 +17,8 @@ export const routes: Routes = [
     { path: 'mermaid', component: MermaidShow },
     { path: 'data', component: DataShow },
     { path: 'pie-chart', component: PieChartShow },
+    { path: 'bar-chart', component: BarChartShow },
+    { path: 'scatter-plot', component: ScatterPlotShow },
     { path: 'sample-form', component: SampleForm }
 ];
 
