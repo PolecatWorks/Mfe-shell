@@ -22,7 +22,12 @@ export async function mount(container: HTMLElement, props: any) {
   });
 
   // Set the inputs
-  if (props) {
+  if (props && props.content) {
+    const data = props.content;
+    if (data.title) componentRef.setInput('title', data.title);
+    if (data.datasets) componentRef.setInput('content', data.datasets);
+    if (data.x_axis_type) componentRef.setInput('xType', data.x_axis_type);
+  } else if (props) {
     if (props.title) componentRef.setInput('title', props.title);
     if (props.content) componentRef.setInput('content', props.content);
     if (props.xType) componentRef.setInput('xType', props.xType);
