@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, HostListener } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as d3 from 'd3';
 
@@ -151,7 +151,7 @@ interface ScatterDataset {
     }
   `]
 })
-export class ScatterPlotShow implements AfterViewInit, OnChanges {
+export class ScatterPlotShow implements AfterViewInit, OnChanges, OnDestroy {
   @Input() title: string = '';
   @Input() content: ScatterDataset[] = [];
 
@@ -162,14 +162,24 @@ export class ScatterPlotShow implements AfterViewInit, OnChanges {
   private defaultColors = [
     '#6366f1', '#ec4899', '#22c55e', '#eab308', '#ef4444', '#8b5cf6', '#06b6d4'
   ];
-
-  @HostListener('window:resize')
-  onResize() {
-    this.renderChart();
-  }
+  private resizeObserver!: ResizeObserver;
 
   ngAfterViewInit() {
     this.renderChart();
+
+    this.resizeObserver = new ResizeObserver(() => {
+      this.renderChart();
+    });
+
+    if (this.containerRef) {
+      this.resizeObserver.observe(this.containerRef.nativeElement);
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {

@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, HostListener } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, AfterViewInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as d3 from 'd3';
 
@@ -159,7 +159,7 @@ interface Dataset {
     }
   `],
 })
-export class DataShow implements AfterViewInit, OnChanges {
+export class DataShow implements AfterViewInit, OnChanges, OnDestroy {
   @Input() title: string = '';
   @Input() content: Dataset[] = [];
   @Input() xType: 'time' | 'linear' | 'band' = 'linear';
@@ -177,14 +177,24 @@ export class DataShow implements AfterViewInit, OnChanges {
     '#8b5cf6', // Violet
     '#06b6d4', // Cyan
   ];
-
-  @HostListener('window:resize')
-  onResize() {
-    this.renderChart();
-  }
+  private resizeObserver!: ResizeObserver;
 
   ngAfterViewInit() {
     this.renderChart();
+
+    this.resizeObserver = new ResizeObserver(() => {
+      this.renderChart();
+    });
+
+    if (this.containerRef) {
+      this.resizeObserver.observe(this.containerRef.nativeElement);
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
