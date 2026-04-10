@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 
 @Component({
   selector: 'app-markdown-show',
@@ -242,7 +243,8 @@ export class MarkdownShow implements OnChanges {
 
     try {
       const html = marked.parse(displayContent) as string;
-      this.renderedHtml = this.sanitizer.bypassSecurityTrustHtml(html);
+      const sanitizedHtml = DOMPurify.sanitize(html);
+      this.renderedHtml = this.sanitizer.bypassSecurityTrustHtml(sanitizedHtml);
     } catch (error) {
       console.error('Markdown rendering failed', error);
       this.renderedHtml = this.sanitizer.bypassSecurityTrustHtml(
