@@ -112,8 +112,17 @@ import { JsonPipe, CommonModule } from '@angular/common';
   `],
 })
 export class JsonShow {
-  @Input() content: any;
+  @Input() content: any = null;
+  @Input() expanded: boolean = true;
   copied = false;
+
+  isObject(val: any): boolean {
+    return val !== null && typeof val === 'object' && !Array.isArray(val);
+  }
+
+  isArray(val: any): boolean {
+    return Array.isArray(val);
+  }
 
   async copyToClipboard() {
     if (!this.content) return;
