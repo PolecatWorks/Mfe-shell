@@ -57,60 +57,24 @@ This is a **federated** markdown component loaded from \`mfe1\`.
   ) { }
 
   async ngOnInit() {
-    try {
-      const module = await loadRemoteModule('mfe1', './Viewer');
-      this.viewerComponent = module.Viewer;
-      this.cdr.detectChanges();
-    } catch (error) {
-      console.error('Error loading Viewer component from mfe1:', error);
-    }
+    await Promise.all([
+      this.loadRemoteComponent('mfe1', './Viewer', 'Viewer', (comp) => this.viewerComponent = comp),
+      this.loadRemoteComponent('mfe1', './JsonShow', 'JsonShow', (comp) => this.jsonShowComponent = comp),
+      this.loadRemoteComponent('mfe1', './MermaidShow', 'MermaidShow', (comp) => this.mermaidShowComponent = comp),
+      this.loadRemoteComponent('mfe1', './MarkdownShow', 'MarkdownShow', (comp) => this.markdownShowComponent = comp),
+      this.loadRemoteComponent('mfe1', './TextShow', 'TextShow', (comp) => this.textShowComponent = comp),
+      this.loadRemoteComponent('mfe1', './SampleForm', 'SampleForm', (comp) => this.sampleFormComponent = comp),
+      this.loadRemoteComponent('mfe1', './PieChartShow', 'PieChartShow', (comp) => this.pieChartShowComponent = comp)
+    ]);
+  }
 
+  private async loadRemoteComponent(remoteName: string, exposedModule: string, componentName: string, assignComponent: (comp: Type<any>) => void) {
     try {
-      const module = await loadRemoteModule('mfe1', './JsonShow');
-      this.jsonShowComponent = module.JsonShow;
+      const module = await loadRemoteModule(remoteName, exposedModule);
+      assignComponent(module[componentName]);
       this.cdr.detectChanges();
     } catch (error) {
-      console.error('Error loading JsonShow component from mfe1:', error);
-    }
-
-    try {
-      const module = await loadRemoteModule('mfe1', './MermaidShow');
-      this.mermaidShowComponent = module.MermaidShow;
-      this.cdr.detectChanges();
-    } catch (error) {
-      console.error('Error loading MermaidShow component from mfe1:', error);
-    }
-
-    try {
-      const module = await loadRemoteModule('mfe1', './MarkdownShow');
-      this.markdownShowComponent = module.MarkdownShow;
-      this.cdr.detectChanges();
-    } catch (error) {
-      console.error('Error loading MarkdownShow component from mfe1:', error);
-    }
-
-    try {
-      const module = await loadRemoteModule('mfe1', './TextShow');
-      this.textShowComponent = module.TextShow;
-      this.cdr.detectChanges();
-    } catch (error) {
-      console.error('Error loading TextShow component from mfe1:', error);
-    }
-
-    try {
-      const module = await loadRemoteModule('mfe1', './SampleForm');
-      this.sampleFormComponent = module.SampleForm;
-      this.cdr.detectChanges();
-    } catch (error) {
-      console.error('Error loading SampleForm component from mfe1:', error);
-    }
-
-    try {
-      const module = await loadRemoteModule('mfe1', './PieChartShow');
-      this.pieChartShowComponent = module.PieChartShow;
-      this.cdr.detectChanges();
-    } catch (error) {
-      console.error('Error loading PieChartShow component from mfe1:', error);
+      console.error(`Error loading ${componentName} component from ${remoteName}:`, error);
     }
   }
 
