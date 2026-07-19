@@ -104,3 +104,5 @@ devsecops:
     jwtRules: []
   AuthorizationPolicy:
     rules: []
+
+customPodSHA: ""
