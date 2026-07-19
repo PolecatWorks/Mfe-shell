@@ -123,6 +123,9 @@ checksum/volumes: {{ tpl (include "nginx-view.volumes" .) . | sha256sum }}
 checksum/configs: {{ tpl (include "nginx-view.getConfigs" .) . | sha256sum }}
 checksum/inits: {{ tpl (include "nginx-view.getInits" .) . | sha256sum }}
 checksum/contents: {{ tpl (include "nginx-view.getContents" .) . | sha256sum }}
+{{- if .Values.customPodSHA }}
+checksum/customPodSHA: {{ .Values.customPodSHA }}
+{{- end }}
 {{- end -}}
 
 
