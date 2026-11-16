@@ -11,32 +11,55 @@ export async function mount(container: HTMLElement, props: any) {
     unmount(container);
   }
 
-  // Create an Angular application instance
   const appRef = await createApplication();
-
-  // Create the component instance and attach it to the provided DOM element
   const environmentInjector = appRef.injector.get(EnvironmentInjector);
   const componentRef = createComponent(TextShow, {
     environmentInjector,
     hostElement: container,
   });
 
-  // Set the inputs
+  let currentState: any = props;
   if (props) {
     componentRef.setInput('content', props);
   }
 
-  // Attach the component view to the ApplicationRef
   appRef.attachView(componentRef.hostView);
-
-  // Trigger immediate change detection for this component
   componentRef.changeDetectorRef.detectChanges();
 
-  // Store references for cleanup
   appRefs.set(container, appRef);
   componentRefs.set(container, componentRef);
 
-  return () => unmount(container);
+  const cleanup = () => unmount(container);
+  return Object.assign(cleanup, {
+    applyPatch: (patches: any) => {
+      if (Array.isArray(patches)) {
+        const nextState = typeof currentState === 'object' && currentState !== null
+          ? { ...currentState }
+          : { content: currentState };
+        for (const p of patches) {
+          const key = p.path?.replace(/^\//, '');
+          if (key && (p.op === 'replace' || p.op === 'add')) {
+            nextState[key] = p.value;
+          }
+        }
+        currentState = nextState;
+      } else {
+        currentState = typeof patches === 'object' && patches !== null ? { ...currentState, ...patches } : { content: patches };
+      }
+      componentRef.setInput('content', currentState);
+      componentRef.changeDetectorRef.detectChanges();
+    },
+    getState: () => currentState,
+    getSchema: () => ({
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      title: 'TextShow',
+      type: 'object',
+      properties: {
+        content: { type: 'string' }
+      }
+    }),
+    unmount: cleanup,
+  });
 }
 
 export function unmount(container: HTMLElement) {

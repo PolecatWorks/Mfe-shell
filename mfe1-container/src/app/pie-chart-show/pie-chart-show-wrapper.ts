@@ -11,33 +11,55 @@ export async function mount(container: HTMLElement, props: any) {
     unmount(container);
   }
 
-  // Create an Angular application instance
   const appRef = await createApplication();
-
-  // Create the component instance and attach it to the provided DOM element
   const environmentInjector = appRef.injector.get(EnvironmentInjector);
   const componentRef = createComponent(PieChartShow, {
     environmentInjector,
     hostElement: container,
   });
 
-  // Set the inputs
+  let currentState: any = { title: props?.title ?? '', content: props?.content ?? [] };
   if (props) {
     if (props.title) componentRef.setInput('title', props.title);
     if (props.content) componentRef.setInput('content', props.content);
   }
 
-  // Attach the component view to the ApplicationRef
   appRef.attachView(componentRef.hostView);
-
-  // Trigger immediate change detection for this component
   componentRef.changeDetectorRef.detectChanges();
 
-  // Store references for cleanup
   appRefs.set(container, appRef);
   componentRefs.set(container, componentRef);
 
-  return () => unmount(container);
+  const cleanup = () => unmount(container);
+  return Object.assign(cleanup, {
+    applyPatch: (patches: any) => {
+      if (Array.isArray(patches)) {
+        for (const p of patches) {
+          const key = p.path?.replace(/^\//, '');
+          if (key && (p.op === 'replace' || p.op === 'add')) {
+            currentState[key] = p.value;
+          }
+        }
+      } else if (patches && typeof patches === 'object') {
+        if (patches.title !== undefined) currentState.title = patches.title;
+        if (patches.content !== undefined) currentState.content = patches.content;
+      }
+      if (currentState.title) componentRef.setInput('title', currentState.title);
+      if (currentState.content) componentRef.setInput('content', currentState.content);
+      componentRef.changeDetectorRef.detectChanges();
+    },
+    getState: () => currentState,
+    getSchema: () => ({
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      title: 'PieChartShow',
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        content: { type: 'array' }
+      }
+    }),
+    unmount: cleanup,
+  });
 }
 
 export function unmount(container: HTMLElement) {

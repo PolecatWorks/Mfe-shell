@@ -21,27 +21,36 @@ export async function mount(container: HTMLElement, props: any) {
     hostElement: container,
   });
 
+  if (props && props.id) {
+    componentRef.setInput('canvasId', props.id);
+  }
+
   // Set the inputs from props
-  if (props && props.content) {
-    const data = props.content;
-    if (data.first_name) componentRef.setInput('firstName', data.first_name);
-    if (data.last_name) componentRef.setInput('lastName', data.last_name);
+  const data = props && (props.content || props.initialState) ? (props.content || props.initialState) : props;
+  if (data && typeof data === 'object') {
+    if (data.first_name ?? data.firstName) componentRef.setInput('firstName', data.first_name ?? data.firstName);
+    if (data.last_name ?? data.lastName) componentRef.setInput('lastName', data.last_name ?? data.lastName);
     if (data.email) componentRef.setInput('email', data.email);
-    if (data.phone_number) componentRef.setInput('phoneNumber', data.phone_number);
+    if (data.phone_number ?? data.phoneNumber) componentRef.setInput('phoneNumber', data.phone_number ?? data.phoneNumber);
     if (data.address) componentRef.setInput('address', data.address);
     if (data.actions) componentRef.setInput('actions', data.actions);
-  } else if (props) {
-    if (props.firstName) componentRef.setInput('firstName', props.firstName);
-    if (props.lastName) componentRef.setInput('lastName', props.lastName);
-    if (props.email) componentRef.setInput('email', props.email);
-    if (props.phoneNumber) componentRef.setInput('phoneNumber', props.phoneNumber);
-    if (props.address) componentRef.setInput('address', props.address);
-    if (props.actions) componentRef.setInput('actions', props.actions);
   }
 
   if (props && props.onAction) {
     componentRef.instance.actionEvent.subscribe((payload: any) => {
       props.onAction('submit', payload);
+    });
+  }
+
+  if (props && props.onStateChange) {
+    componentRef.instance.stateChange.subscribe((evt: { state: any; patches: any[] }) => {
+      props.onStateChange(evt.state, evt.patches);
+    });
+  }
+
+  if (props && props.onSelectionChange) {
+    componentRef.instance.selectionChange.subscribe((selection: any) => {
+      props.onSelectionChange(selection);
     });
   }
 
@@ -55,7 +64,16 @@ export async function mount(container: HTMLElement, props: any) {
   appRefs.set(container, appRef);
   componentRefs.set(container, componentRef);
 
-  return () => unmount(container);
+  const cleanup = () => unmount(container);
+  return Object.assign(cleanup, {
+    applyPatch: (patches: any, attributions?: any[]) => {
+      componentRef.instance.applyPatch(patches, attributions || []);
+      componentRef.changeDetectorRef.detectChanges();
+    },
+    getState: () => componentRef.instance.getState(),
+    getSchema: () => componentRef.instance.getSchema(),
+    unmount: cleanup,
+  });
 }
 
 export function unmount(container: HTMLElement) {

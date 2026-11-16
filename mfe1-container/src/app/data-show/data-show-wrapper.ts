@@ -11,39 +11,65 @@ export async function mount(container: HTMLElement, props: any) {
     unmount(container);
   }
 
-  // Create an Angular application instance
   const appRef = await createApplication();
-
-  // Create the component instance and attach it to the provided DOM element
   const environmentInjector = appRef.injector.get(EnvironmentInjector);
   const componentRef = createComponent(DataShow, {
     environmentInjector,
     hostElement: container,
   });
 
-  // Set the inputs
-  if (props && props.content) {
-    const data = props.content;
-    if (data.title) componentRef.setInput('title', data.title);
-    if (data.datasets) componentRef.setInput('content', data.datasets);
-    if (data.x_axis_type) componentRef.setInput('xType', data.x_axis_type);
-  } else if (props) {
-    if (props.title) componentRef.setInput('title', props.title);
-    if (props.content) componentRef.setInput('content', props.content);
-    if (props.xType) componentRef.setInput('xType', props.xType);
-  }
+  let currentState: any = props?.content ?? props ?? {};
 
-  // Attach the component view to the ApplicationRef
+  const applyProps = (inputProps: any) => {
+    const data = inputProps && inputProps.content !== undefined ? inputProps.content : inputProps;
+    currentState = data;
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      if (data.title) componentRef.setInput('title', data.title);
+      if (data.datasets) componentRef.setInput('content', data.datasets);
+      if (data.x_axis_type ?? data.xType) componentRef.setInput('xType', data.x_axis_type ?? data.xType);
+    } else if (inputProps) {
+      if (inputProps.title) componentRef.setInput('title', inputProps.title);
+      if (inputProps.content) componentRef.setInput('content', inputProps.content);
+      if (inputProps.xType) componentRef.setInput('xType', inputProps.xType);
+    }
+    componentRef.changeDetectorRef.detectChanges();
+  };
+
   appRef.attachView(componentRef.hostView);
+  applyProps(props);
 
-  // Trigger immediate change detection for this component
-  componentRef.changeDetectorRef.detectChanges();
-
-  // Store references for cleanup
   appRefs.set(container, appRef);
   componentRefs.set(container, componentRef);
 
-  return () => unmount(container);
+  const cleanup = () => unmount(container);
+  return Object.assign(cleanup, {
+    applyPatch: (patches: any) => {
+      if (Array.isArray(patches)) {
+        const nextState = JSON.parse(JSON.stringify(currentState || {}));
+        for (const p of patches) {
+          const key = p.path?.replace(/^\//, '');
+          if (key && (p.op === 'replace' || p.op === 'add')) {
+            nextState[key] = p.value;
+          }
+        }
+        applyProps({ content: nextState });
+      } else {
+        applyProps(patches);
+      }
+    },
+    getState: () => currentState,
+    getSchema: () => ({
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      title: 'DataShow',
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        x_axis_type: { type: 'string' },
+        datasets: { type: 'array' }
+      }
+    }),
+    unmount: cleanup,
+  });
 }
 
 export function unmount(container: HTMLElement) {
