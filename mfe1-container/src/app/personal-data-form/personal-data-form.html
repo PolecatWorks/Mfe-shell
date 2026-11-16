@@ -3,35 +3,50 @@
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
     <div class="form-row">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" [class.ai-updated-field]="isAiAttributed('firstName')">
         <mat-label>First Name</mat-label>
-        <input matInput formControlName="firstName" placeholder="First Name">
+        <input matInput formControlName="firstName" placeholder="First Name"
+               (focus)="onFieldFocus('firstName', 'First Name')"
+               (blur)="onFieldBlur('firstName')">
+        <mat-hint *ngIf="isAiAttributed('firstName')" class="ai-badge-hint">✨ {{ getAiRationale('firstName') }}</mat-hint>
         <mat-error *ngIf="form.get('firstName')?.hasError('required')">First name is required</mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" [class.ai-updated-field]="isAiAttributed('lastName')">
         <mat-label>Last Name</mat-label>
-        <input matInput formControlName="lastName" placeholder="Last Name">
+        <input matInput formControlName="lastName" placeholder="Last Name"
+               (focus)="onFieldFocus('lastName', 'Last Name')"
+               (blur)="onFieldBlur('lastName')">
+        <mat-hint *ngIf="isAiAttributed('lastName')" class="ai-badge-hint">✨ {{ getAiRationale('lastName') }}</mat-hint>
         <mat-error *ngIf="form.get('lastName')?.hasError('required')">Last name is required</mat-error>
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="full-width" [class.ai-updated-field]="isAiAttributed('email')">
       <mat-label>Email Address</mat-label>
-      <input matInput formControlName="email" placeholder="example@domain.com" type="email">
+      <input matInput formControlName="email" placeholder="example@domain.com" type="email"
+             (focus)="onFieldFocus('email', 'Email Address')"
+             (blur)="onFieldBlur('email')">
+      <mat-hint *ngIf="isAiAttributed('email')" class="ai-badge-hint">✨ {{ getAiRationale('email') }}</mat-hint>
       <mat-error *ngIf="form.get('email')?.hasError('required')">Email is required</mat-error>
       <mat-error *ngIf="form.get('email')?.hasError('email')">Please enter a valid email</mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="full-width" [class.ai-updated-field]="isAiAttributed('phoneNumber')">
       <mat-label>Phone Number</mat-label>
-      <input matInput formControlName="phoneNumber" placeholder="Phone Number">
+      <input matInput formControlName="phoneNumber" placeholder="Phone Number"
+             (focus)="onFieldFocus('phoneNumber', 'Phone Number')"
+             (blur)="onFieldBlur('phoneNumber')">
+      <mat-hint *ngIf="isAiAttributed('phoneNumber')" class="ai-badge-hint">✨ {{ getAiRationale('phoneNumber') }}</mat-hint>
       <mat-error *ngIf="form.get('phoneNumber')?.hasError('required')">Phone number is required</mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="full-width" [class.ai-updated-field]="isAiAttributed('address')">
       <mat-label>Address</mat-label>
-      <textarea matInput formControlName="address" placeholder="Physical Address" rows="3"></textarea>
+      <textarea matInput formControlName="address" placeholder="Physical Address" rows="3"
+                (focus)="onFieldFocus('address', 'Address')"
+                (blur)="onFieldBlur('address')"></textarea>
+      <mat-hint *ngIf="isAiAttributed('address')" class="ai-badge-hint">✨ {{ getAiRationale('address') }}</mat-hint>
       <mat-error *ngIf="form.get('address')?.hasError('required')">Address is required</mat-error>
     </mat-form-field>
 

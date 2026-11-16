@@ -1,4 +1,4 @@
-import { ApplicationRef, createComponent, EnvironmentInjector, Type } from '@angular/core';
+import { ApplicationRef, createComponent, EnvironmentInjector } from '@angular/core';
 import { createApplication } from '@angular/platform-browser';
 import { JsonShow } from './json-show';
 
@@ -11,32 +11,55 @@ export async function mount(container: HTMLElement, props: any) {
     unmount(container);
   }
 
-  // Create an Angular application instance (without bootstrapping a root component yet)
   const appRef = await createApplication();
-
-  // Create the component instance and attach it to the provided DOM element
   const environmentInjector = appRef.injector.get(EnvironmentInjector);
   const componentRef = createComponent(JsonShow, {
     environmentInjector,
     hostElement: container,
   });
 
-  // Set the inputs
-  if (props && props.content) {
+  let currentState: any = props?.content ?? props ?? {};
+  if (props && props.content !== undefined) {
     componentRef.setInput('content', props.content);
   }
 
-  // Attach the component view to the ApplicationRef so it participates in change detection
   appRef.attachView(componentRef.hostView);
-
-  // Trigger immediate change detection for this component
   componentRef.changeDetectorRef.detectChanges();
 
-  // Store references for cleanup
   appRefs.set(container, appRef);
   componentRefs.set(container, componentRef);
 
-  return () => unmount(container);
+  const cleanup = () => unmount(container);
+  return Object.assign(cleanup, {
+    applyPatch: (patches: any) => {
+      if (Array.isArray(patches)) {
+        const nextState = typeof currentState === 'object' && currentState !== null
+          ? JSON.parse(JSON.stringify(currentState))
+          : {};
+        for (const p of patches) {
+          const key = p.path?.replace(/^\//, '');
+          if (key && (p.op === 'replace' || p.op === 'add')) {
+            nextState[key] = p.value;
+          } else if (key && p.op === 'remove') {
+            delete nextState[key];
+          }
+        }
+        currentState = nextState;
+      } else {
+        currentState = patches?.content !== undefined ? patches.content : patches;
+      }
+      componentRef.setInput('content', currentState);
+      componentRef.changeDetectorRef.detectChanges();
+    },
+    getState: () => currentState,
+    getSchema: () => ({
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      title: 'JsonShow',
+      type: 'object',
+      additionalProperties: true
+    }),
+    unmount: cleanup,
+  });
 }
 
 export function unmount(container: HTMLElement) {

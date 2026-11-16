@@ -22,6 +22,12 @@
     flex-direction: column;
     gap: 8px;
 
+    .ai-badge-hint {
+      color: #003ec7;
+      font-weight: 600;
+      font-size: 0.72rem;
+    }
+
     .form-row {
       display: flex;
       gap: 16px;
