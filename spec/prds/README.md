@@ -1,0 +1,15 @@
+# Product Requirements Documents (PRDs) Registry
+
+This directory contains the Product Requirements Documents (PRDs) defining the Micro-Frontend host portal, `@polecatworks/mfe-shared` singleton state/canvas contract, and ecosystem federation architecture of **MFE-Shell (`Mfe-shell`)**.
+
+## Document Hierarchy & Structure
+
+| Document | Description |
+| :--- | :--- |
+| [shared-canvas-protocol-and-ecosystem-prd.md](./shared-canvas-protocol-and-ecosystem-prd.md) | **Shared Canvas Protocol (`@polecatworks/mfe-shared`) & Ecosystem Federation PRD**: Defines `SharedCanvasService` and the `MfeCanvasController` lifecycle contract (`applyPatch` RFC 6902 JSON Patch, `getState`, self-describing `getSchema`, silent `onStateChange`, `onSelectionChange` focus context, active-focus locks, and AI-attribution badges), upgrades `mfe1-container` wrappers, and federates `Angry-agent`, `data-engine`, and `agent-as-data` under `Mfe-shell`. |
+
+## Related Specifications
+- [MFE1 Container PRD (`mfe1-container/spec/PRD.md`)](../../mfe1-container/spec/PRD.md)
+- [Architecture Overview (`spec/ARCHITECTURE.md`)](../ARCHITECTURE.md)
+- [RFC Requirements Index (`spec/requirements/README.md`)](../requirements/README.md)
+- [REQ-A005: Shared Canvas Protocol & Bidirectional MFE Controller](../requirements/architecture/REQ-A005.md)
