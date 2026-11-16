@@ -53,8 +53,9 @@ spec/
 ## Quick Navigation
 
 ### 👉 Start Here
+- **Product Requirements Documents (PRDs)?** → Read `[spec/prds/README.md](prds/README.md)` (Shared Canvas Protocol & Ecosystem Federation PRDs)
 - **Understanding the Architecture?** → Read `ARCHITECTURE.md` (system overview with diagrams)
-- **Understanding Requirements?** → Read `requirements/README.md` (index of all 17 requirements)
+- **Understanding Requirements?** → Read `requirements/README.md` (index of all requirements)
 - **Finding a specific requirement?** → Check `requirements/README.md` index table, then open the specific file
 - **Checking Work Status?** → Open any requirement file and scroll to "Work Items" section
 - **Seeing implementation results?** → Open the requirement file (e.g., `requirements/documentation/REQ-D015.md`) → scroll to "Implementation Results" or "Work Items"

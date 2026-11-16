@@ -34,6 +34,11 @@ MFE1 is an Angular-based Micro Frontend that provides data visualization compone
 - **Implementation:** Uses `marked` library for parsing. Supports GFM and automatic line breaks. Dark-mode first design with glassmorphism.
 - **Wrapper:** `MarkdownShowWrapper` allows mounting in non-Angular environments.
 
+### 5. Personal Data Form & Bidirectional Shared Canvas (`MfeCanvasController`)
+- **Selector:** `app-personal-data-form` (`PersonalDataFormWrapper`)
+- **Purpose:** Interactive reactive form for viewing and editing structured customer/entity fields (`firstName`, `lastName`, `email`, `phoneNumber`, `address`), supporting live human + AI co-editing on the RHS of `Angry-agent`.
+- **Bidirectional Canvas Contract:** All `mfe1` wrappers implement the `MfeCanvasController` interface (`applyPatch`, `getState`, `getSchema`, `unmount`) defined in [`../../spec/prds/shared-canvas-protocol-and-ecosystem-prd.md`](../../spec/prds/shared-canvas-protocol-and-ecosystem-prd.md), enabling in-place RFC 6902 JSON Patch updates without unmounting the DOM or losing user focus.
+
 ## Technical Details
 - **Framework:** Angular 21
 - **Styling:** SCSS / Tailwind (optional)
@@ -43,3 +48,4 @@ MFE1 is an Angular-based Micro Frontend that provides data visualization compone
 ## Testing
 - **Runner:** ng test (Karma)
 - **Location:** `src/app/**/*.spec.ts`
+
