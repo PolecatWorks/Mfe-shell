@@ -171,13 +171,32 @@ This requirement is implemented through the following work items:
 - Developers can update one MFE without restarting others
 - Easy to debug with container logs
 
-**Production:**
+**Production & Kubernetes (`nginx-view` & Istio `VirtualService`):**
 - Docker images built with optimized production settings
 - Multi-stage builds minimize final image size
-- Health checks ensure readiness before routing traffic
+- Health checks (`/alive` and `/ready`) are served at the root `/` path on port `8080`, independent of `SERVE_ROOT`, ensuring Kubernetes liveness and readiness probes remain uniform across all deployments
+- **Zero URI Path Rewrites:** All applications in the Kubernetes namespace expose their routes natively under their designated prefix so Istio `VirtualService` routes traffic directly without `rewrite` rules:
+  - `mfe-shell` is served at `/` (preserving top-level browser routes like `/home/...` for the Angular Router).
+  - Remote MFEs are deployed with `SERVE_ROOT=/mfe/<service>` (`mfe1` $\rightarrow$ `/mfe/mfe1`, `mfe2` $\rightarrow$ `/mfe/mfe2`, `angry-agent` $\rightarrow$ `/mfe/angry-agent`, `aad` $\rightarrow$ `/mfe/aad`, `data-engine` $\rightarrow$ `/mfe/data-engine`).
+  - `location ^~ ${SERVE_ROOT}/` in `charts/nginx-view/config/configs/default.conf.template` aliases `/usr/share/nginx/html/` and explicitly includes CORS headers (`Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, `Access-Control-Allow-Headers`) and `OPTIONS` preflight handling so federated module requests under `/mfe/<service>/` succeed with proper CORS headers.
+  - Backend APIs are served under `/api/<service>/v1` (`angry-agent` $\rightarrow$ `/api/angry-agent/v1`, `aad` $\rightarrow$ `/api/aad/v1`, `graphrag` $\rightarrow$ `/api/graphrag/v1`, `data-engine` $\rightarrow$ `/api/data-engine/v1`).
+
+| Service Type | Service Name | VirtualService URI Prefix | Container Configuration |
+|---|---|---|---|
+| Host Shell | `mfe-shell` | `/` | Root `location /` with `/index.html` fallback |
+| Remote MFE | `mfe1` | `/mfe/mfe1` | `SERVE_ROOT=/mfe/mfe1` |
+| Remote MFE | `mfe2` | `/mfe/mfe2` | `SERVE_ROOT=/mfe/mfe2` |
+| Remote MFE | `angry-agent` | `/mfe/angry-agent` | `SERVE_ROOT=/mfe/angry-agent` |
+| Remote MFE | `aad` | `/mfe/aad` | `SERVE_ROOT=/mfe/aad` |
+| Remote MFE | `data-engine` | `/mfe/data-engine` | `SERVE_ROOT=/mfe/data-engine` |
+| Backend API | `angry-agent` | `/api/angry-agent/v1` | `api_prefix=/api/angry-agent/v1` |
+| Backend API | `aad` | `/api/aad/v1` | `api_prefix=/api/aad/v1` |
+| Backend API | `graphrag` | `/api/graphrag/v1` | `api_prefix=/api/graphrag/v1` |
+| Backend API | `data-engine` | `/api/data-engine/v1` | `api_prefix=/api/data-engine/v1` |
 
 ---
 
-**Last Updated:** 2026-03-14  
+**Last Updated:** 2026-11-17  
 **Owner:** DevOps / Infrastructure Team  
-**Review Frequency:** When adding new services or changing port mappings
+**Review Frequency:** When adding new services or changing port/prefix mappings
+

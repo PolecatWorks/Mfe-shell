@@ -427,8 +427,61 @@ graph TB
 **Container Orchestration:**
 - Each container can run independently
 - Or run together via docker-compose (future feature)
-- Health checks validate container readiness
+- Health checks validate container readiness (`/alive` and `/ready` at root `/`)
 - Environment-aware configuration (dev/prod)
+
+### Kubernetes VirtualService Composition (Zero Path Rewrites)
+
+In Kubernetes, all frontend MFEs and backend APIs in the ecosystem are exposed under a single shared hostname (`ai.k8s`) via an Istio `VirtualService` **without URI path rewrites**:
+
+1. **`mfe-shell` Host (`/`):** Served at root `/` so the top-level URL namespace remains clean for Angular Router navigation paths (e.g., `/home/...`).
+2. **Remote MFEs (`/mfe/<service>`):** Each remote MFE container uses the `nginx-view` Helm chart configured with `SERVE_ROOT=/mfe/<service>` (using an Nginx `alias /usr/share/nginx/html/;` block under `location ^~ ${SERVE_ROOT}/`), serving `remoteEntry.json` and static chunks directly at `/mfe/<service>/...` without Istio path rewriting:
+   - `mfe1` $\rightarrow$ `/mfe/mfe1`
+   - `mfe2` $\rightarrow$ `/mfe/mfe2`
+   - `angry-agent` $\rightarrow$ `/mfe/angry-agent`
+   - `aad` $\rightarrow$ `/mfe/aad`
+   - `data-engine` $\rightarrow$ `/mfe/data-engine`
+3. **Backend APIs (`/api/<service>/v1`):** Each backend service binds its routes natively under a configurable `api_prefix` (`/api/<service>/v1`) while keeping Kubernetes health probes (`/alive`, `/ready`) at root:
+   - `angry-agent` $\rightarrow$ `/api/angry-agent/v1`
+   - `aad` $\rightarrow$ `/api/aad/v1`
+   - `graphrag` $\rightarrow$ `/api/graphrag/v1`
+   - `data-engine` $\rightarrow$ `/api/data-engine/v1`
+
+```mermaid
+flowchart LR
+    Browser["👤 User Browser"] --> Gateway["🌐 Istio Ingress Gateway<br/>(VirtualService: ai.k8s)"]
+
+    subgraph "Kubernetes Namespace (Zero URI Path Rewrites)"
+        direction TB
+        Shell["🏠 mfe-shell-nginx-view<br/>Prefix: /"]
+        
+        subgraph "Remote MFE Containers (SERVE_ROOT=/mfe/&lt;service&gt;)"
+            MFE1["🔵 mfe1-nginx-view<br/>Prefix: /mfe/mfe1"]
+            MFE2["🟣 mfe2-nginx-view<br/>Prefix: /mfe/mfe2"]
+            AngryMFE["🤖 angry-agent-nginx-view<br/>Prefix: /mfe/angry-agent"]
+            AadMFE["🧩 aad-nginx-view<br/>Prefix: /mfe/aad"]
+            DeMFE["📊 data-engine-nginx-view<br/>Prefix: /mfe/data-engine"]
+        end
+
+        subgraph "Backend API Containers (api_prefix=/api/&lt;service&gt;/v1)"
+            AngryAPI["⚙️ angry-agent-be<br/>Prefix: /api/angry-agent/v1"]
+            AadAPI["⚙️ aad-be<br/>Prefix: /api/aad/v1"]
+            GraphragAPI["⚙️ graphrag-be<br/>Prefix: /api/graphrag/v1"]
+            DeAPI["⚙️ data-engine-be<br/>Prefix: /api/data-engine/v1"]
+        end
+    end
+
+    Gateway -->|"/mfe/mfe1"| MFE1
+    Gateway -->|"/mfe/mfe2"| MFE2
+    Gateway -->|"/mfe/angry-agent"| AngryMFE
+    Gateway -->|"/mfe/aad"| AadMFE
+    Gateway -->|"/mfe/data-engine"| DeMFE
+    Gateway -->|"/api/angry-agent/v1"| AngryAPI
+    Gateway -->|"/api/aad/v1"| AadAPI
+    Gateway -->|"/api/graphrag/v1"| GraphragAPI
+    Gateway -->|"/api/data-engine/v1"| DeAPI
+    Gateway -->|"/"| Shell
+```
 
 ---
 
