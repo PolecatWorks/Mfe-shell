@@ -24,6 +24,27 @@ spec:
       route:
         - destination:
             host: mfe2-nginx-view
+    - name: angry-agent
+      match:
+        - uri:
+            prefix: /mfe/angry-agent
+      route:
+        - destination:
+            host: angry-agent-nginx-view
+    - name: aad
+      match:
+        - uri:
+            prefix: /mfe/aad
+      route:
+        - destination:
+            host: aad-nginx-view
+    - name: data-engine
+      match:
+        - uri:
+            prefix: /mfe/data-engine
+      route:
+        - destination:
+            host: data-engine-nginx-view
     - name: mfe-shell
       match:
         - uri:

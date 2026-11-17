@@ -8,23 +8,38 @@ server {
     server_name localhost;
     root /usr/share/nginx/html;
 
-    # 1. Health Checks (High Priority)
+    # 1. Health Checks (High Priority, independent of SERVE_ROOT)
     location /alive { return 200; access_log off; }
     location /ready { return 200; access_log off; }
 
-    # 2. MFE Logic (Regex - must be carefully ordered)
-    # We use ^~ or place this ABOVE the general static file regex
+    # 2. MFE Logic under configurable ${SERVE_ROOT}/ (e.g. /mfe/mfe1/)
+    # Using ^~ stops regex matching, so CORS headers and OPTIONS preflight must be included here
     location ^~ ${SERVE_ROOT}/ {
         alias /usr/share/nginx/html/;
-        # No try_files here means it will 404 if missing
+
+        add_header 'Access-Control-Allow-Origin' $cors_origin always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
+
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' $cors_origin always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
+            add_header 'Access-Control-Max-Age' 1728000;
+            add_header 'Content-Type' 'text/plain; charset=utf-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+        # No try_files here means missing chunks or assets return 404 cleanly
     }
 
-    # 3. General Static Files
+    # 3. General Static Files (fallback when served at root)
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|json)$ {
         expires 1y;
         add_header Cache-Control "public, no-transform";
-        add_header 'Access-Control-Allow-Origin' $cors_origin;
-        # Note: If a file is in /mfe1/, it was already handled by the ^~ block above
+        add_header 'Access-Control-Allow-Origin' $cors_origin always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' always;
     }
 
 }

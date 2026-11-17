@@ -58,37 +58,44 @@ No immediate work items; system is stable.
 
 ## Configuration Structure
 
+### Local Development (`mfe-shell-container/public/assets/contents/shell-config.json`)
+
 ```json
 {
-  "remotes": [
-    {
-      "name": "mfe1",
-      "port": 3000,
-      "url": "http://localhost:3000/remoteEntry.json"
-    },
-    {
-      "name": "mfe2",
-      "port": 3002,
-      "url": "http://localhost:3002/remoteEntry.json"
-    }
-  ],
-  "routes": [
-    {
-      "path": "mfe1",
-      "remote": "mfe1",
-      "label": "MFE1"
-    },
-    {
-      "path": "mfe2",
-      "remote": "mfe2",
-      "label": "MFE2"
-    }
+  "remotes": {
+    "mfe1": "http://localhost:3000/remoteEntry.json",
+    "mfe2": "http://localhost:3002/remoteEntry.json",
+    "angry-agent": "http://localhost:3001/remoteEntry.json"
+  }
+}
+```
+
+### Kubernetes Deployment (`fluxcd-dev/mfe-shell.yaml`)
+
+In Kubernetes, remote MFEs are served under `/mfe/<service>` via Istio `VirtualService` without URI path rewrites (see [REQ-A004](REQ-A004.md)):
+
+```json
+{
+  "remotes": {
+    "mfe1": "/mfe/mfe1/remoteEntry.json",
+    "mfe2": "/mfe/mfe2/remoteEntry.json",
+    "angry-agent": "/mfe/angry-agent/remoteEntry.json",
+    "aad": "/mfe/aad/remoteEntry.json",
+    "data-engine": "/mfe/data-engine/remoteEntry.json"
+  },
+  "mfeRoutes": [
+    { "path": "mfe1", "displayName": "MFE 1", "remoteName": "mfe1", "exposedModule": "./routes", "componentName": "remoteRoutes" },
+    { "path": "mfe2", "displayName": "Irish MFE", "remoteName": "mfe2", "exposedModule": "./Component", "componentName": "Component" },
+    { "path": "angry-agent", "displayName": "Angry Agent", "remoteName": "angry-agent", "exposedModule": "./routes", "componentName": "remoteRoutes" },
+    { "path": "aad", "displayName": "Agent as Data", "remoteName": "aad", "exposedModule": "./routes", "componentName": "remoteRoutes" },
+    { "path": "data-engine", "displayName": "Data Engine", "remoteName": "data-engine", "exposedModule": "./routes", "componentName": "remoteRoutes" }
   ]
 }
 ```
 
 ---
 
-**Last Updated:** 2026-03-14  
+**Last Updated:** 2026-11-17  
 **Owner:** Architecture Team  
 **Review Frequency:** When adding new MFEs or changing routing strategy
+
