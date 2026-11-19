@@ -15,7 +15,7 @@ spec:
   values:
     image:
       repository: ghcr.io/polecatworks/mfe-shell-mfe1
-      tag: sha-e5b60f763e63b7e0aab88392d8238ba477bd8fcc
+      tag: sha-495e2555d90753dd80824ef21d36c790c1f97cb1
       pullPolicy: Always # Dev ONLY
     env:
       - name: SERVE_ROOT
