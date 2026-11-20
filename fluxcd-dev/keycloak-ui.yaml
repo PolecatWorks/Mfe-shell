@@ -70,5 +70,11 @@ spec:
     - "https://ai.dev.polecatworks.com/*"
     - "http://localhost:4200/*"
     - "http://localhost:8080/*"
+    - "https://aad.k8s/*"
+    - "http://aad.k8s/*"
+    - "https://agent-as-data.k8s/*"
+    - "http://agent-as-data.k8s/*"
+    - "https://ai.k8s/*"
+    - "http://ai.k8s/*"
   webOrigins:
     - "+"
