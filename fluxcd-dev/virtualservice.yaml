@@ -5,6 +5,8 @@ metadata:
   name: mfe-shell
 spec:
   hosts:
+    - aad.k8s
+    - agent-as-data.k8s
     - ai.k8s
   gateways:
     - istio-ingress/k8s-gateway
@@ -30,14 +32,14 @@ spec:
             prefix: /mfe/angry-agent
       route:
         - destination:
-            host: angry-agent-nginx-view
+            host: mfe-angry-agent-nginx-view
     - name: aad
       match:
         - uri:
             prefix: /mfe/aad
       route:
         - destination:
-            host: aad-nginx-view
+            host: aad-fe-nginx-view
     - name: data-engine
       match:
         - uri:
