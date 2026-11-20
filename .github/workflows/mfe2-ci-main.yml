@@ -97,9 +97,54 @@ jobs:
             }
             core.setFailed('Timeout waiting for MFE Shell workflow to complete.');
 
-  build:
+  check-image:
     needs: [check-paths, wait-for-shell]
     if: needs.check-paths.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      exists: ${{ steps.check.outputs.exists }}
+      content_sha: ${{ steps.mfe2-content.outputs.CONTENT_SHA }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine MFE2 Content SHA
+        id: mfe2-content
+        run: |
+          CONTENT_SHA=$(git log -1 --format=%H -- mfe2-container/ .github/workflows/mfe2-ci-main.yml .github/workflows/mfe-shell-ci-main.yml mfe-shell-container/)
+          echo "CONTENT_SHA=$CONTENT_SHA" >> $GITHUB_OUTPUT
+
+      - name: Determine Image Name
+        id: image-name
+        run: |
+          repo_name="${{ github.repository }}"
+          echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe2" >> $GITHUB_OUTPUT
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if image exists
+        id: check
+        run: |
+          IMAGE_REF="${{ env.REGISTRY }}/${{ steps.image-name.outputs.IMAGE_NAME_LOWERCASE }}:sha-${{ steps.mfe2-content.outputs.CONTENT_SHA }}"
+          echo "Checking if image exists: $IMAGE_REF"
+          if docker manifest inspect $IMAGE_REF >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Image exists in registry!"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Image does not exist in registry."
+          fi
+
+  build:
+    needs: [check-paths, wait-for-shell, check-image]
+    if: needs.check-paths.outputs.backend == 'true' && needs.check-image.outputs.exists != 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -166,20 +211,57 @@ jobs:
           context: mfe2-container
           secrets: |
             NODE_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          load: true
+          tags: ${{ env.IMAGE_NAME_LOWERCASE }}:local-test
+          cache-from: |
+            type=gha,scope=${{ github.repository }}-mfe2-${{ github.ref_name }}-${{ matrix.platform }}
+            type=gha,scope=${{ github.repository }}-mfe2-main-${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=${{ github.repository }}-mfe2-${{ github.ref_name }}-${{ matrix.platform }}
+
+      - name: Container Smoke Verification
+        run: |
+          echo "Starting container smoke test for MFE2 on ${{ matrix.platform }}..."
+          CONTAINER_ID=$(docker run -d -p 8082:8080 ${{ env.IMAGE_NAME_LOWERCASE }}:local-test)
+          sleep 3
+
+          echo "Checking container logs..."
+          docker logs $CONTAINER_ID
+
+          echo "Probing container HTTP endpoint /remoteEntry.json..."
+          for i in {1..10}; do
+            if curl -s -f http://127.0.0.1:8082/remoteEntry.json > /dev/null; then
+              echo "MFE2 remoteEntry.json is reachable!"
+              break
+            fi
+            echo "Waiting for container to serve remoteEntry.json... ($i/10)"
+            sleep 2
+          done
+
+          echo "Verifying HTTP response..."
+          curl -I http://127.0.0.1:8082/remoteEntry.json | grep -i "content-type"
+
+          docker stop $CONTAINER_ID
+          docker rm $CONTAINER_ID
+
+      - name: Push Docker image by digest
+        id: push-digest
+        uses: docker/build-push-action@v7
+        with:
+          context: mfe2-container
+          secrets: |
+            NODE_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }}
           push: true
-          # mfe2 is standalone React, no shell dependency needed for build
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
           outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }},push-by-digest=true,name-canonical=true,push=true,oci-mediatypes=true
           cache-from: |
             type=gha,scope=${{ github.repository }}-mfe2-${{ github.ref_name }}-${{ matrix.platform }}
             type=gha,scope=${{ github.repository }}-mfe2-main-${{ matrix.platform }}
-          cache-to: type=gha,mode=max,scope=${{ github.repository }}-mfe2-${{ github.ref_name }}-${{ matrix.platform }}
 
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
-          digest="${{ steps.build.outputs.digest }}"
+          digest="${{ steps.push-digest.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
 
       - name: Upload digest
@@ -193,7 +275,8 @@ jobs:
   merge:
     name: Merge Docker manifests
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [check-paths, check-image, build]
+    if: always() && needs.check-paths.outputs.backend == 'true' && (needs.build.result == 'success' || needs.check-image.outputs.exists == 'true')
     permissions:
       packages: write
       contents: read
@@ -203,7 +286,14 @@ jobs:
           repo_name="${{ github.repository }}"
           echo "IMAGE_NAME_LOWERCASE=$(echo "$repo_name" | tr '[:upper:]' '[:lower:]')-mfe2" >> $GITHUB_ENV
 
+      - name: Determine MFE2 Content SHA
+        id: mfe2-content
+        run: |
+          CONTENT_SHA=$(git log -1 --format=%H -- mfe2-container/ .github/workflows/mfe2-ci-main.yml .github/workflows/mfe-shell-ci-main.yml mfe-shell-container/)
+          echo "CONTENT_SHA=$CONTENT_SHA" >> $GITHUB_ENV
+
       - name: Download digests
+        if: needs.build.result == 'success'
         uses: actions/download-artifact@v6
         with:
           path: /tmp/digests
@@ -231,10 +321,18 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create manifest list and push
+        if: needs.build.result == 'success'
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}@sha256:%s ' *)
+
+      - name: Apply tags to existing image
+        if: needs.build.result != 'success'
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}:sha-${{ env.CONTENT_SHA }}
 
       - name: Inspect image
         run: |
@@ -242,14 +340,14 @@ jobs:
 
   ci-success:
     name: MFE2 CI Success
-    needs: [check-paths, merge]
+    needs: [check-paths, check-image, merge]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Check Status
         run: |
           if [[ "${{ needs.check-paths.outputs.backend }}" == 'true' ]]; then
-            if [[ "${{ needs.merge.result }}" != 'success' ]]; then
+            if [[ "${{ needs.check-image.outputs.exists }}" != 'true' && "${{ needs.merge.result }}" != 'success' ]]; then
                echo "Build/Merge failed!"
                exit 1
             fi

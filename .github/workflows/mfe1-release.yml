@@ -6,7 +6,7 @@ on:
       - "*.*.*"
     paths:
       - "mfe1-container/**"
-      - ".github/workflows/mfe1-docker-publish.yml"
+      - ".github/workflows/mfe1-ci-main.yml"
       - ".github/workflows/mfe1-release.yml"
 
 env:
@@ -25,6 +25,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine MFE1 Content SHA
+        id: mfe1-content
+        run: |
+          CONTENT_SHA=$(git log -1 --format=%H ${{ github.ref_name }} -- mfe1-container/ .github/workflows/mfe1-ci-main.yml)
+          echo "Determined mfe1 content SHA: $CONTENT_SHA"
+          echo "CONTENT_SHA=$CONTENT_SHA" >> $GITHUB_ENV
 
       - name: Prepare environment
         run: |
@@ -40,8 +49,8 @@ jobs:
 
       - name: Add Release Tag
         run: |
-          # Source image linked to the commit sha
-          SRC_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}:sha-${{ github.sha }}"
+          # Source image linked to the content sha
+          SRC_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}:sha-${{ env.CONTENT_SHA }}"
           # Target image with the release tag
           TARGET_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWERCASE }}:${{ github.ref_name }}"
 
