@@ -2,9 +2,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface UserContext {
+  userId?: string;
   username: string;
   roles: string[];
   name: string;
+  email?: string;
+  clientRoles?: Record<string, string[]>;
+  claims?: Record<string, any>;
   accessToken?: string;
 }
 
@@ -29,5 +33,14 @@ export class SharedContextService {
 
   getAccessToken(): string | undefined {
     return this.contextSubject.getValue()?.accessToken;
+  }
+
+  getClientRoles(clientId: string): string[] {
+    return this.contextSubject.getValue()?.clientRoles?.[clientId] || [];
+  }
+
+  hasClientRole(clientId: string, role: string): boolean {
+    const roles = this.getClientRoles(clientId);
+    return roles.includes(role);
   }
 }

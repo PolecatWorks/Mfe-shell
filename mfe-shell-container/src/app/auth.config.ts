@@ -1,23 +1,12 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
-import { lastValueFrom, tap, catchError, throwError, of } from 'rxjs';
-import { isDevMode } from '@angular/core';
+import { lastValueFrom, tap, catchError, throwError } from 'rxjs';
 
 export function initializeAuthConfig(
   httpClient: HttpClient,
   oauthService: OAuthService
 ): () => Promise<void> {
   return () => {
-    if (isDevMode()) {
-      console.warn('Dev Mode: Bypassing authentication.');
-      oauthService.configure({
-        issuer: 'https://dev-mode-bypass',
-        clientId: 'dev',
-        dummyClientSecret: 'dev'
-      });
-      return Promise.resolve();
-    }
-
     return lastValueFrom(
       httpClient.get<AuthConfig>('/assets/contents/auth-config.json').pipe(
         tap((config) => {
@@ -49,17 +38,6 @@ export function initializeAuthConfig(
             <h1 style="margin-bottom: 20px;">Configuration Error</h1>
             <p style="font-size: 1.2rem; margin-bottom: 30px; color: #ccc;">Failed to load authentication configuration.</p>
             <p style="font-size: 0.9rem; color: #888; margin-bottom: 30px;">${error.message || 'Unknown error'}</p>
-            <div style="margin-bottom: 20px; color: #fff;">
-              <p>To fix this, create <code>src/assets/contents/auth-config.json</code> with content:</p>
-              <pre style="background: #333; padding: 10px; text-align: left; display: inline-block;">
-{
-  "issuer": "https://accounts.google.com",
-  "redirectUri": "/home",
-  "clientId": "your-client-id",
-  "scope": "openid profile email"
-}
-              </pre>
-            </div>
             <button onclick="window.location.reload()" style="
               padding: 10px 20px;
               font-size: 1rem;
@@ -71,7 +49,6 @@ export function initializeAuthConfig(
             ">Retry</button>
           `;
           document.body.appendChild(div);
-          // Return non-completing observable or throw to stop app init
           return throwError(() => error);
         })
       )
