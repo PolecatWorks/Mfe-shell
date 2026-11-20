@@ -58,7 +58,6 @@ spec:
   description: Public client for PolecatWorks AI Portal / MFE Shell
   public: true
   standardFlowEnabled: true
-  pkceCodeChallengeMethod: "S256"
   defaultClientScopes:
     - web-origins
     - role_list
