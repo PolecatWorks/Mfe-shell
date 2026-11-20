@@ -20,6 +20,7 @@ Core architectural decisions and patterns.
 | [REQ-A003](architecture/REQ-A003.md) | Shell Dynamic Routing System | ACTIVE | 1.0 |
 | [REQ-A004](architecture/REQ-A004.md) | Docker Deployment & Containerization | ACTIVE | 1.0 |
 | [REQ-A005](architecture/REQ-A005.md) | Shared Canvas Protocol & Bidirectional MFE Controller | PROPOSED | 1.0 |
+| [REQ-A006](architecture/REQ-A006.md) | Build Once Promote Everywhere & Container Verification | PROPOSED | 1.0 |
 
 ---
 
