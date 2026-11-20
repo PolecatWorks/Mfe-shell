@@ -33,14 +33,24 @@ describe('SharedContextService', () => {
 
   it('should get access token correctly when context is set', () => {
     const mockUser: UserContext = {
+      userId: 'usr-123',
       username: 'testuser',
       roles: ['admin'],
       name: 'Test User',
+      email: 'test@example.com',
+      clientRoles: {
+        'angry-agent-api': ['agent:execute'],
+        'graphrag-api': ['graph:read']
+      },
       accessToken: 'test-token'
     };
 
     service.setContext(mockUser);
     expect(service.getAccessToken()).toBe('test-token');
+    expect(service.getClientRoles('angry-agent-api')).toEqual(['agent:execute']);
+    expect(service.hasClientRole('angry-agent-api', 'agent:execute')).toBe(true);
+    expect(service.hasClientRole('angry-agent-api', 'agent:admin')).toBe(false);
+    expect(service.getClientRoles('unknown-client')).toEqual([]);
   });
 
   it('should return undefined for access token when context is null', () => {
