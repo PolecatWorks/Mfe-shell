@@ -1,0 +1,110 @@
+name: Integration Tests
+
+on:
+  pull_request:
+    branches: [main]
+  merge_group:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: integration-tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-paths:
+    runs-on: ubuntu-latest
+    outputs:
+      run_tests: ${{ steps.filter.outputs.run_tests }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            run_tests:
+              - 'mfe-shell-container/**'
+              - 'mfe1-container/**'
+              - 'mfe2-container/**'
+              - 'charts/**'
+              - 'fluxcd-dev/**'
+              - 'integration-tests/**'
+              - '.github/workflows/integration-test.yaml'
+
+  run-robot-tests:
+    needs: check-paths
+    if: needs.check-paths.outputs.run_tests == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Robot Framework & Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install robotframework robotframework-requests
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build MFE Shell Container
+        uses: docker/build-push-action@v7
+        with:
+          context: mfe-shell-container
+          secrets: |
+            NODE_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          load: true
+          tags: mfe-shell-test:local
+
+      - name: Start Test Container with Configured MFE Prefix Mock
+        run: |
+          docker run -d --name mfe-shell-nginx-view -p 8080:8080 mfe-shell-test:local
+          sleep 3
+
+          echo "Container status:"
+          docker ps
+          docker logs mfe-shell-nginx-view
+
+      - name: Execute Robot Tests
+        run: |
+          mkdir -p reports
+          robot \
+            --variable MFE_SHELL_URL:http://127.0.0.1:8080 \
+            --loglevel DEBUG \
+            --outputdir reports \
+            integration-tests/tests/test_mfe_prefix.robot
+
+      - name: Stop Test Container
+        if: always()
+        run: |
+          docker stop mfe-shell-nginx-view || true
+          docker rm mfe-shell-nginx-view || true
+
+      - name: Upload Robot Test Results
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: robot-test-results
+          path: reports/
+          retention-days: 7
+
+  integration-success:
+    name: Integration Tests Success
+    needs: [check-paths, run-robot-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Status
+        run: |
+          if [[ "${{ needs.check-paths.outputs.run_tests }}" == 'true' ]]; then
+            if [[ "${{ needs.run-robot-tests.result }}" != 'success' ]]; then
+               echo "Robot Integration tests failed!"
+               exit 1
+            fi
+          fi
+          echo "Integration tests passed successfully!"
