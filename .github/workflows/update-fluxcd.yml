@@ -8,8 +8,6 @@ on:
       - ".github/workflows/mfe-shell-ci-main.yml"
       - "mfe1-container/**"
       - ".github/workflows/mfe1-ci-main.yml"
-      - "mfe2-container/**"
-      - ".github/workflows/mfe2-ci-main.yml"
       - ".github/workflows/update-fluxcd.yml"
 
 jobs:
@@ -18,7 +16,6 @@ jobs:
     outputs:
       mfe_shell: ${{ steps.filter.outputs.mfe_shell }}
       mfe1: ${{ steps.filter.outputs.mfe1 }}
-      mfe2: ${{ steps.filter.outputs.mfe2 }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -31,10 +28,6 @@ jobs:
             mfe1:
               - 'mfe1-container/**'
               - '.github/workflows/mfe1-ci-main.yml'
-              - '.github/workflows/mfe-shell-ci-main.yml'
-            mfe2:
-              - 'mfe2-container/**'
-              - '.github/workflows/mfe2-ci-main.yml'
               - '.github/workflows/mfe-shell-ci-main.yml'
 
   update-fluxcd:
@@ -54,13 +47,11 @@ jobs:
         env:
           EXPECT_MFE_SHELL: ${{ needs.check-paths.outputs.mfe_shell }}
           EXPECT_MFE1: ${{ needs.check-paths.outputs.mfe1 }}
-          EXPECT_MFE2: ${{ needs.check-paths.outputs.mfe2 }}
         with:
           script: |
             const workflowIds = [];
             if (process.env.EXPECT_MFE_SHELL === 'true') workflowIds.push('mfe-shell-ci-main.yml');
             if (process.env.EXPECT_MFE1 === 'true') workflowIds.push('mfe1-ci-main.yml');
-            if (process.env.EXPECT_MFE2 === 'true') workflowIds.push('mfe2-ci-main.yml');
 
             if (workflowIds.length === 0) {
               console.log('No relevant CI workflows expected to run. Proceeding directly.');
@@ -127,22 +118,20 @@ jobs:
           # Get the last modified commit SHA for each MFE component
           SHELL_SHA=$(git log -1 --format=%H -- mfe-shell-container/ .github/workflows/mfe-shell-ci-main.yml)
           MFE1_SHA=$(git log -1 --format=%H -- mfe1-container/ .github/workflows/mfe1-ci-main.yml .github/workflows/mfe-shell-ci-main.yml mfe-shell-container/)
-          MFE2_SHA=$(git log -1 --format=%H -- mfe2-container/ .github/workflows/mfe2-ci-main.yml .github/workflows/mfe-shell-ci-main.yml mfe-shell-container/)
 
           # Apply updates unconditionally. `yq` will harmlessly overwrite tags if they haven't changed,
           # and `git diff` will naturally ignore files with no actual changes.
           yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe-shell") | .spec.values.image.tag) = "sha-" + "'"$SHELL_SHA"'"' -i fluxcd-dev/mfe-shell.yaml
           yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe1") | .spec.values.image.tag) = "sha-" + "'"$MFE1_SHA"'"' -i fluxcd-dev/mfe1.yaml
-          yq e '(. | select(.kind == "HelmRelease" and .metadata.name == "mfe2") | .spec.values.image.tag) = "sha-" + "'"$MFE2_SHA"'"' -i fluxcd-dev/mfe2.yaml
 
-          git add fluxcd-dev/mfe-shell.yaml fluxcd-dev/mfe1.yaml fluxcd-dev/mfe2.yaml
+          git add fluxcd-dev/mfe-shell.yaml fluxcd-dev/mfe1.yaml
 
           if git diff --staged --quiet; then
             echo "No changes to commit for fluxcd-dev tags."
           else
             BRANCH_NAME="update-fluxcd-${GITHUB_SHA}"
             git checkout -b $BRANCH_NAME
-            git commit -m "chore: update fluxcd-dev image tags for MFE shell, MFE1, and MFE2"
+            git commit -m "chore: update fluxcd-dev image tags for MFE shell and MFE1"
             git push --force https://x-access-token:$PAT@github.com/${{ github.repository }}.git $BRANCH_NAME
             gh pr create --title "chore: update fluxcd-dev tags" --body "Automated PR to update FluxCD tags based on new MFE image builds." --base main --head $BRANCH_NAME
             gh pr merge $BRANCH_NAME --auto --rebase

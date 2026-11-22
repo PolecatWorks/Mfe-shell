@@ -63,7 +63,6 @@ export class Home {
   sampleDiagram = `
     graph TD
       A[MFE Shell] -->|loads| B(MFE1)
-      A -->|loads| C(MFE2)
       B -->|renders| D{MermaidShow}
       D -->|Result| E[Beautiful Diagrams]
   `;

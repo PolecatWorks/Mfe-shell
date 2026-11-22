@@ -2,7 +2,7 @@
 
 ## Overview
 This PRD defines the evolution of **MFE-Shell (`mfe-shell-container`, `@polecatworks/mfe-shared`, and `mfe1-container`)** to serve as:
-1. **The Unified Enterprise AI Portal Host (`mfe-shell-container`)**: Dynamically federating [`Angry-agent`](https://github.com/PolecatWorks/Angry-agent) (`/home/angry-agent`), [`data-engine`](https://github.com/PolecatWorks/data-engine) (`/home/data-engine`), [`agent-as-data`](https://github.com/PolecatWorks/agent-as-data) (`/home/agent-studio`), `mfe1`, and `mfe2` via `shell-config.json` and Istio `VirtualService` routing on `ai.k8s`.
+1. **The Unified Enterprise AI Portal Host (`mfe-shell-container`)**: Dynamically federating [`Angry-agent`](https://github.com/PolecatWorks/Angry-agent) (`/home/angry-agent`), [`data-engine`](https://github.com/PolecatWorks/data-engine) (`/home/data-engine`), [`agent-as-data`](https://github.com/PolecatWorks/agent-as-data) (`/home/agent-studio`), and `mfe1` via `shell-config.json` and Istio `VirtualService` routing on `ai.k8s`.
 2. **The Canonical Shared Canvas State & Lifecycle Contract (`@polecatworks/mfe-shared`)**: Providing `SharedCanvasService` and the framework-agnostic `MfeCanvasController` interface so any MFE form or visualization mounted on the right-hand side (RHS) of a chat interface supports live bidirectional human + AI co-editing without losing DOM focus or unsaved user input.
 3. **Live-Patchable Visual & Form Remotes (`mfe1-container`)**: Upgrading `PersonalDataFormWrapper`, `DataShowWrapper`, `MermaidShowWrapper`, `JsonShowWrapper`, `MarkdownShowWrapper`, and `TextShowWrapper` to return full `MfeCanvasController` instances.
 
@@ -24,13 +24,12 @@ flowchart TB
 
     subgraph Remotes["Federated Ecosystem Remotes"]
         MFE1["mfe1-container (:3000)\nVisual & Form Widgets\n(PersonalDataFormWrapper, DataShowWrapper,\nMermaidShowWrapper, JsonShowWrapper)"]
-        MFE2["mfe2-container (:3002)\nReact Remote Widgets"]
         Angry["Angry-agent (:3001)\nChat + RHS Live Shared Canvas Host\n(/home/angry-agent)"]
         DE["data-engine (:3003)\nData Steward & Sandbox MFE\n(/home/data-engine + RHS Canvas Wrappers)"]
         AAD["agent-as-data\nDeclarative Agent & Knowledge Studio\n(/home/agent-studio)"]
     end
 
-    Router -->|"remoteEntry.json"| MFE1 & MFE2 & Angry & DE & AAD
+    Router -->|"remoteEntry.json"| MFE1 & Angry & DE & AAD
     Portal --- Shared
     MFE1 --- Shared
     Angry --- Shared
@@ -115,7 +114,6 @@ All wrappers in `mfe1-container` are upgraded from returning a bare `() => unmou
 ### 3. Ecosystem Registration in `shell-config.json` & `fluxcd-dev/virtualservice.yaml`
 `mfe-shell-container/public/assets/contents/shell-config.json` and `fluxcd-dev/virtualservice.yaml` support routing across all federated remotes in the ecosystem:
 - `mfe1` (`:3000` / `/mfe/mfe1`)
-- `mfe2` (`:3002` / `/mfe/mfe2`)
 - `angry-agent` (`:3001` / `/mfe/angry-agent`)
 - `data-engine` (`:3003` / `/mfe/data-engine`)
 - `agent-as-data` (`:3004` / `/mfe/agent-as-data`)

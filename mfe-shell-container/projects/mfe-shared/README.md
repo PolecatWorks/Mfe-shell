@@ -57,7 +57,7 @@ GitHub Packages does not allow overwriting existing versions. To handle this, ev
   - **Main**: Tagged as `main` and `latest`.
 
 ### 2. Synchronization Strategy
-Consumer builds (MFE1, MFE2, Shell) include a "Wait for Shared" job that polls the GitHub API to ensure the `mfe-shared-publish` workflow has completed successfully before starting their own Docker builds.
+Consumer builds (MFE1, Shell) include a "Wait for Shared" job that polls the GitHub API to ensure the `mfe-shared-publish` workflow has completed successfully before starting their own Docker builds.
 
 ### 3. Pipeline Flow
 The following diagram depicts how `mfe-shared` changes move through the registry and into consumer builds:
@@ -77,7 +77,7 @@ graph TD
         TagLatest -.-> Registry
     end
 
-    subgraph "Consumer CI (MFE1 / MFE2 / Shell)"
+    subgraph "Consumer CI (MFE1 / Shell)"
         StartConsumer[Change in MFE code] --> DetectDeps{Shared MFE changed?}
         
         DetectDeps -- Yes --> WaitForShared[Wait for 'mfe-shared-publish' Success]

@@ -1,7 +1,6 @@
 {
     "remotes": {
         "mfe1": "http://localhost:3000/remoteEntry.json",
-        "mfe2": "http://localhost:3002/remoteEntry.json",
         "angry-agent": "http://localhost:3001/remoteEntry.json",
         "data-engine": "http://localhost:4203/remoteEntry.json"
     },
@@ -12,13 +11,6 @@
             "remoteName": "mfe1",
             "exposedModule": "./routes",
             "componentName": "remoteRoutes"
-        },
-        {
-            "path": "mfe2",
-            "displayName": "React MFE Irish",
-            "remoteName": "mfe2",
-            "exposedModule": "./Component",
-            "componentName": "Component"
         },
         {
             "path": "angry-agent",
@@ -60,11 +52,6 @@
             "name": "MFE 1",
             "route": "/home/mfe1",
             "icon": "extension"
-        },
-        {
-            "name": "React MFE",
-            "route": "/home/mfe2",
-            "icon": "widgets"
         },
         {
             "name": "Angry Agent",
