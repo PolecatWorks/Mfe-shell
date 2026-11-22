@@ -1,14 +1,13 @@
 name: Update FluxCD
 
+# Restricted to manual workflow_dispatch only:
+# fluxcd-dev/mfe-shell.yaml and fluxcd-dev/mfe1.yaml intentionally track `tag: main`
+# (with pullPolicy: Always for dev; see commit 8fdb11c). Running this workflow
+# automatically on push to `main` would open PRs reverting `tag: main` back to
+# pinned `sha-...` tags on every merge. Trigger manually only when explicitly
+# pinning fluxcd-dev manifests to content-SHA tags.
 on:
-  push:
-    branches: ["main"]
-    paths:
-      - "mfe-shell-container/**"
-      - ".github/workflows/mfe-shell-ci-main.yml"
-      - "mfe1-container/**"
-      - ".github/workflows/mfe1-ci-main.yml"
-      - ".github/workflows/update-fluxcd.yml"
+  workflow_dispatch:
 
 jobs:
   check-paths:
