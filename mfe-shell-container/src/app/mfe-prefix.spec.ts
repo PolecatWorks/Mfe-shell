@@ -6,14 +6,12 @@ describe('MfeConfig & Route Composition Prefixes', () => {
   const mockConfig: MfeConfig = {
     remotes: {
       'mfe1': '/mfe/mfe1/remoteEntry.json',
-      'mfe2': '/mfe/mfe2/remoteEntry.json',
       'angry-agent': '/mfe/angry-agent/remoteEntry.json',
       'aad': '/mfe/aad/remoteEntry.json',
       'data-engine': '/mfe/data-engine/remoteEntry.json',
     },
     mfeRoutes: [
       { path: 'mfe1', displayName: 'MFE 1', remoteName: 'mfe1', exposedModule: './routes', componentName: 'remoteRoutes' },
-      { path: 'mfe2', displayName: 'Irish MFE', remoteName: 'mfe2', exposedModule: './Component', componentName: 'Component' },
       { path: 'angry-agent', displayName: 'Angry Agent', remoteName: 'angry-agent', exposedModule: './routes', componentName: 'remoteRoutes' },
       { path: 'aad', displayName: 'Agent as Data', remoteName: 'aad', exposedModule: './routes', componentName: 'remoteRoutes' },
       { path: 'data-engine', displayName: 'Data Engine', remoteName: 'data-engine', exposedModule: './routes', componentName: 'remoteRoutes' },
@@ -22,7 +20,6 @@ describe('MfeConfig & Route Composition Prefixes', () => {
       { name: 'Home', route: '/home' },
       { name: 'Base', route: '/home/base' },
       { name: 'MFE 1', route: '/home/mfe1' },
-      { name: 'Irish MFE', route: '/home/mfe2' },
       { name: 'Angry Agent', route: '/home/angry-agent' },
       { name: 'Agent as Data', route: '/home/aad' },
       { name: 'Data Engine', route: '/home/data-engine' },
@@ -46,23 +43,33 @@ describe('MfeConfig & Route Composition Prefixes', () => {
 
     const registeredPaths = children.map((c: any) => c.path);
     expect(registeredPaths).toContain('mfe1');
-    expect(registeredPaths).toContain('mfe2');
     expect(registeredPaths).toContain('angry-agent');
     expect(registeredPaths).toContain('aad');
     expect(registeredPaths).toContain('data-engine');
   });
 
   it('POSITIVE: distinguishes Angular routes (.routes) from generic component wrappers', () => {
-    const routes = createRoutes(mockConfig);
+    const configWithGenericWidget: MfeConfig = {
+      ...mockConfig,
+      remotes: {
+        ...mockConfig.remotes,
+        'custom-widget': '/mfe/custom-widget/remoteEntry.json',
+      },
+      mfeRoutes: [
+        ...mockConfig.mfeRoutes,
+        { path: 'custom-widget', displayName: 'Custom Widget', remoteName: 'custom-widget', exposedModule: './Component', componentName: 'Component' },
+      ],
+    };
+    const routes = createRoutes(configWithGenericWidget);
     const homeRoute = routes.find(r => r.path === 'home') as any;
 
     const angularRoute = homeRoute.children.find((c: any) => c.path === 'angry-agent');
     expect(angularRoute.loadChildren).toBeDefined();
     expect(angularRoute.loadComponent).toBeUndefined();
 
-    const componentRoute = homeRoute.children.find((c: any) => c.path === 'mfe2');
+    const componentRoute = homeRoute.children.find((c: any) => c.path === 'custom-widget');
     expect(componentRoute.loadComponent).toBeDefined();
-    expect(componentRoute.data.remoteName).toBe('mfe2');
+    expect(componentRoute.data.remoteName).toBe('custom-widget');
   });
 
   it('NEGATIVE: rejects or flags remoteEntry URLs missing the /mfe/ prefix', () => {

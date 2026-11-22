@@ -64,14 +64,12 @@ spec:
           {
             "remotes": {
               "mfe1": "/mfe/mfe1/remoteEntry.json",
-              "mfe2": "/mfe/mfe2/remoteEntry.json",
               "angry-agent": "/mfe/angry-agent/remoteEntry.json",
               "aad": "/mfe/aad/remoteEntry.json",
               "data-engine": "/mfe/data-engine/remoteEntry.json"
             },
             "mfeRoutes": [
               { "path": "mfe1", "displayName": "MFE 1", "remoteName": "mfe1", "exposedModule": "./routes", "componentName": "remoteRoutes" },
-              { "path": "mfe2", "displayName": "Irish MFE", "remoteName": "mfe2", "exposedModule": "./Component", "componentName": "Component" },
               { "path": "angry-agent", "displayName": "Angry Agent", "remoteName": "angry-agent", "exposedModule": "./routes", "componentName": "remoteRoutes" },
               { "path": "aad", "displayName": "Agent as Data", "remoteName": "aad", "exposedModule": "./routes", "componentName": "remoteRoutes" },
               { "path": "data-engine", "displayName": "Data Engine", "remoteName": "data-engine", "exposedModule": "./routes", "componentName": "remoteRoutes" }
@@ -82,7 +80,6 @@ spec:
               { "name": "Profile", "route": "/home/profile" },
               { "name": "Settings", "route": "/home/settings" },
               { "name": "MFE 1", "route": "/home/mfe1" },
-              { "name": "Irish MFE", "route": "/home/mfe2" },
               { "name": "Angry Agent", "route": "/home/angry-agent" },
               { "name": "Agent as Data", "route": "/home/aad" },
               { "name": "Data Engine", "route": "/home/data-engine" }

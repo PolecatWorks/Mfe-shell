@@ -39,24 +39,21 @@ graph TB
     
     subgraph "Micro Frontends"
         MFE1["🔵 MFE1 Container<br/>(Angular 21 Remote)<br/>Port 3000"]
-        MFE2["🟣 MFE2 Container<br/>(React 18 Remote)<br/>Port 3002"]
     end
     
     User -->|"HTTP Requests"| Shell
     Shell -->|"Consumes"| MfeShared
     MFE1 -->|"Consumes"| MfeShared
     Shell -->|"Federation Links<br/>(remoteEntry.json)"| MFE1
-    Shell -->|"Federation Links<br/>(remoteEntry.json)"| MFE2
     
     style Shell fill:#4A90E2
     style MFE1 fill:#6B5B95
-    style MFE2 fill:#9B59B6
     style MfeShared fill:#F39C12
 ```
 
 **Key Characteristics:**
 - **Host:** Angular 21 shell application serving as the federated host
-- **Remotes:** Angular and React micro frontends dynamically loaded at runtime
+- **Remotes:** Federated micro frontends dynamically loaded at runtime
 - **Shared State:** Singleton library (mfe-shared) for state consistency
 - **Configuration-Driven:** Runtime configuration for MFE discovery (no code changes needed)
 
@@ -148,47 +145,7 @@ graph LR
 
 ---
 
-### 3. MFE2 - React Remote
-
-```mermaid
-graph LR
-    Bootstrap["Bootstrap<br/>remoteEntry.js"]
-    
-    subgraph "MFE2 Application"
-        App["React App<br/>(root component)"]
-        Routes["React Router<br/>(pages)"]
-        Components["Components"]
-        State["Local State<br/>(context)"]
-    end
-    
-    subgraph "Host Wrapper"
-        AngularWrapper["GenericMfeWrapper<br/>(Angular component)"]
-    end
-    
-    Bootstrap --> App
-    App --> Routes
-    App --> Components
-    App --> State
-    AngularWrapper -->|"Mounts"| App
-    
-    style Bootstrap fill:#E91E63
-    style App fill:#E91E63
-    style AngularWrapper fill:#4A90E2
-```
-
-**Characteristics:**
-- **Framework:** React 18
-- **Module Exposed:** Exposes App component for host
-- **Wrapper:** GenericMfeWrapperComponent handles React integration
-- **State:** Local React context (not linked to mfe-shared by design)
-- **Testing:** None configured (identified as gap)
-- **Port:** 3002 (development) / 8080 (Docker internal)
-
-**Location:** `mfe2-container/src/`
-
----
-
-### 4. Shared Library (mfe-shared)
+### 3. Shared Library (mfe-shared)
 
 ```mermaid
 graph TB
@@ -255,7 +212,6 @@ graph LR
     
     subgraph "MFE Configuration"
         MFE1Def["MFE1 Definition<br/>- name<br/>- remoteEntry URL<br/>- routes"]
-        MFE2Def["MFE2 Definition<br/>- name<br/>- remoteEntry URL<br/>- routes"]
     end
     
     subgraph "Menu Configuration"
@@ -263,12 +219,10 @@ graph LR
     end
     
     Config --> MFE1Def
-    Config --> MFE2Def
     Config --> MenuItems
     
     style Config fill:#F39C12
     style MFE1Def fill:#8E44AD
-    style MFE2Def fill:#E91E63
     style MenuItems fill:#2196F3
 ```
 
@@ -289,13 +243,11 @@ graph TB
     subgraph "Build Time"
         ShellFed["Shell Federation Config<br/>(@angular-architects/native-federation)"]
         MFE1Fed["MFE1 Federation Config<br/>(exposes module)"]
-        MFE2Fed["MFE2 Federation Config<br/>(exposes module)"]
     end
     
     subgraph "Artifacts"
         ShellDist["Shell dist/<br/>- app code<br/>- importmap.json"]
         MFE1Dist["MFE1 dist/<br/>- remoteEntry.json<br/>- module code"]
-        MFE2Dist["MFE2 dist/<br/>- remoteEntry.json<br/>- module code"]
     end
     
     subgraph "Runtime - Host Bootstrap"
@@ -307,17 +259,14 @@ graph TB
     
     ShellFed --> ShellDist
     MFE1Fed --> MFE1Dist
-    MFE2Fed --> MFE2Dist
     
     ShellDist --> LoadImportMap
     MFE1Dist --> FetchRemotes
-    MFE2Dist --> FetchRemotes
     FetchRemotes --> MergeMaps
     MergeMaps --> Bootstrap
     
     style ShellFed fill:#4A90E2
     style MFE1Fed fill:#8E44AD
-    style MFE2Fed fill:#E91E63
     style Bootstrap fill:#F39C12
 ```
 
@@ -341,7 +290,7 @@ sequenceDiagram
     participant Shared as mfe-shared Build
     participant Global as npm Global Link
     
-    User->>Shared: make mfe1-shared (builds mfe-shared)
+    User->>Shared: make mfe-shared-dev (builds mfe-shared)
     Shared->>Global: npm link (registers globally)
     Global->>Shell: mfe-shared available
     Global->>MFE1: mfe-shared available
@@ -360,12 +309,9 @@ sequenceDiagram
 
 **Setup:**
 ```bash
-# First time setup
-npm link
-
 # Development workflow
-make mfe1-shared    # Build shared library
-npm start           # Start Shell (links to shared)
+make mfe-shared-dev    # Build and link shared library
+make mfe-shell-dev     # Start Shell
 ```
 
 ---
@@ -379,42 +325,34 @@ graph TB
     subgraph "Development Ports"
         ShellDev["Shell Dev<br/>localhost:4200"]
         MFE1Dev["MFE1 Dev<br/>localhost:3000"]
-        MFE2Dev["MFE2 Dev<br/>localhost:3002"]
     end
     
     subgraph "Docker Containers"
         ShellImg["Shell Container<br/>image: shell:latest<br/>port: 8080 → 4200"]
         MFE1Img["MFE1 Container<br/>image: mfe1:latest<br/>port: 8080 → 3000"]
-        MFE2Img["MFE2 Container<br/>image: mfe2:latest<br/>port: 8080 → 3002"]
     end
     
     subgraph "Production Ports"
         ShellProd["Port 4200"]
         MFE1Prod["Port 3000"]
-        MFE2Prod["Port 3002"]
     end
     
     subgraph "Internal"
         ShellInt["8080"]
         MFE1Int["8080"]
-        MFE2Int["8080"]
     end
     
     ShellDev -.->|same as| ShellImg
     MFE1Dev -.->|same as| MFE1Img
-    MFE2Dev -.->|same as| MFE2Img
     
     ShellImg --> ShellInt
     MFE1Img --> MFE1Int
-    MFE2Img --> MFE2Int
     
     ShellInt -.->|maps to| ShellProd
     MFE1Int -.->|maps to| MFE1Prod
-    MFE2Int -.->|maps to| MFE2Prod
     
     style ShellDev fill:#4A90E2
     style MFE1Dev fill:#8E44AD
-    style MFE2Dev fill:#E91E63
 ```
 
 **Port Mapping:**
@@ -422,11 +360,9 @@ graph TB
 |-----------|----------|----------|---------|
 | Shell | 4200 | 8080 | Host application |
 | MFE1 | 3000 | 8080 | Angular remote |
-| MFE2 | 3002 | 8080 | React remote |
 
 **Container Orchestration:**
-- Each container can run independently
-- Or run together via docker-compose (future feature)
+- Each container runs independently (Kubernetes / FluxCD)
 - Health checks validate container readiness (`/alive` and `/ready` at root `/`)
 - Environment-aware configuration (dev/prod)
 
@@ -437,7 +373,6 @@ In Kubernetes, all frontend MFEs and backend APIs in the ecosystem are exposed u
 1. **`mfe-shell` Host (`/`):** Served at root `/` so the top-level URL namespace remains clean for Angular Router navigation paths (e.g., `/home/...`).
 2. **Remote MFEs (`/mfe/<service>`):** Each remote MFE container uses the `nginx-view` Helm chart configured with `SERVE_ROOT=/mfe/<service>` (using an Nginx `alias /usr/share/nginx/html/;` block under `location ^~ ${SERVE_ROOT}/`), serving `remoteEntry.json` and static chunks directly at `/mfe/<service>/...` without Istio path rewriting:
    - `mfe1` $\rightarrow$ `/mfe/mfe1`
-   - `mfe2` $\rightarrow$ `/mfe/mfe2`
    - `angry-agent` $\rightarrow$ `/mfe/angry-agent`
    - `aad` $\rightarrow$ `/mfe/aad`
    - `data-engine` $\rightarrow$ `/mfe/data-engine`
@@ -457,7 +392,6 @@ flowchart LR
         
         subgraph "Remote MFE Containers (SERVE_ROOT=/mfe/&lt;service&gt;)"
             MFE1["🔵 mfe1-nginx-view<br/>Prefix: /mfe/mfe1"]
-            MFE2["🟣 mfe2-nginx-view<br/>Prefix: /mfe/mfe2"]
             AngryMFE["🤖 angry-agent-nginx-view<br/>Prefix: /mfe/angry-agent"]
             AadMFE["🧩 aad-nginx-view<br/>Prefix: /mfe/aad"]
             DeMFE["📊 data-engine-nginx-view<br/>Prefix: /mfe/data-engine"]
@@ -472,7 +406,6 @@ flowchart LR
     end
 
     Gateway -->|"/mfe/mfe1"| MFE1
-    Gateway -->|"/mfe/mfe2"| MFE2
     Gateway -->|"/mfe/angry-agent"| AngryMFE
     Gateway -->|"/mfe/aad"| AadMFE
     Gateway -->|"/mfe/data-engine"| DeMFE
@@ -555,12 +488,6 @@ graph TB
         MFE1Test["Karma + Jasmine"]
     end
     
-    subgraph "MFE2"
-        MFE2Frame["React 18"]
-        MFE2Build["Custom build.js"]
-        MFE2Test["None (Gap)"]
-    end
-    
     subgraph "Federation"
         Federation["@angular-architects<br/>native-federation"]
     end
@@ -572,7 +499,6 @@ graph TB
     
     ShellFrame --> Federation
     MFE1Frame --> Federation
-    MFE2Frame --> Federation
     
     ShellFrame --> SharedLib
     MFE1Frame --> SharedLib
@@ -581,7 +507,6 @@ graph TB
     
     style ShellFrame fill:#4A90E2
     style MFE1Frame fill:#8E44AD
-    style MFE2Frame fill:#E91E63
     style Federation fill:#F39C12
     style SharedLib fill:#FF9800
 ```
@@ -645,26 +570,25 @@ graph TB
 **Rationale:** Add MFEs without code changes, flexible routing  
 **Trade-off:** JSON configuration instead of code-based setup
 
-### 4. Generic Wrapper Component for React
-**Decision:** GenericMfeWrapperComponent handles React integration  
+### 4. Generic Wrapper Component for Non-Angular Remotes
+**Decision:** `GenericMfeWrapperComponent` handles framework-agnostic `mount()`/`unmount()` integration  
 **Rationale:** Allows non-Angular frameworks, maintains architecture simplicity  
 **Trade-off:** Extra wrapper layer, requires framework-agnostic design
 
 ### 5. Independent Testing Strategies
-**Decision:** Shell uses Vitest, MFE1 uses Karma/Jasmine, MFE2 needs tests  
+**Decision:** Shell uses Vitest, MFE1 uses Karma/Jasmine  
 **Rationale:** Flexibility per team, tech choice per container  
-**Trade-off:** Different test runners to maintain, consistency gaps
+**Trade-off:** Different test runners to maintain
 
 ---
 
-## Related Requirements
+## Related Documentation
 
-For detailed specifications on each component:
+For detailed product requirements and build specifications:
 
-- **[REQ-A001: Native Federation Architecture](requirements/architecture/REQ-A001.md)** - Module federation setup
-- **[REQ-A002: Shared Library Singleton Pattern](requirements/architecture/REQ-A002.md)** - State sharing
-- **[REQ-A003: Shell Dynamic Routing System](requirements/architecture/REQ-A003.md)** - Runtime routing
-- **[REQ-A004: Docker Deployment & Containerization](requirements/architecture/REQ-A004.md)** - Container setup
+- **[Product Requirements Documents (`spec/prds/README.md`)](./prds/README.md)** - Active PRDs for Shared Canvas Protocol, Keycloak OIDC, and CI/CD modernization
+- **[TDD Build Specifications (`spec/specs/README.md`)](./specs/README.md)** - Ordered implementation specifications derived from PRDs
+- **[MFE1 Container PRD (`mfe1-container/spec/PRD.md`)](../mfe1-container/spec/PRD.md)** - Container-specific specification for `mfe1-container`
 
 ---
 
@@ -673,33 +597,24 @@ For detailed specifications on each component:
 ### Prerequisites
 - [ ] Docker installed and running
 - [ ] Node.js 18+ and npm 11+
-- [ ] mfe-shared built: `make mfe1-shared`
-- [ ] npm link configured for shared library
+- [ ] mfe-shared built and linked: `make mfe-shared-dev`
 
 ### Development Startup
 ```bash
 # Terminal 1: Start Shell (includes shared)
-cd mfe-shell-container
-npm start
+make mfe-shell-dev
 
 # Terminal 2: Start MFE1
-cd mfe1-container
-npm start
-
-# Terminal 3: Start MFE2
-cd mfe2-container
-npm start
+make mfe1-dev
 ```
 
 ### Docker Deployment
 ```bash
-# Build all containers
-docker-compose build
+# Build and run Shell container (port 4200 -> 8080)
+make mfe-shell-docker-run
 
-# Run all services
-docker-compose up
-
-# Access Shell at http://localhost:4200
+# Build and run MFE1 container (port 3000 -> 8080)
+make mfe1-docker-run
 ```
 
 ---
@@ -707,12 +622,12 @@ docker-compose up
 ## Scaling Considerations
 
 ### Adding a New MFE
-1. Create new Angular or React application
-2. Configure native federation for that app
-3. Build and deploy to accessible URL
-4. Add entry to shell-config.json with:
+1. Create a new federated micro-frontend application
+2. Configure Native Federation for that app
+3. Build and deploy to an accessible URL
+4. Add entry to `shell-config.json` with:
    - MFE name
-   - remoteEntry.json URL
+   - `remoteEntry.json` URL
    - Routes to expose
    - Menu items
 5. Shell automatically discovers and loads at runtime
@@ -723,16 +638,5 @@ docker-compose up
 - Each container can scale independently
 - Load balance Shell across multiple instances
 - Load balance each MFE across multiple instances
-- Centralized configuration service for shell-config.json
-
----
-
-## Known Gaps & Improvements
-
-1. **Testing:** MFE2 (React) needs E2E testing framework
-2. **Documentation:** Several README and technical docs need updates
-3. **Docker Compose:** Full-stack docker-compose.yml would simplify development
-4. **E2E Tests:** End-to-end testing framework not implemented
-
-See [GAP_ANALYSIS.md](GAP_ANALYSIS.md) for detailed issue tracking.
+- Centralized configuration service for `shell-config.json`
 

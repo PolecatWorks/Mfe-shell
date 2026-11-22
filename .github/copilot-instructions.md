@@ -1,12 +1,11 @@
 # Copilot Instructions for MFE Shell Repository
 
-This repository implements a **Micro Frontend (MFE) architecture** using Angular 21, React 18, and Native Federation. It contains a Shell (Host) application that dynamically loads Remote Micro Frontends at runtime.
+This repository implements a **Micro Frontend (MFE) architecture** using Angular 21 and Native Federation. It contains a Shell (Host) application that dynamically loads Remote Micro Frontends at runtime.
 
 ## Project Structure
 
 - **`mfe-shell-container/`** - The host application (Angular) that loads remote MFEs. Contains a shared library (`projects/mfe-shared/`) used for singleton state management.
-- **`mfe1-container/`** - Angular-based remote MFE that exposes routes via Native Federation.
-- **`mfe2-container/`** - React-based remote MFE that exposes components via Esbuild.
+- **`mfe1-container/`** - Angular-based remote MFE that exposes routes and canvas wrappers via Native Federation.
 - **`fluxcd-dev/`** - FluxCD manifests for deployment configuration.
 - **`charts/`** - Helm charts (if applicable).
 
@@ -22,7 +21,6 @@ Each application runs on its own port and must be started separately:
 ```bash
 make mfe-shell-dev              # Shell at http://localhost:4200
 make mfe1-dev                   # MFE1 at http://localhost:3000 (Angular)
-make mfe2-dev                   # MFE2 at http://localhost:3002 (React)
 ```
 
 ### Building
@@ -34,10 +32,6 @@ npm run mfe-shared              # Build only the shared library
 
 cd mfe1-container
 npm run build                   # Build MFE1
-npm start                       # Dev server
-
-cd mfe2-container
-npm run build                   # Build with Esbuild (static)
 npm start                       # Dev server
 ```
 
@@ -54,7 +48,6 @@ npm test                        # Run ng test (Karma-based)
 ```bash
 make mfe-shell-docker-run       # Build & run Shell in Docker (port 4200)
 make mfe1-docker-run            # Build & run MFE1 in Docker (port 3000)
-make mfe2-docker-run            # Build & run MFE2 in Docker (port 3002)
 ```
 
 Override ports: `make mfe-shell-docker-run mfe-shell_PORT=5000`
@@ -63,7 +56,7 @@ Override ports: `make mfe-shell-docker-run mfe-shell_PORT=5000`
 
 ### 1. Native Federation
 - The Shell and MFEs use **Native Federation** (part of the Angular ecosystem, standards-compliant, no Webpack).
-- Each MFE exposes modules via `federation.config.js` or `build.js` (Esbuild).
+- Each MFE exposes modules via `federation.config.js`.
 - The Shell dynamically loads remotes at runtime using `loadRemoteModule()` and `loadComponent()`.
 
 ### 2. Shared Library (mfe-shared)
@@ -73,8 +66,6 @@ Override ports: `make mfe-shell-docker-run mfe-shell_PORT=5000`
 - Uses `npm link` to symlink the built library to both Shell and MFE1's `node_modules`.
 
 **Why npm link?** Because `mfe-shared` is a local library, `npm link` creates a symbolic link from the built distribution to the global npm store, ensuring both applications resolve the same physical files.
-
-**MFE2 (React)**: Does not use the Angular-based shared library directly. Instead, duplicates the `UserContext` interface locally to avoid coupling to Angular.
 
 ### 3. Dynamic Route Loading
 The Shell loads MFE routes based on **`shell-config.json`** (`mfe-shell-container/public/assets/contents/shell-config.json`):
@@ -86,20 +77,19 @@ The Shell loads MFE routes based on **`shell-config.json`** (`mfe-shell-containe
 - If `exposedModule` ends with `"routes"` or `componentName` is `"remoteRoutes"` → Angular routes (use `loadChildren`).
 - Otherwise → Generic component (wrap with `GenericMfeWrapperComponent`, use `loadComponent`).
 
-### 4. React in Angular Shell
-MFE2 (React) is wrapped by the Shell's `GenericMfeWrapperComponent` which:
-- Dynamically imports the exposed React component.
+### 4. Non-Angular Remotes in Angular Shell
+Non-Angular remote components can be wrapped by the Shell's `GenericMfeWrapperComponent` which:
+- Dynamically imports the exposed component.
 - Calls its `mount()` function to render into a DOM container.
 - Calls `unmount()` on cleanup.
-- This allows React and Angular to coexist in the same application.
 
 ### 5. Route Animations
 The Shell provides **slide-in/slide-out animations** when routes change. MFEs don't need to implement animations; they simply render content at 100% width/height of their container.
 
 ## Adding a New Micro Frontend
 
-1. **Create the MFE** (Angular or React) in a new `*-container/` directory.
-2. **Expose modules** in `federation.config.js` (Angular) or `build.js` (Esbuild):
+1. **Create the MFE** in a new `*-container/` directory or separate repository.
+2. **Expose modules** in `federation.config.js`:
    ```javascript
    exposes: { './routes': './src/app/app.routes.ts' }  // Angular
    ```
@@ -110,7 +100,7 @@ The Shell provides **slide-in/slide-out animations** when routes change. MFEs do
 4. **If Angular + shared state**: Link `mfe-shared`:
    ```bash
    cd mfe-shell-container/dist/mfe-shared && npm link
-   cd path/to/new-mfe && npm link mfe-shared
+   cd path/to/new-mfe && npm link @polecatworks/mfe-shared
    ```
 5. **Build & run** the MFE dev server; the Shell will load it automatically.
 
@@ -118,11 +108,11 @@ The Shell provides **slide-in/slide-out animations** when routes change. MFEs do
 
 ### File Organization
 - **Shell**: `mfe-shell-container/src/app/` contains routing, config loading, and wrapper components.
-- **MFE1 & MFE2**: Each has a `src/` directory with its own routing and components.
+- **MFE1**: Has a `src/` directory with its own routing and components.
 - **Shared Library**: `mfe-shell-container/projects/mfe-shared/src/lib/` contains services and interfaces.
 
 ### Naming
-- MFE routes are lowercase (e.g., `mfe1`, `mfe2`).
+- MFE routes are lowercase (e.g., `mfe1`, `angry-agent`, `data-engine`).
 - Angular services follow the pattern `*Service` (e.g., `SharedContextService`).
 - Wrapper components use `Generic*` prefix (e.g., `GenericMfeWrapperComponent`).
 
@@ -133,7 +123,6 @@ The Shell provides **slide-in/slide-out animations** when routes change. MFEs do
 ### Shared State
 - Use `mfe-shared` services in Angular MFEs to access shared state.
 - The singleton pattern ensures all consumers of `mfe-shared` reference the same in-memory instance.
-- React MFEs should duplicate interfaces locally or implement a custom state bridge if needed.
 
 ### Testing
 - **Shell**: Uses Vitest (`npm test` in mfe-shell-container).
@@ -143,9 +132,8 @@ The Shell provides **slide-in/slide-out animations** when routes change. MFEs do
 ## CI/CD & Deployment
 
 **Workflows** (see `.github/workflows/` and `.github/WORKFLOW_LOGIC.md`):
-- **PR workflows** (`mfe-shell-ci-pr.yml`, `mfe1-ci-pr.yml`, `mfe2-ci-pr.yml`): Build and verify PRs.
-  - MFE1 and MFE2 conditionally wait for Shell if Shell files changed (to use the correct base image).
-- **Main workflows** (`mfe-shell-ci-main.yml`, `mfe1-ci-main.yml`, `mfe2-ci-main.yml`): Build and push to production registries.
+- **PR workflows** (`mfe-shell-ci-pr.yml`, `mfe1-ci-pr.yml`): Build and verify PRs.
+- **Main workflows** (`mfe-shell-ci-main.yml`, `mfe1-ci-main.yml`): Build and push to production registries.
 - **Auto-deployment** (`update-fluxcd.yml`): Syncs Docker image tags to FluxCD manifests and creates auto-merging PRs.
 
 **Image tags:**

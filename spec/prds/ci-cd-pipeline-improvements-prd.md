@@ -2,7 +2,7 @@
 
 ## 1. Executive Summary
 
-This PRD defines the architectural requirements, pipeline modernization, and automated verification strategy for `Mfe-shell` (Micro-Frontend Shell, MFE1, MFE2, and `@polecatworks/mfe-shared`). 
+This PRD defines the architectural requirements, pipeline modernization, and automated verification strategy for `Mfe-shell` (Micro-Frontend Shell, MFE1, and `@polecatworks/mfe-shared`). 
 
 Aligning with the proven enterprise CI/CD architecture established in [`sward-warden`](https://github.com/PolecatWorks/sward-warden), this initiative transitions `Mfe-shell` to:
 1. **Build Once, Promote Everywhere**: Content-hash addressing and existence checks (`check-image`) with immutable digest retagging via `docker buildx imagetools`, eliminating redundant multi-arch container rebuilds between PR and Main workflows.
@@ -16,8 +16,8 @@ Aligning with the proven enterprise CI/CD architecture established in [`sward-wa
 
 ### Current Gaps in `Mfe-shell` CI/CD
 1. **Redundant Rebuilds & Long Feedback Cycles**:
-   - `mfe-shell-ci-pr.yml`, `mfe1-ci-pr.yml`, and `mfe2-ci-pr.yml` build multi-arch (`linux/amd64` and `linux/arm64`) Docker images on PR branches.
-   - Upon merge to `main`, `mfe-shell-ci-main.yml`, `mfe1-ci-main.yml`, and `mfe2-ci-main.yml` rebuild the exact same images from source despite identical component Git content SHAs.
+   - `mfe-shell-ci-pr.yml` and `mfe1-ci-pr.yml` build multi-arch (`linux/amd64` and `linux/arm64`) Docker images on PR branches.
+   - Upon merge to `main`, `mfe-shell-ci-main.yml` and `mfe1-ci-main.yml` rebuild the exact same images from source despite identical component Git content SHAs.
    - This doubles runner compute time, inflates GHA cache usage, and introduces drift risk between what was tested in the PR and what is tagged on `main`.
 2. **Lack of In-Pipeline Container Health Verification**:
    - Workflows only verify that Docker build completes and that `docker buildx imagetools inspect` can read the manifest metadata.
@@ -101,7 +101,6 @@ Before pushing images or promoting manifests to `main`/`pr-XXX`:
 | :--- | :--- | :--- |
 | **Shell CI** | `.github/workflows/mfe-shell-ci-*.yml` | Integrate `check-image`, container smoke testing, and retagging logic. |
 | **MFE1 CI** | `.github/workflows/mfe1-ci-*.yml` | Integrate `check-image`, container smoke testing, and retagging logic. |
-| **MFE2 CI** | `.github/workflows/mfe2-ci-*.yml` | Integrate `check-image`, container smoke testing, and retagging logic. |
 | **Integration Test** | `.github/workflows/integration-test.yaml` | New workflow running Robot Framework against container targets. |
 | **Releases** | `.github/workflows/*-release.yml` | Update release retagging to pull from `sha-${CONTENT_SHA}` instead of raw `${{ github.sha }}`. |
 

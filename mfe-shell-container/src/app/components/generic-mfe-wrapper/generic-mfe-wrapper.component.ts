@@ -18,7 +18,7 @@ export class GenericMfeWrapperComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     // Get route data from snapshot. Note: if path parameters change but component is reused, ngOnInit might not rerun.
-    // However, MFE path usually changes completely (/mfe1 -> /mfe2) so new component instance.
+    // However, MFE path usually changes completely (/mfe1 -> /angry-agent) so new component instance.
     const data = this.route.snapshot.data;
     const remoteName = data['remoteName'];
     const exposedModule = data['exposedModule'];

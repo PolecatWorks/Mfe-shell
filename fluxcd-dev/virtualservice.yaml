@@ -19,13 +19,6 @@ spec:
       route:
         - destination:
             host: mfe1-nginx-view
-    - name: mfe2
-      match:
-        - uri:
-            prefix: /mfe/mfe2
-      route:
-        - destination:
-            host: mfe2-nginx-view
     - name: angry-agent
       match:
         - uri:

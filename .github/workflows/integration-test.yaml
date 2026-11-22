@@ -25,7 +25,6 @@ jobs:
             run_tests:
               - 'mfe-shell-container/**'
               - 'mfe1-container/**'
-              - 'mfe2-container/**'
               - 'charts/**'
               - 'fluxcd-dev/**'
               - 'integration-tests/**'
