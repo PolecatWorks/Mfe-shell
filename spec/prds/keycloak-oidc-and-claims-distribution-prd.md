@@ -72,3 +72,21 @@ export interface UserContext {
 }
 ```
 All federated child MFEs (`agent-ui`, `de-fe`, `mfe1`, `agent-as-data`) must query `SharedContextService` rather than establishing their own auth flows or using local mock credentials.
+
+### 3. Ecosystem Realm Groups & Roles Distribution
+To grant coherent, end-to-end access across all ecosystem backends, Keycloak provides standard realm groups (`KeycloakRealmGroup`):
+
+#### A. `DataAgentAdmins` (`metadata.name: data-agent-admins`)
+Grants full administrative privileges across all 4 ecosystem backend APIs:
+- `angry-agent-api`: `["agent:execute", "agent:create", "agent:admin"]`
+- `graphrag-api`: `["graph:read", "graph:write", "graph:admin"]`
+- `data-engine-api`: `["profile:run", "query:run", "compute:execute", "dataset:admin"]`
+- `agent-as-data-api`: `["agent:read", "agent:author", "agent:publish", "governance:admin"]`
+
+#### B. `DataAgentUsers` (`metadata.name: data-agent-users`)
+Grants standard operational and authoring privileges for daily workflows:
+- `angry-agent-api`: `["agent:execute", "agent:create"]`
+- `graphrag-api`: `["graph:read", "graph:write"]`
+- `data-engine-api`: `["profile:run", "query:run", "compute:execute"]`
+- `agent-as-data-api`: `["agent:read", "agent:author"]`
+

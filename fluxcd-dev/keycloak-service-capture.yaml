@@ -44,3 +44,64 @@ spec:
       roles:
         - service-write
         - service-delete
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmGroup
+metadata:
+  name: data-agent-admins
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  name: DataAgentAdmins
+  clientRoles:
+    - clientId: angry-agent-api
+      roles:
+        - "agent:execute"
+        - "agent:create"
+        - "agent:admin"
+    - clientId: graphrag-api
+      roles:
+        - "graph:read"
+        - "graph:write"
+        - "graph:admin"
+    - clientId: data-engine-api
+      roles:
+        - "profile:run"
+        - "query:run"
+        - "compute:execute"
+        - "dataset:admin"
+    - clientId: agent-as-data-api
+      roles:
+        - "agent:read"
+        - "agent:author"
+        - "agent:publish"
+        - "governance:admin"
+---
+apiVersion: v1.edp.epam.com/v1
+kind: KeycloakRealmGroup
+metadata:
+  name: data-agent-users
+spec:
+  realmRef:
+    name: dev
+    kind: KeycloakRealm
+  name: DataAgentUsers
+  clientRoles:
+    - clientId: angry-agent-api
+      roles:
+        - "agent:execute"
+        - "agent:create"
+    - clientId: graphrag-api
+      roles:
+        - "graph:read"
+        - "graph:write"
+    - clientId: data-engine-api
+      roles:
+        - "profile:run"
+        - "query:run"
+        - "compute:execute"
+    - clientId: agent-as-data-api
+      roles:
+        - "agent:read"
+        - "agent:author"
