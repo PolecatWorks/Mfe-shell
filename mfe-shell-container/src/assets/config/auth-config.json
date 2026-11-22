@@ -1,6 +1,0 @@
-{
-  "issuer": "https://accounts.google.com",
-  "redirectUri": "/home",
-  "clientId": "your-client-id",
-  "scope": "openid profile email"
-}

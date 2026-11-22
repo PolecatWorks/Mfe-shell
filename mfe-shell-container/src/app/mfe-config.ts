@@ -1,29 +1,12 @@
 import { InjectionToken } from '@angular/core';
+import type { MfeConfig } from './config-parser';
 
-export interface MfeRouteConfig {
-  path: string;
-  displayName: string;
-  remoteName: string;
-  exposedModule: string;
-  componentName: string;
-}
-
-export interface MenuConfig {
-  name: string;
-  route: string;
-  icon?: string;
-}
-
-export interface OTelConfig {
-  collectorUrl: string;
-  logLevel: string;
-}
-
-export interface MfeConfig {
-  remotes: Record<string, string>;
-  mfeRoutes: MfeRouteConfig[];
-  menu: MenuConfig[];
-  otel?: OTelConfig;
-}
+export type {
+  MfeRouteConfig,
+  MenuConfig,
+  OTelConfig,
+  MfeConfig,
+} from './config-parser';
+export { parseShellConfig } from './config-parser';
 
 export const MFE_CONFIG = new InjectionToken<MfeConfig>('MFE_CONFIG');
