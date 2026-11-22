@@ -92,4 +92,24 @@ describe('MfeConfig & Route Composition Prefixes', () => {
       expect(/^\/mfe\/[a-z0-9-_]+\/remoteEntry\.json$/.test(url)).toBe(false);
     }
   });
+
+  it('POSITIVE: mounts data-engine ./routes child router supporting /explore and /topology deep links', () => {
+    const configWithDataEngineMenu: MfeConfig = {
+      ...mockConfig,
+      menu: [
+        ...mockConfig.menu,
+        { name: 'Data Explorer', route: '/home/data-engine/explore', icon: 'bar_chart' },
+        { name: 'Data Topology', route: '/home/data-engine/topology', icon: 'hub' },
+      ],
+    };
+
+    const routes = createRoutes(configWithDataEngineMenu);
+    const homeRoute = routes.find((r) => r.path === 'home') as any;
+    const dataEngineRoute = homeRoute.children.find((c: any) => c.path === 'data-engine');
+
+    expect(dataEngineRoute).toBeDefined();
+    expect(typeof dataEngineRoute.loadChildren).toBe('function');
+    expect(configWithDataEngineMenu.menu.map((m) => m.route)).toContain('/home/data-engine/explore');
+    expect(configWithDataEngineMenu.menu.map((m) => m.route)).toContain('/home/data-engine/topology');
+  });
 });

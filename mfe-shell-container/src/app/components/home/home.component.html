@@ -47,15 +47,15 @@
 
         @if (!outlet.isActivated) {
         <div class="dashboard-container">
-          <div class="square-card card-1">
-            <mat-icon>dashboard</mat-icon>
-            <span class="title">Dashboard</span>
+          <div class="square-card card-1" [routerLink]="['/home/data-engine/topology']" matTooltip="Semantic & Structural Data Topology">
+            <mat-icon>hub</mat-icon>
+            <span class="title">Data Topology</span>
           </div>
-          <div class="square-card card-2">
+          <div class="square-card card-2" [routerLink]="['/home/data-engine/explore']" matTooltip="Data Visual Explorer">
             <mat-icon>analytics</mat-icon>
-            <span class="title">Analytics</span>
+            <span class="title">Data Explorer</span>
           </div>
-          <div class="square-card card-3">
+          <div class="square-card card-3" [routerLink]="['/home/settings']" matTooltip="Settings">
             <mat-icon>settings</mat-icon>
             <span class="title">Settings</span>
           </div>
