@@ -1,12 +1,11 @@
 import { Component, OnInit, Type, ChangeDetectorRef } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
 import { SharedContextService } from '@polecatworks/mfe-shared';
 import { loadRemoteModule } from '@angular-architects/native-federation';
 
 @Component({
   selector: 'base-content',
-  imports: [MatButtonModule, NgComponentOutlet],
+  imports: [NgComponentOutlet],
   templateUrl: './base-content.html',
   styleUrl: './base-content.scss',
 })
@@ -76,21 +75,5 @@ This is a **federated** markdown component loaded from \`mfe1\`.
     } catch (error) {
       console.error(`Error loading ${componentName} component from ${remoteName}:`, error);
     }
-  }
-
-  pressA() {
-    this.context.setContext({
-      username: 'Ben',
-      roles: ['admin'],
-      name: 'Ben Greene'
-    });
-  }
-
-  pressB() {
-    this.context.setContext({
-      username: 'Jane',
-      roles: ['user'],
-      name: 'Jane Doe'
-    });
   }
 }

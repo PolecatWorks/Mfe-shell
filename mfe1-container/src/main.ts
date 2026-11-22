@@ -1,6 +1,8 @@
 import { initFederation } from '@angular-architects/native-federation';
 
 initFederation()
-  .catch(err => console.error(err))
-  .then(_ => import('./bootstrap'))
-  .catch(err => console.error(err));
+  .then(() => import('./bootstrap'))
+  .then((m) => m.default())
+  .catch((err) => {
+    console.error('Failed to bootstrap mfe1:', err);
+  });

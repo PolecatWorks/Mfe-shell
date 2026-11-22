@@ -1,21 +1,19 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { SharedContextService } from '@polecatworks/mfe-shared';
-import { MatButtonModule } from '@angular/material/button';
 import { MermaidShow } from '../mermaid-show/mermaid-show';
 import { BarChartShow } from '../bar-chart-show/bar-chart-show';
 import { ScatterPlotShow } from '../scatter-plot-show/scatter-plot-show';
 
 @Component({
   selector: 'app-home',
-  imports: [AsyncPipe, MatButtonModule, MermaidShow, BarChartShow, ScatterPlotShow],
+  imports: [AsyncPipe, MermaidShow, BarChartShow, ScatterPlotShow],
   template: `
     <div class="home-container">
         <h2>MFE1 Component (Home)</h2>
         <div class="context-info">
           <p>Name from Context: {{ $any(sharedContext.context$ | async)?.name }}</p>
           <p>Current User: {{sharedContext.getContext()?.name}}</p>
-          <button mat-raised-button color="primary" (click)="setRobRoy()">Set Rob Roy</button>
         </div>
 
         <div class="demo-section">
@@ -96,12 +94,4 @@ export class Home {
       ]
     }
   ];
-
-  setRobRoy() {
-    this.sharedContext.setContext({
-      name: 'Rob Roy',
-      username: 'robroy',
-      roles: ['hero']
-    });
-  }
 }

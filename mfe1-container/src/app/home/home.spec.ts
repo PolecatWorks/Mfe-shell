@@ -51,26 +51,6 @@ describe('Home Component', () => {
     expect(contextInfoText).toContain('Name from Context: Updated User');
   });
 
-  it('should call setContext with Rob Roy data when setRobRoy is called', () => {
-    component.setRobRoy();
-    expect(mockSharedContextService.setContext).toHaveBeenCalledWith({
-      name: 'Rob Roy',
-      username: 'robroy',
-      roles: ['hero']
-    });
-  });
-
-  it('should trigger setRobRoy on button click', () => {
-    const button = fixture.debugElement.query(By.css('button[color="primary"]'));
-    button.triggerEventHandler('click', null);
-
-    expect(mockSharedContextService.setContext).toHaveBeenCalledWith({
-      name: 'Rob Roy',
-      username: 'robroy',
-      roles: ['hero']
-    });
-  });
-
   it('should have correct initial data for child components', () => {
     expect(component.sampleDiagram).toContain('graph TD');
     expect(component.sampleDiagram).toContain('A[MFE Shell] -->|loads| B(MFE1)');
