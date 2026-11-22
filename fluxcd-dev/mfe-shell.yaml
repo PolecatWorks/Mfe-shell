@@ -82,7 +82,9 @@ spec:
               { "name": "MFE 1", "route": "/home/mfe1" },
               { "name": "Angry Agent", "route": "/home/angry-agent" },
               { "name": "Agent as Data", "route": "/home/aad" },
-              { "name": "Data Engine", "route": "/home/data-engine" }
+              { "name": "Data Engine", "route": "/home/data-engine", "icon": "database" },
+              { "name": "Data Explorer", "route": "/home/data-engine/explore", "icon": "bar_chart" },
+              { "name": "Data Topology", "route": "/home/data-engine/topology", "icon": "hub" }
             ]
           }
         auth-config.json: |

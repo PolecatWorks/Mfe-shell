@@ -2,7 +2,7 @@
     "remotes": {
         "mfe1": "http://localhost:3000/remoteEntry.json",
         "angry-agent": "http://localhost:3001/remoteEntry.json",
-        "data-engine": "http://localhost:4203/remoteEntry.json"
+        "data-engine": "http://localhost:3003/remoteEntry.json"
     },
     "mfeRoutes": [
         {
@@ -62,6 +62,16 @@
             "name": "Data Engine",
             "route": "/home/data-engine",
             "icon": "database"
+        },
+        {
+            "name": "Data Explorer",
+            "route": "/home/data-engine/explore",
+            "icon": "bar_chart"
+        },
+        {
+            "name": "Data Topology",
+            "route": "/home/data-engine/topology",
+            "icon": "hub"
         }
     ],
     "otel": {
