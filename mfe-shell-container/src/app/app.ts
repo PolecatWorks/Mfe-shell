@@ -2,8 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
 import { filter } from 'rxjs/operators';
-import { SharedContextService, SharedOtelService, UserContext } from '@polecatworks/mfe-shared';
-import { MFE_CONFIG, MfeConfig } from './mfe-config';
+import { SharedContextService, SharedOtelService } from '@polecatworks/mfe-shared';
+import { MFE_CONFIG, MfeConfig, parseOidcClaims } from './mfe-config';
 
 @Component({
   selector: 'app-root',
@@ -50,29 +50,10 @@ export class App implements OnInit {
   }
 
   private updateUserContext(): void {
-    const claims = (this.oauthService.getIdentityClaims() || {}) as any;
-    const accessToken = this.oauthService.getAccessToken();
-
-    // Extract client-specific roles from resource_access if present
-    const rawResourceAccess = claims?.resource_access || {};
-    const clientRoles: Record<string, string[]> = {};
-    for (const [clientId, access] of Object.entries<any>(rawResourceAccess)) {
-      if (Array.isArray(access?.roles)) {
-        clientRoles[clientId] = access.roles;
-      }
-    }
-
-    const context: UserContext = {
-      userId: claims?.sub || '',
-      username: claims?.preferred_username || claims?.email || 'Anonymous',
-      name: claims?.name || claims?.preferred_username || 'User',
-      email: claims?.email,
-      roles: claims?.realm_access?.roles || claims?.roles || [],
-      clientRoles,
-      claims,
-      accessToken: accessToken || undefined
-    };
-
+    const context = parseOidcClaims(
+      this.oauthService.getIdentityClaims(),
+      this.oauthService.getAccessToken()
+    );
     this.sharedContext.setContext(context);
   }
 }

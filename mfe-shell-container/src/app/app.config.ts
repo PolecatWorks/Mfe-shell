@@ -1,4 +1,4 @@
-import { ApplicationConfig, APP_INITIALIZER } from '@angular/core';
+import { ApplicationConfig, inject, provideAppInitializer } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HttpClient, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
@@ -15,11 +15,6 @@ export const createAppConfig = (config: MfeConfig): ApplicationConfig => ({
     provideHttpClient(withInterceptorsFromDi(), withInterceptors([authInterceptor])),
     provideOAuthClient(),
     { provide: MFE_CONFIG, useValue: config },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeAuthConfig,
-      deps: [HttpClient, OAuthService],
-      multi: true,
-    },
+    provideAppInitializer(() => initializeAuthConfig(inject(HttpClient), inject(OAuthService))()),
   ]
 });

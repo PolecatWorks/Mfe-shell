@@ -1,11 +1,17 @@
-import { ApplicationRef, createComponent, EnvironmentInjector } from '@angular/core';
+import { ApplicationRef, ComponentRef, createComponent, EnvironmentInjector } from '@angular/core';
 import { createApplication } from '@angular/platform-browser';
+import { applyJsonPatches, JsonPatchOp, MfeMountProps } from '@polecatworks/mfe-shared';
 import { MermaidShow } from './mermaid-show';
 
-const appRefs = new Map<HTMLElement, ApplicationRef>();
-const componentRefs = new Map<HTMLElement, any>();
+export interface MermaidShowState {
+  title: string;
+  content: string;
+}
 
-export async function mount(container: HTMLElement, props: any) {
+const appRefs = new Map<HTMLElement, ApplicationRef>();
+const componentRefs = new Map<HTMLElement, ComponentRef<MermaidShow>>();
+
+export async function mount(container: HTMLElement, props?: MfeMountProps<string>) {
   if (appRefs.has(container)) {
     console.warn('Angular app already mounted on this container, unmounting first.');
     unmount(container);
@@ -18,7 +24,10 @@ export async function mount(container: HTMLElement, props: any) {
     hostElement: container,
   });
 
-  let currentState: any = { title: props?.title ?? '', content: props?.content ?? '' };
+  let currentState: MermaidShowState = {
+    title: props?.title ?? '',
+    content: props?.content ?? '',
+  };
   if (props && props.content) {
     if (props.title) {
       componentRef.setInput('title', props.title);
@@ -34,19 +43,11 @@ export async function mount(container: HTMLElement, props: any) {
 
   const cleanup = () => unmount(container);
   return Object.assign(cleanup, {
-    applyPatch: (patches: any) => {
-      if (Array.isArray(patches)) {
-        for (const p of patches) {
-          const key = p.path?.replace(/^\//, '');
-          if (key && (p.op === 'replace' || p.op === 'add')) {
-            currentState[key] = p.value;
-          }
-        }
-      } else if (typeof patches === 'string') {
-        currentState.content = patches;
-      } else if (patches && typeof patches === 'object') {
-        if (patches.title !== undefined) currentState.title = patches.title;
-        if (patches.content !== undefined) currentState.content = patches.content;
+    applyPatch: (patches: JsonPatchOp[] | Partial<MermaidShowState> | string) => {
+      if (typeof patches === 'string') {
+        currentState = { ...currentState, content: patches };
+      } else {
+        currentState = applyJsonPatches(currentState, patches);
       }
       if (currentState.title) componentRef.setInput('title', currentState.title);
       if (currentState.content) componentRef.setInput('content', currentState.content);

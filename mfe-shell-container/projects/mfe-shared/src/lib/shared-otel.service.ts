@@ -1,12 +1,14 @@
-import { Injectable, Optional } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { LoggerProvider, BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { logs, Logger } from '@opentelemetry/api-logs';
-import { SharedContextService, UserContext } from './shared-context.service';
+import { SharedContextService } from './shared-context.service';
+
+export type OTelLogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 export interface OTelConfig {
   collectorUrl: string;
-  logLevel: string;
+  logLevel: OTelLogLevel;
 }
 
 @Injectable({

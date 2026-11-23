@@ -1,11 +1,32 @@
-import { ApplicationRef, createComponent, EnvironmentInjector } from '@angular/core';
+import { ApplicationRef, ComponentRef, createComponent, EnvironmentInjector } from '@angular/core';
 import { createApplication } from '@angular/platform-browser';
+import {
+  AiFieldAttribution,
+  CanvasSelection,
+  JsonPatchOp,
+  MfeMountProps,
+} from '@polecatworks/mfe-shared';
 import { PersonalDataForm } from './personal-data-form';
 
-const appRefs = new Map<HTMLElement, ApplicationRef>();
-const componentRefs = new Map<HTMLElement, any>();
+export interface PersonalDataPayload {
+  first_name?: string;
+  firstName?: string;
+  last_name?: string;
+  lastName?: string;
+  email?: string;
+  phone_number?: string;
+  phoneNumber?: string;
+  address?: string;
+  actions?: string[];
+}
 
-export async function mount(container: HTMLElement, props: any) {
+const appRefs = new Map<HTMLElement, ApplicationRef>();
+const componentRefs = new Map<HTMLElement, ComponentRef<PersonalDataForm>>();
+
+export async function mount(
+  container: HTMLElement,
+  props?: MfeMountProps<PersonalDataPayload> & PersonalDataPayload
+) {
   if (appRefs.has(container)) {
     console.warn('Angular app already mounted on this container, unmounting first.');
     unmount(container);
@@ -26,7 +47,8 @@ export async function mount(container: HTMLElement, props: any) {
   }
 
   // Set the inputs from props
-  const data = props && (props.content || props.initialState) ? (props.content || props.initialState) : props;
+  const data: PersonalDataPayload | undefined =
+    props && (props.content || props.initialState) ? (props.content || props.initialState) : props;
   if (data && typeof data === 'object') {
     if (data.first_name ?? data.firstName) componentRef.setInput('firstName', data.first_name ?? data.firstName);
     if (data.last_name ?? data.lastName) componentRef.setInput('lastName', data.last_name ?? data.lastName);
@@ -37,20 +59,23 @@ export async function mount(container: HTMLElement, props: any) {
   }
 
   if (props && props.onAction) {
-    componentRef.instance.actionEvent.subscribe((payload: any) => {
-      props.onAction('submit', payload);
+    const onAction = props.onAction;
+    componentRef.instance.actionEvent.subscribe((payload: Record<string, unknown>) => {
+      onAction('submit', payload);
     });
   }
 
   if (props && props.onStateChange) {
-    componentRef.instance.stateChange.subscribe((evt: { state: any; patches: any[] }) => {
-      props.onStateChange(evt.state, evt.patches);
+    const onStateChange = props.onStateChange;
+    componentRef.instance.stateChange.subscribe((evt: { state: Record<string, unknown>; patches: JsonPatchOp[] }) => {
+      onStateChange(evt.state as PersonalDataPayload, evt.patches);
     });
   }
 
   if (props && props.onSelectionChange) {
-    componentRef.instance.selectionChange.subscribe((selection: any) => {
-      props.onSelectionChange(selection);
+    const onSelectionChange = props.onSelectionChange;
+    componentRef.instance.selectionChange.subscribe((selection: CanvasSelection | null) => {
+      onSelectionChange(selection);
     });
   }
 
@@ -66,7 +91,7 @@ export async function mount(container: HTMLElement, props: any) {
 
   const cleanup = () => unmount(container);
   return Object.assign(cleanup, {
-    applyPatch: (patches: any, attributions?: any[]) => {
+    applyPatch: (patches: JsonPatchOp[] | Record<string, unknown>, attributions?: AiFieldAttribution[]) => {
       componentRef.instance.applyPatch(patches, attributions || []);
       componentRef.changeDetectorRef.detectChanges();
     },
