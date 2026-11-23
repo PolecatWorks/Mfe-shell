@@ -1,3 +1,9 @@
+import type { OTelConfig, OTelLogLevel, UserContext } from '@polecatworks/mfe-shared';
+
+export type { OTelConfig, OTelLogLevel };
+
+const VALID_OTEL_LOG_LEVELS: readonly OTelLogLevel[] = ['debug', 'info', 'warn', 'error'];
+
 export interface MfeRouteConfig {
   path: string;
   displayName: string;
@@ -10,11 +16,6 @@ export interface MenuConfig {
   name: string;
   route: string;
   icon?: string;
-}
-
-export interface OTelConfig {
-  collectorUrl: string;
-  logLevel: string;
 }
 
 export interface MfeConfig {
@@ -33,6 +34,16 @@ function requireNonEmptyString(value: unknown, fieldPath: string): string {
     throw new Error(`Invalid shell-config.json: "${fieldPath}" must be a non-empty string`);
   }
   return value;
+}
+
+function parseOTelLogLevel(value: unknown): OTelLogLevel {
+  const rawLevel = requireNonEmptyString(value, 'otel.logLevel').toLowerCase();
+  if (!(VALID_OTEL_LOG_LEVELS as readonly string[]).includes(rawLevel)) {
+    throw new Error(
+      `Invalid shell-config.json: "otel.logLevel" must be one of ${VALID_OTEL_LOG_LEVELS.join(', ')}`
+    );
+  }
+  return rawLevel as OTelLogLevel;
 }
 
 export function parseShellConfig(raw: unknown): MfeConfig {
@@ -98,9 +109,58 @@ export function parseShellConfig(raw: unknown): MfeConfig {
     }
     config.otel = {
       collectorUrl: requireNonEmptyString(raw['otel']['collectorUrl'], 'otel.collectorUrl'),
-      logLevel: requireNonEmptyString(raw['otel']['logLevel'], 'otel.logLevel'),
+      logLevel: parseOTelLogLevel(raw['otel']['logLevel']),
     };
   }
 
   return config;
 }
+
+function asOptionalNonEmptyString(value: unknown): string | undefined {
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
+}
+
+function asStringArray(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+  return value.filter((item): item is string => typeof item === 'string');
+}
+
+export function parseOidcClaims(raw: unknown, accessToken?: string): UserContext {
+  const claims: Record<string, unknown> = isPlainObject(raw) ? raw : {};
+
+  const sub = asOptionalNonEmptyString(claims['sub']) ?? '';
+  const preferredUsername = asOptionalNonEmptyString(claims['preferred_username']);
+  const email = asOptionalNonEmptyString(claims['email']);
+  const name = asOptionalNonEmptyString(claims['name']);
+
+  const realmAccess = isPlainObject(claims['realm_access']) ? claims['realm_access'] : undefined;
+  const realmRoles = realmAccess ? asStringArray(realmAccess['roles']) : undefined;
+  const directRoles = asStringArray(claims['roles']);
+  const roles = realmRoles ?? directRoles ?? [];
+
+  const clientRoles: Record<string, string[]> = {};
+  if (isPlainObject(claims['resource_access'])) {
+    for (const [clientId, access] of Object.entries(claims['resource_access'])) {
+      if (isPlainObject(access)) {
+        const extracted = asStringArray(access['roles']);
+        if (extracted) {
+          clientRoles[clientId] = extracted;
+        }
+      }
+    }
+  }
+
+  return {
+    userId: sub,
+    username: preferredUsername ?? email ?? 'Anonymous',
+    name: name ?? preferredUsername ?? 'User',
+    email,
+    roles,
+    clientRoles,
+    claims,
+    accessToken: asOptionalNonEmptyString(accessToken),
+  };
+}
+

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseShellConfig } from './mfe-config';
+import { parseShellConfig, parseOidcClaims } from './mfe-config';
 import { validateAuthConfig } from './auth.config';
 
 describe('parseShellConfig', () => {
@@ -100,6 +100,12 @@ describe('parseShellConfig', () => {
         otel: { collectorUrl: '', logLevel: 'info' },
       })
     ).toThrow(/otel\.collectorUrl/);
+    expect(() =>
+      parseShellConfig({
+        ...validPayload,
+        otel: { collectorUrl: 'http://localhost:4318/v1/logs', logLevel: 'trace' },
+      })
+    ).toThrow(/otel\.logLevel/);
   });
 });
 
@@ -127,3 +133,49 @@ describe('validateAuthConfig', () => {
     expect(() => validateAuthConfig({ ...validAuth, scope: 42 })).toThrow(/scope/);
   });
 });
+
+describe('parseOidcClaims', () => {
+  it('parses full Keycloak OIDC identity claims with realm and client roles', () => {
+    const rawClaims = {
+      sub: 'user-123',
+      preferred_username: 'alice',
+      name: 'Alice Smith',
+      email: 'alice@example.com',
+      realm_access: { roles: ['admin', 'user'] },
+      resource_access: {
+        'mfe-shell': { roles: ['portal-viewer'] },
+        'data-engine': { roles: ['analyst', 42] },
+      },
+    };
+
+    const ctx = parseOidcClaims(rawClaims, 'jwt-token-xyz');
+    expect(ctx).toEqual({
+      userId: 'user-123',
+      username: 'alice',
+      name: 'Alice Smith',
+      email: 'alice@example.com',
+      roles: ['admin', 'user'],
+      clientRoles: {
+        'mfe-shell': ['portal-viewer'],
+        'data-engine': ['analyst'],
+      },
+      claims: rawClaims,
+      accessToken: 'jwt-token-xyz',
+    });
+  });
+
+  it('falls back safely when claims payload is null or missing optional properties', () => {
+    const ctx = parseOidcClaims(null, '');
+    expect(ctx).toEqual({
+      userId: '',
+      username: 'Anonymous',
+      name: 'User',
+      email: undefined,
+      roles: [],
+      clientRoles: {},
+      claims: {},
+      accessToken: undefined,
+    });
+  });
+});
+

@@ -1,11 +1,12 @@
-import { ApplicationRef, createComponent, EnvironmentInjector } from '@angular/core';
+import { ApplicationRef, ComponentRef, createComponent, EnvironmentInjector } from '@angular/core';
 import { createApplication } from '@angular/platform-browser';
+import { applyJsonPatches, JsonPatchOp, MfeMountProps } from '@polecatworks/mfe-shared';
 import { JsonShow } from './json-show';
 
 const appRefs = new Map<HTMLElement, ApplicationRef>();
-const componentRefs = new Map<HTMLElement, any>();
+const componentRefs = new Map<HTMLElement, ComponentRef<JsonShow>>();
 
-export async function mount(container: HTMLElement, props: any) {
+export async function mount(container: HTMLElement, props?: MfeMountProps<Record<string, unknown>> | Record<string, unknown>) {
   if (appRefs.has(container)) {
     console.warn('Angular app already mounted on this container, unmounting first.');
     unmount(container);
@@ -18,9 +19,11 @@ export async function mount(container: HTMLElement, props: any) {
     hostElement: container,
   });
 
-  let currentState: any = props?.content ?? props ?? {};
-  if (props && props.content !== undefined) {
-    componentRef.setInput('content', props.content);
+  const mountProps = props as MfeMountProps<Record<string, unknown>> | undefined;
+  let currentState: Record<string, unknown> =
+    (mountProps?.content !== undefined ? mountProps.content : (props as Record<string, unknown>)) ?? {};
+  if (mountProps && mountProps.content !== undefined) {
+    componentRef.setInput('content', mountProps.content);
   }
 
   appRef.attachView(componentRef.hostView);
@@ -31,22 +34,16 @@ export async function mount(container: HTMLElement, props: any) {
 
   const cleanup = () => unmount(container);
   return Object.assign(cleanup, {
-    applyPatch: (patches: any) => {
+    applyPatch: (patches: JsonPatchOp[] | Record<string, unknown>) => {
       if (Array.isArray(patches)) {
-        const nextState = typeof currentState === 'object' && currentState !== null
-          ? JSON.parse(JSON.stringify(currentState))
-          : {};
-        for (const p of patches) {
-          const key = p.path?.replace(/^\//, '');
-          if (key && (p.op === 'replace' || p.op === 'add')) {
-            nextState[key] = p.value;
-          } else if (key && p.op === 'remove') {
-            delete nextState[key];
-          }
-        }
-        currentState = nextState;
+        const baseState =
+          typeof currentState === 'object' && currentState !== null ? currentState : {};
+        currentState = applyJsonPatches(baseState, patches);
       } else {
-        currentState = patches?.content !== undefined ? patches.content : patches;
+        const recordPatch = patches as Record<string, unknown> | undefined;
+        currentState = (recordPatch?.['content'] !== undefined
+          ? recordPatch['content']
+          : recordPatch) as Record<string, unknown>;
       }
       componentRef.setInput('content', currentState);
       componentRef.changeDetectorRef.detectChanges();

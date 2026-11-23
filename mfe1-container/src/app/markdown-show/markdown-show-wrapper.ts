@@ -1,11 +1,12 @@
-import { ApplicationRef, createComponent, EnvironmentInjector } from '@angular/core';
+import { ApplicationRef, ComponentRef, createComponent, EnvironmentInjector } from '@angular/core';
 import { createApplication } from '@angular/platform-browser';
+import { applyJsonPatches, JsonPatchOp, MfeMountProps } from '@polecatworks/mfe-shared';
 import { MarkdownShow } from './markdown-show';
 
 const appRefs = new Map<HTMLElement, ApplicationRef>();
-const componentRefs = new Map<HTMLElement, any>();
+const componentRefs = new Map<HTMLElement, ComponentRef<MarkdownShow>>();
 
-export async function mount(container: HTMLElement, props: any) {
+export async function mount(container: HTMLElement, props?: MfeMountProps<string> | string) {
   if (appRefs.has(container)) {
     console.warn('Angular app already mounted on this container, unmounting first.');
     unmount(container);
@@ -18,7 +19,7 @@ export async function mount(container: HTMLElement, props: any) {
     hostElement: container,
   });
 
-  let currentState: any = props;
+  let currentState: MfeMountProps<string> | string | undefined = props;
   if (props) {
     componentRef.setInput('content', props);
   }
@@ -31,20 +32,15 @@ export async function mount(container: HTMLElement, props: any) {
 
   const cleanup = () => unmount(container);
   return Object.assign(cleanup, {
-    applyPatch: (patches: any) => {
-      if (Array.isArray(patches)) {
-        const nextState = typeof currentState === 'object' && currentState !== null
-          ? { ...currentState }
-          : { content: currentState };
-        for (const p of patches) {
-          const key = p.path?.replace(/^\//, '');
-          if (key && (p.op === 'replace' || p.op === 'add')) {
-            nextState[key] = p.value;
-          }
-        }
-        currentState = nextState;
+    applyPatch: (patches: JsonPatchOp[] | Partial<MfeMountProps<string>> | string) => {
+      const baseState: MfeMountProps<string> =
+        typeof currentState === 'object' && currentState !== null
+          ? currentState
+          : { content: typeof currentState === 'string' ? currentState : '' };
+      if (typeof patches === 'string') {
+        currentState = { ...baseState, content: patches };
       } else {
-        currentState = typeof patches === 'object' && patches !== null ? { ...currentState, ...patches } : { content: patches };
+        currentState = applyJsonPatches(baseState, patches);
       }
       componentRef.setInput('content', currentState);
       componentRef.changeDetectorRef.detectChanges();
